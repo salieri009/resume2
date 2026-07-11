@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { ProjectKey, Strings } from '../data/types';
 
 interface ProjectsBentoProps {
@@ -7,7 +8,7 @@ interface ProjectsBentoProps {
   onOpenProject: (key: ProjectKey) => void;
 }
 
-export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: ProjectsBentoProps) {
+export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRef, onOpenProject }: ProjectsBentoProps) {
   const open = (key: ProjectKey) => () => onOpenProject(key);
   const openKey = (key: ProjectKey) => (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -25,7 +26,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
     >
       <div className="sal-section-header">
         <span className="sal-section-num">01.</span>
-        <h2 className="sal-section-title">Case Studies</h2>
+        <h2 className="sal-section-title">{t.sectionProjects}</h2>
         <div className="sal-section-rule" />
       </div>
 
@@ -59,7 +60,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
           </div>
           <div className="sal-bento-a-footer">
             <span>Lead — training &amp; inference · 97% commits</span>
-            <span className="sal-case-study-link">Case Study →</span>
+            <span className="sal-case-study-link">Open →</span>
           </div>
         </article>
 
@@ -76,7 +77,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
             <h3>IoTBay</h3>
             <p>{t.iotbaySummary}</p>
           </div>
-          <span className="sal-case-study-link">Case Study →</span>
+          <span className="sal-case-study-link">Open →</span>
         </article>
 
         <article
@@ -92,7 +93,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
             <h3>Animal Farm Simulator</h3>
             <p>{t.farmSummary}</p>
           </div>
-          <span className="sal-case-study-link">Case Study →</span>
+          <span className="sal-case-study-link">Open →</span>
         </article>
 
         <article
@@ -108,7 +109,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
             <h3>Gundam Board</h3>
             <p>{t.gundamSummary}</p>
           </div>
-          <span className="sal-case-study-link">Case Study →</span>
+          <span className="sal-case-study-link">Open →</span>
         </article>
 
         <article
@@ -124,7 +125,7 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
             <h3>EphemeralTime</h3>
             <p>{t.ephemeralSummary}</p>
           </div>
-          <span className="sal-case-study-link">Case Study →</span>
+          <span className="sal-case-study-link">Open →</span>
         </article>
 
         <a
@@ -147,4 +148,4 @@ export function ProjectsBento({ t, revealed, revealRef, onOpenProject }: Project
       </div>
     </section>
   );
-}
+});

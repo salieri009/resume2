@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Strings } from '../data/types';
 
 interface AboutProps {
@@ -6,7 +7,7 @@ interface AboutProps {
   revealRef: (el: HTMLElement | null) => void;
 }
 
-export function About({ t, revealed, revealRef }: AboutProps) {
+export const About = memo(function About({ t, revealed, revealRef }: AboutProps) {
   return (
     <section
       id="about"
@@ -15,8 +16,8 @@ export function About({ t, revealed, revealRef }: AboutProps) {
       className={`sal-section${revealed ? ' is-revealed' : ''}`}
     >
       <div className="sal-section-header">
-        <span className="sal-section-num">04.</span>
-        <h2 className="sal-section-title">About</h2>
+        <span className="sal-section-num">05.</span>
+        <h2 className="sal-section-title">{t.sectionAbout}</h2>
         <div className="sal-section-rule" />
       </div>
 
@@ -24,7 +25,7 @@ export function About({ t, revealed, revealRef }: AboutProps) {
         <div className="sal-about-grid-bg" aria-hidden="true" />
         <div className="sal-about-content">
           <span className="sal-eyebrow" style={{ color: 'var(--c-accent-text)' }}>
-            // philosophy
+            // notes
           </span>
           <p className="sal-about-story">{t.aboutStory}</p>
           <div className="sal-about-divider" />
@@ -38,4 +39,4 @@ export function About({ t, revealed, revealRef }: AboutProps) {
       </div>
     </section>
   );
-}
+});

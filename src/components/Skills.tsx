@@ -1,13 +1,16 @@
-import type { ProjectKey, Strings } from '../data/types';
+import { memo } from 'react';
+import type { Lang, ProjectKey, Strings } from '../data/types';
+import { SKILL_PROOFS, formatProof } from '../data/academic';
 
 interface SkillsProps {
   t: Strings;
+  lang: Lang;
   revealed: boolean;
   revealRef: (el: HTMLElement | null) => void;
   onOpenProject: (key: ProjectKey) => void;
 }
 
-export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
+export const Skills = memo(function Skills({ t, lang, revealed, revealRef, onOpenProject }: SkillsProps) {
   return (
     <section
       id="skills"
@@ -17,7 +20,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
     >
       <div className="sal-section-header">
         <span className="sal-section-num">03.</span>
-        <h2 className="sal-section-title">Arsenal</h2>
+        <h2 className="sal-section-title">{t.sectionSkills}</h2>
         <div className="sal-section-rule" />
       </div>
 
@@ -35,7 +38,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
             ))}
           </div>
           <div className="sal-skill-footer">
-            <span className="sal-eyebrow">Software Dev Studio · 95 HD</span>
+            <span className="sal-eyebrow">{formatProof(SKILL_PROOFS.enterprise, lang)}</span>
             <button type="button" className="sal-skill-proof sal-focus" onClick={() => onOpenProject('iotbay')}>
               Proof: IoTBay →
             </button>
@@ -53,7 +56,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
             ))}
           </div>
           <div className="sal-skill-footer">
-            <span className="sal-eyebrow">SageMaker · JRDB fine-tune</span>
+            <span className="sal-eyebrow">{formatProof(SKILL_PROOFS.ai, lang)} · SageMaker</span>
             <button type="button" className="sal-skill-proof sal-focus" onClick={() => onOpenProject('crowd')}>
               Proof: Crowd Detection →
             </button>
@@ -71,7 +74,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
             ))}
           </div>
           <div className="sal-skill-footer">
-            <span className="sal-eyebrow">Cloud/SaaS · 86 HD</span>
+            <span className="sal-eyebrow">{formatProof(SKILL_PROOFS.cloud, lang)}</span>
             <button type="button" className="sal-skill-proof sal-focus" onClick={() => onOpenProject('gundam')}>
               Proof: Gundam Board →
             </button>
@@ -89,7 +92,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
             ))}
           </div>
           <div className="sal-skill-footer">
-            <span className="sal-eyebrow">Computer Graphics · 81 D</span>
+            <span className="sal-eyebrow">{formatProof(SKILL_PROOFS.graphics, lang)}</span>
             <button type="button" className="sal-skill-proof sal-focus" onClick={() => onOpenProject('farm')}>
               Proof: Farm Simulator →
             </button>
@@ -107,7 +110,7 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
             ))}
           </div>
           <div className="sal-skill-footer">
-            <span className="sal-eyebrow">Interactive Media · 82 D</span>
+            <span className="sal-eyebrow">{formatProof(SKILL_PROOFS.interactive, lang)}</span>
             <button type="button" className="sal-skill-proof sal-focus" onClick={() => onOpenProject('crowd')}>
               Proof: Detection UI →
             </button>
@@ -138,4 +141,4 @@ export function Skills({ t, revealed, revealRef, onOpenProject }: SkillsProps) {
       </div>
     </section>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Strings } from '../data/types';
 
 interface ContactProps {
@@ -6,7 +7,7 @@ interface ContactProps {
   revealRef: (el: HTMLElement | null) => void;
 }
 
-export function Contact({ t, revealed, revealRef }: ContactProps) {
+export const Contact = memo(function Contact({ t, revealed, revealRef }: ContactProps) {
   return (
     <section
       id="contact"
@@ -16,18 +17,38 @@ export function Contact({ t, revealed, revealRef }: ContactProps) {
       style={{ paddingBottom: 96 }}
     >
       <div className="sal-contact-panel">
-        <div className="sal-beacon" aria-hidden="true">
-          <div className="sal-beacon-sweep" />
-          <span className="sal-beacon-dot" />
+        <div className="sal-lighthouse" aria-hidden="true">
+          <div className="sal-beacon">
+            <div className="sal-beacon-sweep" />
+            <span className="sal-beacon-dot" />
+          </div>
+          <div className="sal-lighthouse-status">
+            <span className="sal-lighthouse-ok" />
+            <span className="sal-eyebrow">{t.lighthouseStatus}</span>
+          </div>
+          <svg className="sal-sparkline" viewBox="0 0 120 28" aria-hidden="true">
+            <polyline
+              className="sal-sparkline-line"
+              fill="none"
+              stroke="var(--c-accent-text)"
+              strokeWidth={1.5}
+              points="0,20 12,18 24,16 36,14 48,15 60,10 72,12 84,8 96,9 108,6 120,7"
+            />
+            <circle className="sal-sparkline-tip" cx="120" cy="7" r="2.5" fill="var(--c-accent)" />
+          </svg>
+          <span className="sal-eyebrow" style={{ color: 'var(--c-text-faint)' }}>
+            {t.lighthouseUptime}
+          </span>
         </div>
+
         <span className="sal-eyebrow" style={{ color: 'var(--c-accent-text)' }}>
-          05. Contact — voyage complete
+          06. Contact
         </span>
         <h2 className="sal-contact-title">{t.contactTitle}</h2>
         <p className="sal-contact-sub">{t.contactSub}</p>
 
         <a href="mailto:kordalek@naver.com" className="sal-contact-cta sal-focus">
-          Initialize Contact →
+          Email me →
         </a>
 
         <div className="sal-contact-links">
@@ -47,4 +68,4 @@ export function Contact({ t, revealed, revealRef }: ContactProps) {
       </div>
     </section>
   );
-}
+});

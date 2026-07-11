@@ -1,9 +1,13 @@
 # Salieri — Resume Site
 
 Personal resume / portfolio site, built with Vite + React + TypeScript. Implements the "Voyage" design
-(`Salieri Resume v2.dc.html`) as a real, deployable codebase: hero, project case studies with detail
-overlays, experience timeline, skills, about, and contact — with English/Korean/Japanese localization
-and a light/dark theme.
+as a deployable codebase: hero with **exploded axonometric degree stack** (UTS transcript storytelling),
+nautical-chart backdrop, project case studies, semester timeline, skills arsenal, an interactive
+**Voyage Chart** (project archipelago + real IoTBay CI/CD route), about, and contact lighthouse —
+with English/Korean/Japanese localization and a light/dark theme.
+
+Smooth scrolling via Lenis; Hero axonometric + Voyage Chart scrub via GSAP ScrollTrigger; desktop Voyage
+map via Three.js (WebGL) with SVG fallback for reduced-motion / no-WebGL / mobile.
 
 ## Develop
 
@@ -21,16 +25,20 @@ npm run preview # serve the production build locally
 
 ## Structure
 
-- `src/data/` — content (project case studies, i18n strings) and shared types
-- `src/hooks/` — scroll progress, section spy, reveal-on-scroll, typewriter, reduced-motion
-- `src/components/` — page sections (`Hero`, `ProjectsBento`, `Experience`, `Skills`, `About`,
-  `Contact`) and the project case-study overlay (`ProjectDetail`)
+- `src/data/` — content (academic transcript highlights, project case studies, i18n) and shared types
+- `src/hooks/` — scroll progress, section spy, reveal-on-scroll, typewriter, reduced-motion, Lenis/GSAP
+- `src/components/` — page sections (`Hero` + `HeroAxono`, `ProjectsBento`, `Experience`, `Skills`,
+  `VoyageChart`, `VoyageScene`, `About`, `Contact`) and the project case-study overlay (`ProjectDetail`)
+- `src/lib/webgl.ts` — WebGL capability check for graceful fallback
 - `src/index.css` — theme tokens (CSS variables, swapped via `data-theme` on `<html>`) and all styling
 
 ## Notes
 
 - The header/hero "Download Résumé" links point to `/resume.pdf`, which is not included — drop a PDF at
   `public/resume.pdf` to make that link work.
-- Accent color, hero backdrop, and layout density were exposed as design-tool props in the original
-  prototype; this build ships with their defaults (red accent, full backdrop, comfortable density) since
-  there's no in-app UI to change them.
+- Public site shows GPA / WAM / 144 CP / Complete only — **student number is never displayed**.
+- Hero axonometric floors map Foundations → Systems → Algorithms & Graphics → Production from the
+  UTS Online Student Record (printed 29 Jun 2026). Timeline expands the same arc by semester.
+- Voyage Chart islands open the same case-study overlay as the bento grid. The CI/CD strip mirrors the
+  real IoTBay pipeline (push → Actions → E2E → Docker → GHCR) — no unshipped tech (e.g. Kubernetes).
+- Three.js scene is procedural (ocean, ship, five project islands, lighthouse) — no external glTF required.

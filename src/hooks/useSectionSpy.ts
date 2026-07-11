@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const SECTION_IDS = ['top', 'projects', 'experience', 'skills', 'about', 'contact'];
+const SECTION_IDS = ['top', 'projects', 'experience', 'skills', 'voyage', 'about', 'contact'];
 
 export function useSectionSpy() {
   const [activeSection, setActiveSection] = useState('');

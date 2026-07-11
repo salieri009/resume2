@@ -1,20 +1,25 @@
-import type { Strings } from '../data/types';
+import { memo } from 'react';
+import { DEGREE, SEMESTER_WAYPOINTS, formatGpaWam, formatMark } from '../data/academic';
+import type { Lang, Strings } from '../data/types';
 
 interface ExperienceProps {
   t: Strings;
+  lang: Lang;
   revealed: boolean;
   revealRef: (el: HTMLElement | null) => void;
 }
 
-const UTS_COURSES = [
-  'Software Dev Studio · 95 HD',
-  'Data Structures · 92 HD',
-  'Intro Software Dev · 90 HD',
-  'Advanced Software Dev · 87 HD',
-  'Cloud/SaaS · 86 HD',
-];
+const SEMESTER_COPY: Record<
+  (typeof SEMESTER_WAYPOINTS)[number]['id'],
+  { title: keyof Strings; body: keyof Strings }
+> = {
+  spr24: { title: 'semesterSpr24Title', body: 'semesterSpr24Body' },
+  aut25: { title: 'semesterAut25Title', body: 'semesterAut25Body' },
+  spr25: { title: 'semesterSpr25Title', body: 'semesterSpr25Body' },
+  aut26: { title: 'semesterAut26Title', body: 'semesterAut26Body' },
+};
 
-export function Experience({ t, revealed, revealRef }: ExperienceProps) {
+export const Experience = memo(function Experience({ t, lang, revealed, revealRef }: ExperienceProps) {
   return (
     <section
       id="experience"
@@ -24,7 +29,7 @@ export function Experience({ t, revealed, revealRef }: ExperienceProps) {
     >
       <div className="sal-section-header">
         <span className="sal-section-num">02.</span>
-        <h2 className="sal-section-title">Timeline</h2>
+        <h2 className="sal-section-title">{t.sectionExperience}</h2>
         <div className="sal-section-rule" />
       </div>
 
@@ -39,26 +44,66 @@ export function Experience({ t, revealed, revealRef }: ExperienceProps) {
           <div className="sal-timeline-body">
             <div className="sal-timeline-meta">
               <span className="sal-mono" style={{ fontSize: 12, color: 'var(--c-accent-text)' }}>
-                2023 — 2026
+                {DEGREE.startYear} — {DEGREE.completedYear}
               </span>
-              <span className="sal-badge">Complete · 144 CP</span>
+              <span className="sal-badge">
+                {DEGREE.status} · {DEGREE.creditPoints} CP
+              </span>
             </div>
-            <h3 className="sal-timeline-h3">University of Technology Sydney</h3>
-            <p className="sal-timeline-p1">Bachelor of Information Technology</p>
+            <h3 className="sal-timeline-h3">{DEGREE.institution}</h3>
+            <p className="sal-timeline-p1">{DEGREE.award}</p>
             <p className="sal-timeline-p2">
-              Major: Enterprise Software Development · Sub-major: Computer Graphics &amp; Animation · GPA 6.00 / WAM
-              80.31
+              {t.majorLine} · {formatGpaWam(lang)}
             </p>
             <p className="sal-timeline-p3">{t.growthUts}</p>
-            <div className="sal-tag-row">
-              {UTS_COURSES.map((c) => (
-                <span key={c} className="sal-pill-outline">
-                  {c}
-                </span>
-              ))}
-            </div>
+            <p className="sal-timeline-foundations">{t.timelineFoundations}</p>
+            <p className="sal-eyebrow" style={{ marginTop: 8 }}>
+              {t.exemptionsNote}
+            </p>
           </div>
         </div>
+
+        {SEMESTER_WAYPOINTS.map((wp, idx) => {
+          const copy = SEMESTER_COPY[wp.id];
+          const isLast = idx === SEMESTER_WAYPOINTS.length - 1;
+          return (
+            <div key={wp.id} className="sal-timeline-row">
+              <div className="sal-timeline-rail">
+                <div className={`sal-timeline-dot${isLast ? ' is-current' : ' is-past'}`} />
+                {!isLast && <div className="sal-timeline-line" />}
+              </div>
+              <div className="sal-timeline-body">
+                <div className="sal-timeline-meta">
+                  <span className="sal-mono" style={{ fontSize: 12, color: 'var(--c-accent-text)' }}>
+                    {wp.session}
+                  </span>
+                  <span className="sal-badge">WP-0{idx + 1}</span>
+                </div>
+                <h3 className="sal-timeline-h3">{t[copy.title]}</h3>
+                <p className="sal-timeline-p3">{t[copy.body]}</p>
+                <div className="sal-tag-row">
+                  {wp.highlights.map((h) => (
+                    <span key={h.short} className="sal-pill-outline">
+                      {h.short} · {formatMark(h.mark, h.grade, lang)}
+                    </span>
+                  ))}
+                  {wp.artifacts?.map((a) => (
+                    <a
+                      key={a.url}
+                      href={a.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="sal-artifact-chip sal-focus"
+                      title={a.subject}
+                    >
+                      {a.label} ↗
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
 
         <div className="sal-timeline-row">
           <div className="sal-timeline-rail">
@@ -66,16 +111,26 @@ export function Experience({ t, revealed, revealRef }: ExperienceProps) {
           </div>
           <div>
             <span className="sal-mono" style={{ fontSize: 12, color: 'var(--c-accent-text)' }}>
-              Prior Service
+              {t.priorService}
             </span>
-            <h3 className="sal-timeline-h3">Republic of Korea Army</h3>
-            <p className="sal-timeline-p1">Interpreter / Translator — English liaison duties.</p>
-            <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: 14, lineHeight: 1.6, color: 'var(--c-text-muted)' }}>
+            <h3 className="sal-timeline-h3">{t.armyName}</h3>
+            <p className="sal-timeline-p1">{t.armyRole}</p>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: "'Inter', sans-serif",
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: 'var(--c-text-muted)',
+              }}
+            >
               {t.growthArmy}
             </p>
           </div>
         </div>
       </div>
+
+      <p className="sal-full-record">{t.fullRecordNote}</p>
     </section>
   );
-}
+});

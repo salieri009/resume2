@@ -1,15 +1,20 @@
-import type { Lang, Theme } from '../data/types';
+import { memo } from 'react';
+import type { Lang, Strings, Theme } from '../data/types';
 import { SunIcon, MoonIcon, MenuIcon, CloseIcon } from './Icons';
 
-const NAV_ITEMS = [
-  { id: 'projects', label: 'projects' },
-  { id: 'experience', label: 'experience' },
-  { id: 'skills', label: 'skills' },
-  { id: 'about', label: 'about' },
-  { id: 'contact', label: 'contact' },
-] as const;
+const NAV_IDS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
+
+const NAV_LABEL_KEYS: Record<(typeof NAV_IDS)[number], keyof Strings> = {
+  projects: 'navProjects',
+  experience: 'navExperience',
+  skills: 'navSkills',
+  voyage: 'navVoyage',
+  about: 'navAbout',
+  contact: 'navContact',
+};
 
 interface NavProps {
+  t: Strings;
   activeSection: string;
   theme: Theme;
   toggleTheme: () => void;
@@ -19,7 +24,16 @@ interface NavProps {
   toggleMobile: () => void;
 }
 
-export function Nav({ activeSection, theme, toggleTheme, lang, setLang, mobileOpen, toggleMobile }: NavProps) {
+export const Nav = memo(function Nav({
+  t,
+  activeSection,
+  theme,
+  toggleTheme,
+  lang,
+  setLang,
+  mobileOpen,
+  toggleMobile,
+}: NavProps) {
   const isDark = theme === 'dark';
 
   return (
@@ -30,13 +44,13 @@ export function Nav({ activeSection, theme, toggleTheme, lang, setLang, mobileOp
         </a>
 
         <nav className="sal-desktop-nav" aria-label="Primary">
-          {NAV_ITEMS.map((item) => (
+          {NAV_IDS.map((id) => (
             <a
-              key={item.id}
-              href={`#${item.id}`}
-              className={`sal-nav-link sal-focus${activeSection === item.id ? ' is-active' : ''}`}
+              key={id}
+              href={`#${id}`}
+              className={`sal-nav-link sal-focus${activeSection === id ? ' is-active' : ''}`}
             >
-              {item.label}
+              {t[NAV_LABEL_KEYS[id]]}
             </a>
           ))}
         </nav>
@@ -44,7 +58,7 @@ export function Nav({ activeSection, theme, toggleTheme, lang, setLang, mobileOp
         <div className="sal-header-actions">
           <div className="sal-nav-pill sal-desktop-nav">
             <span className="sal-status-dot" />
-            <span className="sal-status-text">System: Online</span>
+            <span className="sal-status-text">{t.navOnline}</span>
           </div>
 
           <div role="group" aria-label="Language" className="sal-lang-group">
@@ -70,7 +84,7 @@ export function Nav({ activeSection, theme, toggleTheme, lang, setLang, mobileOp
           </button>
 
           <a href="/resume.pdf" className="sal-download-btn sal-desktop-nav sal-focus">
-            Download Résumé
+            {t.navDownload}
           </a>
 
           <button
@@ -87,16 +101,16 @@ export function Nav({ activeSection, theme, toggleTheme, lang, setLang, mobileOp
 
       {mobileOpen && (
         <nav className="sal-mobile-nav">
-          {NAV_ITEMS.map((item) => (
-            <a key={item.id} href={`#${item.id}`} onClick={toggleMobile}>
-              {item.label}
+          {NAV_IDS.map((id) => (
+            <a key={id} href={`#${id}`} onClick={toggleMobile}>
+              {t[NAV_LABEL_KEYS[id]]}
             </a>
           ))}
           <a href="/resume.pdf" className="sal-download-btn">
-            Download Résumé
+            {t.navDownload}
           </a>
         </nav>
       )}
     </header>
   );
-}
+});

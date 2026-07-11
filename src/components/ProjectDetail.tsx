@@ -1,33 +1,64 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject } from '../data/projects';
+import type { ScrollControl } from '../hooks/useSmoothScroll';
 
 interface ProjectDetailProps {
   projectKey: ProjectKey;
   lang: Lang;
   reducedMotion: boolean;
+  scrollControl: ScrollControl;
   onClose: () => void;
   onNext: () => void;
 }
 
-export function ProjectDetail({ projectKey, lang, reducedMotion, onClose, onNext }: ProjectDetailProps) {
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, onClose, onNext }: ProjectDetailProps) {
   const project = getLocalizedProject(projectKey, lang);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const [explode, setExplode] = useState(0);
 
+  // Freeze the page behind the overlay: native overflow AND the Lenis engine.
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    scrollControl.stop();
     return () => {
       document.body.style.overflow = '';
+      scrollControl.start();
     };
-  }, []);
+  }, [scrollControl]);
 
+  // Focus trap: move focus in, cycle Tab inside, restore focus on close.
   useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    dialogRef.current?.focus();
+
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+      const focusables = dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE);
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || active === dialogRef.current)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus();
+    };
   }, [onClose]);
 
   useEffect(() => {
@@ -56,12 +87,13 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, onClose, onNext
       aria-modal="true"
       aria-label="Case study detail"
       className="sal-overlay"
+      tabIndex={-1}
       onScroll={handleScroll}
     >
       <div className="sal-overlay-header">
         <div className="sal-overlay-header-inner">
           <button type="button" onClick={onClose} className="sal-back-btn sal-focus">
-            ← Back to index
+            ← Back
           </button>
           <span className="sal-eyebrow">{project.crumb}</span>
         </div>
@@ -135,40 +167,67 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, onClose, onNext
 
               <div className="sal-detail-axono" aria-hidden="true">
                 <div className="sal-detail-axono-stage">
-                  <div className="sal-detail-axono-scene">
+                  <div
+                    className="sal-detail-axono-scene"
+                    style={
+                      {
+                        '--axstack': String(
+                          Math.round((project.layers.length - 1) * (28 + ex * 58) + 44),
+                        ),
+                      } as React.CSSProperties
+                    }
+                  >
+                    <div className="sal-detail-axono-ground" />
+
+                    {[
+                      { left: 0, top: 0 },
+                      { left: 180, top: 0 },
+                      { left: 0, top: 180 },
+                      { left: 180, top: 180 },
+                    ].map((p) => (
+                      <div
+                        key={`pl-${p.left}-${p.top}`}
+                        className="sal-axono-pline"
+                        style={{ left: p.left, top: p.top }}
+                      />
+                    ))}
+
                     {project.layers.map((layer, i) => (
                       <div
                         key={layer.label}
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          transform: `translateZ(${Math.round(i * (26 + ex * 64))}px)`,
-                          border: '1px solid var(--c-accent-dim)',
-                          backgroundImage:
-                            'linear-gradient(var(--c-accent-dim) 1px, transparent 1px), linear-gradient(90deg, var(--c-accent-dim) 1px, transparent 1px)',
-                          backgroundSize: '28px 28px',
-                          backgroundColor: 'var(--c-panel)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 6,
-                          padding: 12,
-                          boxSizing: 'border-box',
-                        }}
+                        className="sal-detail-axono-floor"
+                        style={{ transform: `translateZ(${Math.round(i * (28 + ex * 58))}px)` }}
                       >
-                        <span className="sal-axono-layer-label">{layer.label}</span>
-                        <div className="sal-axono-layer-items">
-                          {layer.items.map((it) => (
-                            <span key={it} className="sal-axono-layer-tag">
-                              {it}
-                            </span>
-                          ))}
+                        <div className="sal-detail-axono-slab">
+                          <div className="sal-detail-axono-slab-top">
+                            <span className="sal-axono-level">{`L${i}`}</span>
+                            <span className="sal-axono-layer-label">{layer.label}</span>
+                            <div className="sal-axono-layer-items">
+                              {layer.items.map((it) => (
+                                <span key={it} className="sal-axono-layer-tag">
+                                  {it}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="sal-detail-axono-slab-front" />
+                          <div className="sal-detail-axono-slab-right" />
                         </div>
                       </div>
                     ))}
+
+                    <div
+                      className="sal-detail-axono-roofplate"
+                      style={{
+                        transform: `translateZ(${Math.round((project.layers.length - 1) * (28 + ex * 58) + 36)}px)`,
+                      }}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="sal-detail-axono-caption">exploded view — keep scrolling to separate the layers</div>
+              <div className="sal-detail-axono-caption">
+                exploded axonometric — scroll to separate the layers
+              </div>
             </div>
           </div>
 
@@ -225,7 +284,7 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, onClose, onNext
             {project.tradeoffs.map((to) => (
               <div key={to.rejected} className="sal-tradeoff-card">
                 <div className="sal-problem-row">
-                  <span className="sal-pill-muted">not chosen</span>
+                  <span className="sal-pill-muted">skipped</span>
                   <p className="sal-tradeoff-rejected">{to.rejected}</p>
                 </div>
                 <p className="sal-tradeoff-why">{to.why}</p>
@@ -269,10 +328,10 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, onClose, onNext
 
           <div className="sal-detail-footer-nav">
             <button type="button" onClick={onClose} className="sal-close-btn sal-focus">
-              ← All case studies
+              ← All projects
             </button>
             <button type="button" onClick={onNext} className="sal-next-project-btn sal-focus">
-              Next case study →
+              Next project →
             </button>
           </div>
         </div>
