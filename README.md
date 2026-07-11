@@ -25,11 +25,15 @@ npm run preview # serve the production build locally
 
 ## Structure
 
-- `src/data/` — content (academic transcript highlights, project case studies, i18n) and shared types
-- `src/hooks/` — scroll progress, section spy, reveal-on-scroll, typewriter, reduced-motion, Lenis/GSAP
-- `src/components/` — page sections (`Hero` + `HeroAxono`, `ProjectsBento`, `Experience`, `Skills`,
-  `VoyageChart`, `VoyageScene`, `About`, `Contact`) and the project case-study overlay (`ProjectDetail`)
-- `src/lib/webgl.ts` — WebGL capability check for graceful fallback
+- `src/data/` — content and shared types: `academic.ts` (transcript highlights), `projects.ts` (case
+  studies), `voyage.ts` (Voyage Chart islands + CI/CD route), `strings.ts` (EN/KO/JA i18n), `types.ts`
+- `src/hooks/` — `useScrollProgress`, `useSectionSpy`, `useReveal` (reveal-on-scroll), `useTypewriter`,
+  `useReducedMotion`, `useSmoothScroll` (Lenis)
+- `src/components/` — layout chrome (`Nav`, `CourseLine`, `Footer`, `BackToTop`, `Icons`) and page
+  sections (`Hero` + `HeroAxono`, `ProjectsBento`, `Experience`, `Skills`, `VoyageChart` + `VoyageScene`
+  + `NauticalBg`, `About`, `Contact`), plus the project case-study overlay (`ProjectDetail`)
+- `src/lib/` — `webgl.ts` (capability check for graceful fallback), `voyageVisuals.ts` (GSAP ScrollTrigger
+  wiring for the Hero axonometric and Voyage Chart scrub)
 - `src/index.css` — theme tokens (CSS variables, swapped via `data-theme` on `<html>`) and all styling
 
 ## Notes
