@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { PROFILE } from '../data/profile';
 import type { Strings } from '../data/types';
 
 interface ContactProps {
@@ -45,6 +46,9 @@ export const Contact = memo(function Contact({ t, revealed, revealRef }: Contact
           06. Contact
         </span>
         <h2 className="sal-contact-title">{t.contactTitle}</h2>
+        <p className="sal-contact-name">
+          {PROFILE.name} · {PROFILE.alias}
+        </p>
         <p className="sal-contact-sub">{t.contactSub}</p>
 
         <a href="mailto:kordalek@naver.com" className="sal-contact-cta sal-focus">

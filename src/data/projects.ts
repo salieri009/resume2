@@ -1,4 +1,5 @@
 import type { Project, ProjectKey, Lang } from './types';
+import { PROFILE } from './profile';
 
 export const PROJECT_ORDER: ProjectKey[] = ['crowd', 'iotbay', 'farm', 'gundam', 'ephemeral'];
 
@@ -15,6 +16,12 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     github: 'https://github.com/salieri009/DeepLearning42028UTS',
     diagram: ['Webcam Feed', 'React UI', 'Spring Boot API', 'FastAPI · YOLOv8', 'Proximity Alerts'],
     shipping: { label: 'Training', ports: ['JRDB', 'DVC', 'SageMaker · g5', 'best.pt', 'container'] },
+    manifest: {
+      badge: 'v2.6.0 · live',
+      chips: ['YOLOv8', 'FastAPI', 'Spring Boot', 'React', 'SageMaker'],
+      footer: 'Lead — training & inference · 97% commits',
+    },
+    receipts: { releases: true, prs: true },
     period: '2026 S1 · Autumn',
     teamSize: '3 — ML lead',
     decisions: [
@@ -83,6 +90,12 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     github: 'https://github.com/salieri009/IoTBay',
     diagram: ['JSP Views', 'Servlet Controllers', 'Service Layer', 'DAO per Entity', 'SQLite'],
     shipping: { label: 'CI', ports: ['push', 'GH Actions', '118 E2E', 'Docker image', 'GHCR'] },
+    manifest: {
+      badge: '118 E2E · GHCR',
+      chips: ['Java Servlets', 'SQLite', 'Selenium', 'GH Actions'],
+      footer: 'Team of 8 — orders & tests',
+    },
+    receipts: { prs: true },
     period: '2025 S1 · Autumn',
     teamSize: '8',
     decisions: [
@@ -147,6 +160,11 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     github: 'https://github.com/salieri009/ThreeJSUTS26-v2',
     diagram: ['React 19', 'Scene Graph', 'Season/Weather Systems', 'GLSL Shaders', 'WebGL'],
     shipping: { label: 'Optional', ports: ['OpenWeatherMap', 'weather sync', 'scene state'] },
+    manifest: {
+      badge: '4 seasons · GLSL',
+      chips: ['Three.js', 'GLSL', 'React 19'],
+      footer: 'Graphics — shaders & particles',
+    },
     period: '2025 — v2 refactor 2026',
     teamSize: 'Team — graphics lead',
     decisions: [
@@ -206,6 +224,11 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     github: 'https://github.com/salieri009/ToyProject-Gundam',
     diagram: ['Next.js', 'Typed API Client', 'AWS Chalice', 'JWT Middleware', 'PostgreSQL'],
     shipping: { label: 'Auth', ports: ['Google OAuth', 'server verify', 'short-lived JWT', 'request check'] },
+    manifest: {
+      badge: 'OAuth+JWT · serverless',
+      chips: ['Next.js', 'AWS Chalice', 'PostgreSQL'],
+      footer: 'Solo — schema to deploy',
+    },
     period: '2025 · summer break',
     teamSize: 'Solo',
     decisions: [
@@ -265,6 +288,11 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     github: 'https://github.com/salieri009/EphemeralTime',
     diagram: ['Clock Events', 'Perlin Fluid Field', 'Particle Pool', 'Render Strategies', 'Generative Audio'],
     shipping: { label: 'Layers', ports: ['bgLayer · static', 'historyLayer', 'activeLayer'] },
+    manifest: {
+      badge: '60fps · GC −50~70%',
+      chips: ['p5.js', 'Object Pool', 'IoC'],
+      footer: 'Solo — architecture-first art',
+    },
     period: '2025',
     teamSize: 'Solo',
     decisions: [
@@ -829,4 +857,24 @@ export function getLocalizedProject(key: ProjectKey, lang: Lang): Project {
   if (lang === 'en') return base;
   const override = L10N[lang][key];
   return { ...base, ...override };
+}
+
+export interface ProjectReceipt {
+  label: string;
+  url: string;
+}
+
+/** Bill of lading — auto-derived GitHub links only, never fabricated deep links. */
+export function getReceipts(p: Project): ProjectReceipt[] {
+  const out: ProjectReceipt[] = [
+    { label: 'commits', url: `${p.github}/commits?author=${PROFILE.githubUser}` },
+  ];
+  if (p.receipts?.releases) out.push({ label: 'releases', url: `${p.github}/releases` });
+  if (p.receipts?.prs) {
+    out.push({
+      label: 'PRs',
+      url: `${p.github}/pulls?q=${encodeURIComponent(`is:pr author:${PROFILE.githubUser}`)}`,
+    });
+  }
+  return out;
 }

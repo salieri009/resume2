@@ -18,6 +18,16 @@ export interface ProjectLayer {
   items: string[];
 }
 
+/** Bento-card manifest — curated, short; tech labels stay English. */
+export interface ProjectManifest {
+  /** One-metric stamp shown as sal-badge, ≤ ~24 chars, e.g. '118 E2E · GHCR'. */
+  badge: string;
+  /** 3–5 curated stack chips for the card (full stack lives in `stack`). */
+  chips: string[];
+  /** Short role/metric footer line, e.g. 'Solo — schema to deploy'. */
+  footer: string;
+}
+
 /** Deployment/pipeline leg drawn as a port-to-port shipping lane. */
 export interface ProjectShipping {
   /** Leg name shown in the lane header, e.g. 'Training' — stays English. */
@@ -37,6 +47,9 @@ export interface Project {
   github: string;
   diagram: string[];
   shipping: ProjectShipping;
+  manifest: ProjectManifest;
+  /** Which derived GitHub receipt links exist beyond commits. */
+  receipts?: { releases?: boolean; prs?: boolean };
   period: string;
   teamSize: string;
   decisions: ProjectDecision[];
@@ -123,6 +136,11 @@ export interface Strings {
   detailSectionCaption: string;
   detailShippingLabel: string;
   detailAxonoCaption: string;
+  heroRegistryLine: string;
+  heroProofMicrosoft: string;
+  detailReceiptsNote: string;
+  credentialsTitle: string;
+  credentialsNote: string;
   timelineFoundations: string;
   semesterSpr24Title: string;
   semesterSpr24Body: string;

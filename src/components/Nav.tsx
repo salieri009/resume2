@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import type { Lang, Strings, Theme } from '../data/types';
+import { RESUME_PDF } from '../data/profile';
 import { SunIcon, MoonIcon, MenuIcon, CloseIcon } from './Icons';
 
 const NAV_IDS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
@@ -83,9 +84,11 @@ export const Nav = memo(function Nav({
             {isDark ? <MoonIcon /> : <SunIcon />}
           </button>
 
-          <a href="/resume.pdf" className="sal-download-btn sal-desktop-nav sal-focus">
-            {t.navDownload}
-          </a>
+          {RESUME_PDF.available && (
+            <a href={RESUME_PDF.href} className="sal-download-btn sal-desktop-nav sal-focus">
+              {t.navDownload}
+            </a>
+          )}
 
           <button
             type="button"
@@ -106,9 +109,11 @@ export const Nav = memo(function Nav({
               {t[NAV_LABEL_KEYS[id]]}
             </a>
           ))}
-          <a href="/resume.pdf" className="sal-download-btn">
-            {t.navDownload}
-          </a>
+          {RESUME_PDF.available && (
+            <a href={RESUME_PDF.href} className="sal-download-btn">
+              {t.navDownload}
+            </a>
+          )}
         </nav>
       )}
     </header>

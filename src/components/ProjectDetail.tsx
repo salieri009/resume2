@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Lang, ProjectKey } from '../data/types';
-import { getLocalizedProject, PROJECT_ORDER } from '../data/projects';
+import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
 import { SectionDiagram } from './SectionDiagram';
 import { ShippingLane } from './ShippingLane';
@@ -135,9 +135,23 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
             </div>
             <div className="sal-detail-meta-item">
               <div className="sal-detail-meta-label">Links</div>
-              <a href={project.github} target="_blank" rel="noopener noreferrer" className="sal-link sal-focus">
-                GitHub ↗
-              </a>
+              <div className="sal-receipt-row">
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="sal-link sal-focus">
+                  GitHub ↗
+                </a>
+                {getReceipts(project).map((r) => (
+                  <a
+                    key={r.label}
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sal-receipt-link sal-focus"
+                  >
+                    {r.label} ↗
+                  </a>
+                ))}
+              </div>
+              <div className="sal-receipt-note">{t.detailReceiptsNote}</div>
             </div>
           </div>
         </div>

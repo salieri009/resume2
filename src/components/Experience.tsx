@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { DEGREE, SEMESTER_WAYPOINTS, formatGpaWam, formatMark } from '../data/academic';
+import { getLocalizedCredentials } from '../data/credentials';
 import type { Lang, Strings } from '../data/types';
 
 interface ExperienceProps {
@@ -127,6 +128,28 @@ export const Experience = memo(function Experience({ t, lang, revealed, revealRe
               {t.growthArmy}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Letters of commendation — the military ones sit right under Prior Service. */}
+      <div className="sal-cred-block">
+        <div className="sal-cred-heading">
+          <span className="sal-eyebrow" style={{ color: 'var(--c-accent-text)' }}>
+            {t.credentialsNote}
+          </span>
+          <h3 className="sal-timeline-h3">{t.credentialsTitle}</h3>
+        </div>
+        <div className="sal-cred-grid">
+          {getLocalizedCredentials(lang).map((c) => (
+            <article key={c.id} className="sal-cred-card">
+              <span className="sal-cred-seal" aria-hidden="true">
+                {c.seal}
+              </span>
+              <span className="sal-eyebrow">{c.issuer}</span>
+              <h4 className="sal-cred-title">{c.title}</h4>
+              <p className="sal-cred-detail">{c.detail}</p>
+            </article>
+          ))}
         </div>
       </div>
 

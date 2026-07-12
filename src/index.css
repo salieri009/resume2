@@ -465,6 +465,45 @@ button {
   line-height: 1.5;
 }
 
+/* Harbor log — verifiable proof chips under the CTAs */
+.sal-proof-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sal-proof-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--c-border);
+  background: var(--c-panel-2);
+  color: var(--c-text-muted);
+  white-space: nowrap;
+}
+
+.sal-proof-chip--flag {
+  border-color: transparent;
+  background: var(--c-accent-dim);
+  color: var(--c-accent-text);
+}
+
+/* Cargo manifest — the 3-second skill read under the degree plate */
+.sal-cargo-line {
+  display: block;
+  margin-top: 6px;
+  color: var(--c-text-faint);
+}
+
+.sal-cargo-label {
+  color: var(--c-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-right: 10px;
+}
+
 .sal-hero-eyebrow {
   display: flex;
   align-items: center;
@@ -482,6 +521,24 @@ button {
   line-height: 0.95;
   letter-spacing: -0.03em;
   color: var(--c-text);
+}
+
+/* Ship's registry — registered name next to the call sign */
+.sal-hero-registry {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  color: var(--c-text-faint);
+}
+
+.sal-hero-registry-name {
+  color: var(--c-text);
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 
 .sal-hero-tagline {
@@ -872,6 +929,78 @@ button {
   color: var(--c-text-faint);
 }
 
+/* ---------- Commendations (letters stamped at port) ---------- */
+
+.sal-cred-block {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sal-cred-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sal-cred-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.sal-cred-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-panel);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Harbor master's stamp — rotated dashed seal in the corner */
+.sal-cred-seal {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 58px;
+  height: 58px;
+  border: 1.5px dashed var(--c-accent-text);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  white-space: pre-line;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.1em;
+  color: var(--c-accent-text);
+  opacity: 0.55;
+  transform: rotate(-12deg);
+}
+
+.sal-cred-title {
+  margin: 0;
+  padding-right: 64px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 15.5px;
+  color: var(--c-text);
+  line-height: 1.35;
+}
+
+.sal-cred-detail {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+
 /* ---------- Sections ---------- */
 
 .sal-section {
@@ -1062,18 +1191,50 @@ button {
   color: var(--c-text-muted);
 }
 
-.sal-bento-a-footer {
+.sal-bento-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sal-bento-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sal-bento-a .sal-bento-body {
+  gap: 14px;
+}
+
+.sal-bento-chips .sal-tag {
+  font-size: 10.5px;
+  padding: 3px 7px;
+}
+
+.sal-bento-a .sal-bento-chips .sal-tag {
+  font-size: 11px;
+  padding: 4px 9px;
+}
+
+.sal-bento-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding-top: 16px;
   border-top: 1px solid var(--c-border);
 }
 
-.sal-bento-a-footer span:first-child {
+.sal-bento-footer span:first-child {
   font-family: 'Inter', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--c-text);
+}
+
+.sal-bento-a .sal-bento-footer span:first-child {
+  font-size: 13px;
 }
 
 .sal-case-study-link {
@@ -1381,6 +1542,14 @@ button {
   letter-spacing: -0.02em;
 }
 
+.sal-contact-name {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--c-text-faint);
+  letter-spacing: 0.04em;
+}
+
 .sal-contact-sub {
   margin: 0;
   max-width: 480px;
@@ -1568,6 +1737,39 @@ button {
   font-size: 14px;
   color: var(--c-text);
   line-height: 1.5;
+}
+
+/* Bill of lading — derived GitHub receipt links */
+.sal-receipt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sal-receipt-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background: var(--c-panel-2);
+  color: var(--c-text-muted);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.sal-receipt-link:hover {
+  border-color: var(--c-accent-text);
+  color: var(--c-accent-text);
+}
+
+.sal-receipt-note {
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--c-text-faint);
+  letter-spacing: 0.02em;
 }
 
 .sal-detail-meta-row {
@@ -2495,6 +2697,9 @@ button {
   }
   .sal-stat-strip {
     flex-wrap: wrap !important;
+  }
+  .sal-cred-grid {
+    grid-template-columns: 1fr;
   }
   .sal-nautical-rose {
     width: 64px;
