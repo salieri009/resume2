@@ -90,9 +90,12 @@ export interface Strings {
   contactSub: string;
   voyageTitle: string;
   voyageIntro: string;
-  voyageCICDLabel: string;
-  voyageCICDNote: string;
+  voyageMilestonesLabel: string;
+  voyageMilestonesNote: string;
+  voyageDegreeDone: string;
   voyageIslandHint: string;
+  voyageStart: string;
+  voyageNow: string;
   lighthouseStatus: string;
   lighthouseUptime: string;
   backToTop: string;

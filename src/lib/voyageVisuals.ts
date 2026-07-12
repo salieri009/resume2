@@ -1,14 +1,12 @@
-import * as THREE from 'three';
-import { VOYAGE_ROUTE_3D } from '../data/voyage';
-
-/** Shared centripetal route — 3D scene samples the same curve as the SVG dashed line. */
-export function buildVoyageCurve(): THREE.CatmullRomCurve3 {
-  const pts = VOYAGE_ROUTE_3D.map((w) => new THREE.Vector3(w.x, 0.35, w.z));
-  return new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.42);
-}
+/**
+ * Shared voyage math — deliberately free of runtime `three` imports so the
+ * eagerly-loaded SVG fallback (VoyageChart) never pulls Three.js into the
+ * main bundle. THREE-dependent route helpers live in src/three/voyage/route.ts,
+ * which only the lazy WebGL chunk imports.
+ */
 
 /** Heading (Y rotation) for hull built with bow along +X. */
-export function voyageShipYaw(tangent: THREE.Vector3): number {
+export function voyageShipYaw(tangent: { x: number; z: number }): number {
   return Math.atan2(-tangent.z, tangent.x);
 }
 
@@ -20,14 +18,27 @@ export function shortestAngleDelta(from: number, to: number): number {
   return d;
 }
 
-/** Shared wave height — used by ship bobbing and shore foam in VoyageScene. */
+/**
+ * Wave spectrum shared between the CPU (ship bobbing/tilt, below) and the GPU
+ * water shader (src/three/voyage/water.ts generates GLSL from this same table)
+ * — a single source of truth so the hull can never drift off the water surface.
+ * Each term contributes `trig(x·kx + z·kz + time·kt) · amp`.
+ */
+export const WAVE_TERMS = [
+  { trig: 'sin', kx: 0.35, kz: 0, kt: 0.0011, amp: 0.045 },
+  { trig: 'cos', kx: 0, kz: 0.28, kt: 0.0008, amp: 0.03 },
+  { trig: 'sin', kx: 0.18, kz: 0.18, kt: 0.0014, amp: 0.022 },
+  { trig: 'cos', kx: 0.12, kz: -0.22, kt: 0.0009, amp: 0.013 },
+] as const;
+
+/** Shared wave height — used by ship bobbing and the GPU water displacement. */
 export function waveHeight(x: number, z: number, time: number): number {
-  return (
-    Math.sin(x * 0.35 + time * 0.0011) * 0.07 +
-    Math.cos(z * 0.28 + time * 0.0008) * 0.05 +
-    Math.sin((x + z) * 0.18 + time * 0.0014) * 0.035 +
-    Math.cos(x * 0.12 - z * 0.22 + time * 0.0009) * 0.02
-  );
+  let h = 0;
+  for (const w of WAVE_TERMS) {
+    const phase = x * w.kx + z * w.kz + time * w.kt;
+    h += (w.trig === 'sin' ? Math.sin(phase) : Math.cos(phase)) * w.amp;
+  }
+  return h;
 }
 
 /** Deterministic coast outline for SVG nautical chart islands. */

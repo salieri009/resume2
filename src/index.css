@@ -579,6 +579,8 @@ button {
   top: 120px;
   width: 230px;
   height: 230px;
+  /* Shared axonometric language: rotateX(58deg) ≡ the WebGL voyage scene's
+     orthographic camera at elevation 32° (90° − 58°), azimuth 45°. */
   transform: rotateX(58deg) rotateZ(-45deg);
   transform-style: preserve-3d;
 }
@@ -1682,6 +1684,7 @@ button {
   height: 180px;
   margin: 76px auto 0;
   transform-style: preserve-3d;
+  /* Same fixed axonometric angle as HeroAxono and the WebGL voyage camera. */
   transform: rotateX(58deg) rotateZ(-45deg);
 }
 
@@ -2064,15 +2067,15 @@ button {
   overflow: hidden;
 }
 
+/* Diorama vignette — bottom only; the chart-table scene has no sky/horizon. */
 .sal-voyage-horizon {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 2;
   background:
-    linear-gradient(180deg, rgba(74, 106, 138, 0.12) 0%, transparent 28%),
-    linear-gradient(0deg, var(--c-panel) 0%, transparent 14%),
-    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 0, 0, 0.18) 0%, transparent 55%);
+    linear-gradient(0deg, var(--c-panel) 0%, transparent 12%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 0, 0, 0.14) 0%, transparent 55%);
 }
 
 .sal-voyage-scene {
@@ -2091,6 +2094,35 @@ button {
 .sal-voyage-scene--loading {
   background: linear-gradient(160deg, var(--c-panel) 40%, var(--c-accent-dim));
   animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+/* Start / now corner chips — the voyage narrative anchors. */
+.sal-voyage-chip {
+  position: absolute;
+  z-index: 3;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--c-border-strong);
+  background: var(--c-nav-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: var(--c-muted);
+  pointer-events: none;
+}
+
+.sal-voyage-chip--start {
+  top: 14px;
+  right: 16px;
+}
+
+.sal-voyage-chip--now {
+  bottom: 14px;
+  left: 16px;
+  color: var(--c-accent-text);
+  border-color: var(--c-accent-dim);
 }
 
 .sal-voyage-tooltip {

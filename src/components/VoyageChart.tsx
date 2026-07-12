@@ -12,15 +12,10 @@ const VoyageScene = lazy(() =>
   import('./VoyageScene').then((m) => ({ default: m.VoyageScene })),
 );
 
-const PORTS = [
-  { id: 'push', label: 'push', x: 80, y: 40 },
-  { id: 'actions', label: 'GitHub Actions', x: 220, y: 40 },
-  { id: 'e2e', label: '118 E2E', x: 380, y: 40 },
-  { id: 'docker', label: 'Docker', x: 520, y: 40 },
-  { id: 'ghcr', label: 'GHCR', x: 640, y: 40 },
-] as const;
-
-const CICD_PATH = 'M80 40 H640';
+/** Degree voyage log — career milestones, not tied to any single project. */
+const MILESTONE_XS = [80, 220, 360, 500, 640] as const;
+const MILESTONE_Y = 40;
+const MILESTONE_PATH = 'M80 40 H640';
 
 interface VoyageChartProps {
   t: Strings;
@@ -173,6 +168,14 @@ export const VoyageChart = memo(function VoyageChart({
 
   const show3D = useWebGL && !reducedMotion;
 
+  const milestones = [
+    { id: 'spr24', year: '2024 SPR', label: t.semesterSpr24Title },
+    { id: 'aut25', year: '2025 AUT', label: t.semesterAut25Title },
+    { id: 'spr25', year: '2025 SPR', label: t.semesterSpr25Title },
+    { id: 'aut26', year: '2026 AUT', label: t.semesterAut26Title },
+    { id: 'done', year: '2026', label: t.voyageDegreeDone },
+  ].map((m, i) => ({ ...m, x: MILESTONE_XS[i], y: MILESTONE_Y }));
+
   return (
     <section
       id="voyage"
@@ -193,7 +196,14 @@ export const VoyageChart = memo(function VoyageChart({
         <div ref={sceneTriggerRef} className="sal-voyage-scene-host">
           {show3D ? (
             <Suspense fallback={<div className="sal-voyage-scene sal-voyage-scene--loading" aria-hidden="true" />}>
-              <VoyageScene chartRef={sceneTriggerRef} theme={theme} onOpenProject={onOpenProject} reducedMotion={reducedMotion} />
+              <VoyageScene
+                chartRef={sceneTriggerRef}
+                theme={theme}
+                onOpenProject={onOpenProject}
+                reducedMotion={reducedMotion}
+                startLabel={t.voyageStart}
+                nowLabel={t.voyageNow}
+              />
             </Suspense>
           ) : (
             <svg viewBox="0 0 720 360" className="sal-voyage-svg" role="img" aria-label={t.voyageTitle}>
@@ -250,6 +260,38 @@ export const VoyageChart = memo(function VoyageChart({
               <polygon points="0,-18 4,0 0,4 -4,0" fill="var(--c-accent-text)" />
               <text y="32" textAnchor="middle" fontSize="7" fontFamily="JetBrains Mono, monospace" fill="var(--c-text-faint)">
                 N
+              </text>
+            </g>
+
+            {/* Departure flag — NE chart entry, where the voyage began. */}
+            <g transform="translate(645 61.5)" opacity={0.85}>
+              <line x1="0" y1="2" x2="0" y2="-16" stroke="var(--c-text-faint)" strokeWidth="1.2" />
+              <polygon points="0,-16 10,-12.5 0,-9" fill="var(--c-accent)" />
+              <text
+                x="-7"
+                y="-8"
+                textAnchor="end"
+                fontSize="7"
+                fontFamily="JetBrains Mono, monospace"
+                fill="var(--c-text-faint)"
+              >
+                {t.voyageStart}
+              </text>
+            </g>
+
+            {/* Lighthouse — SW route exit: the present the ship sails toward. */}
+            <g transform="translate(70 310)" opacity={0.9}>
+              <polygon
+                points="-4.5,0 4.5,0 2.6,-15 -2.6,-15"
+                fill="var(--c-panel-2)"
+                stroke="var(--c-accent)"
+                strokeWidth="1"
+              />
+              <circle cx="0" cy="-17.5" r="2.6" fill="var(--c-accent)" />
+              <line x1="5" y1="-19.5" x2="12" y2="-22.5" stroke="var(--c-accent)" strokeWidth="0.8" opacity="0.6" />
+              <line x1="-5" y1="-19.5" x2="-12" y2="-22.5" stroke="var(--c-accent)" strokeWidth="0.8" opacity="0.6" />
+              <text x="9" y="0" fontSize="7" fontFamily="JetBrains Mono, monospace" fill="var(--c-accent-text)">
+                {t.voyageNow}
               </text>
             </g>
 
@@ -348,35 +390,45 @@ export const VoyageChart = memo(function VoyageChart({
 
         <div ref={cicdTriggerRef} className="sal-voyage-cicd">
           <div className="sal-voyage-cicd-header">
-            <span className="sal-skill-label">{t.voyageCICDLabel}</span>
-            <span className="sal-eyebrow">{t.voyageCICDNote}</span>
+            <span className="sal-skill-label">{t.voyageMilestonesLabel}</span>
+            <span className="sal-eyebrow">{t.voyageMilestonesNote}</span>
           </div>
           <svg viewBox="0 0 720 80" className="sal-voyage-cicd-svg" aria-hidden="true">
-            <path ref={cicdRef} d={CICD_PATH} fill="none" stroke="var(--c-accent)" strokeWidth={2} opacity={0.8} />
-            {PORTS.map((port, i) => (
-              <g key={port.id}>
+            <path ref={cicdRef} d={MILESTONE_PATH} fill="none" stroke="var(--c-accent)" strokeWidth={2} opacity={0.8} />
+            {milestones.map((m, i) => (
+              <g key={m.id}>
                 <circle
-                  cx={port.x}
-                  cy={port.y}
+                  cx={m.x}
+                  cy={m.y}
                   r={8}
                   fill="var(--c-panel)"
                   stroke="var(--c-accent-text)"
                   strokeWidth={1.5}
                 />
                 <text
-                  x={port.x}
-                  y={port.y + 24}
+                  x={m.x}
+                  y={m.y - 16}
                   textAnchor="middle"
-                  fontSize={10}
+                  fontSize={8.5}
+                  fontFamily="JetBrains Mono, monospace"
+                  fill="var(--c-accent-text)"
+                >
+                  {m.year}
+                </text>
+                <text
+                  x={m.x}
+                  y={m.y + 24}
+                  textAnchor="middle"
+                  fontSize={9.5}
                   fontFamily="JetBrains Mono, monospace"
                   fill="var(--c-text-muted)"
                 >
-                  {port.label}
+                  {m.label}
                 </text>
-                {i < PORTS.length - 1 && (
+                {i < milestones.length - 1 && (
                   <text
-                    x={(port.x + PORTS[i + 1].x) / 2}
-                    y={port.y - 10}
+                    x={(m.x + milestones[i + 1].x) / 2}
+                    y={m.y - 10}
                     textAnchor="middle"
                     fontSize={9}
                     fontFamily="JetBrains Mono, monospace"
@@ -389,8 +441,8 @@ export const VoyageChart = memo(function VoyageChart({
             ))}
             <circle
               ref={shipRef}
-              cx={PORTS[0].x}
-              cy={PORTS[0].y}
+              cx={MILESTONE_XS[0]}
+              cy={MILESTONE_Y}
               r={5}
               fill="var(--c-accent)"
               className="sal-voyage-cargo"
@@ -413,10 +465,10 @@ export const VoyageChart = memo(function VoyageChart({
           </button>
         ))}
         <div className="sal-voyage-cicd-mobile">
-          <span className="sal-skill-label">{t.voyageCICDLabel}</span>
+          <span className="sal-skill-label">{t.voyageMilestonesLabel}</span>
           <ol className="sal-voyage-ports">
-            {PORTS.map((port) => (
-              <li key={port.id}>{port.label}</li>
+            {milestones.map((m) => (
+              <li key={m.id}>{`${m.year} — ${m.label}`}</li>
             ))}
           </ol>
         </div>

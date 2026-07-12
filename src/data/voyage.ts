@@ -100,3 +100,115 @@ export const VOYAGE_ROUTE_SVG =
 
 /** Indices into {@link VOYAGE_ROUTE_3D} where the ship passes each island pier. */
 export const VOYAGE_DOCK_INDICES = [2, 4, 6, 8, 10] as const;
+
+/* ------------------------------------------------------------------------ *
+ * Island recipes — "Life Archipelago": each island's terrain and structures
+ * echo its project's character. Consumed by src/three/voyage/islands.ts.
+ * ------------------------------------------------------------------------ */
+
+export type IslandPaletteKey = 'arid' | 'lush' | 'urban' | 'port' | 'signal';
+export type IslandTerrain = 'dune' | 'terraced' | 'plateau' | 'quay' | 'twin';
+export type TreeKind = 'palm' | 'pine' | 'round';
+
+export type IslandStructure =
+  | 'sundial'
+  | 'orbs'
+  | 'standingStones'
+  | 'windmill'
+  | 'barn'
+  | 'paddock'
+  | 'cropRows'
+  | 'hangar'
+  | 'mecha'
+  | 'antenna'
+  | 'torii'
+  | 'containers'
+  | 'crane'
+  | 'warehouse'
+  | 'watchtower'
+  | 'sensorMasts'
+  | 'figures';
+
+export interface IslandStructurePlacement {
+  kind: IslandStructure;
+  /** Offset from island origin; y = platform height the piece stands on. */
+  x: number;
+  y: number;
+  z: number;
+  rot?: number;
+  s?: number;
+}
+
+export interface IslandRecipe {
+  terrain: IslandTerrain;
+  paletteKey: IslandPaletteKey;
+  structures: IslandStructurePlacement[];
+  trees: { count: number; kind: TreeKind };
+  rocks: number;
+}
+
+export const VOYAGE_RECIPES: Record<ProjectKey, IslandRecipe> = {
+  // Tide-Glass Isle — p5.js / Perlin / audio: quiet arid origin, time motifs.
+  ephemeral: {
+    terrain: 'dune',
+    paletteKey: 'arid',
+    structures: [
+      { kind: 'sundial', x: 0, y: 0.42, z: 0.05 },
+      { kind: 'orbs', x: -0.5, y: 0.42, z: -0.38 },
+      { kind: 'standingStones', x: 0.52, y: 0.42, z: -0.42 },
+    ],
+    trees: { count: 1, kind: 'palm' },
+    rocks: 2,
+  },
+  // Terrace Isle — Three.js/GLSL farm sim: stacked paddies, windmill, barn.
+  farm: {
+    terrain: 'terraced',
+    paletteKey: 'lush',
+    structures: [
+      { kind: 'windmill', x: 0, y: 0.88, z: 0 },
+      { kind: 'barn', x: 0.6, y: 0.36, z: -0.38 },
+      { kind: 'paddock', x: -0.62, y: 0.36, z: 0.38 },
+      { kind: 'cropRows', x: 0.12, y: 0.62, z: 0.42 },
+    ],
+    trees: { count: 2, kind: 'round' },
+    rocks: 1,
+  },
+  // Hangar Isle — Next.js full-stack solo: machined plateau, mecha, torii.
+  gundam: {
+    terrain: 'plateau',
+    paletteKey: 'urban',
+    structures: [
+      { kind: 'hangar', x: -0.38, y: 0.6, z: -0.28, rot: 0.35 },
+      { kind: 'mecha', x: 0.38, y: 0.6, z: 0.22 },
+      { kind: 'antenna', x: -0.08, y: 0.6, z: 0.52 },
+      { kind: 'torii', x: 0.95, y: 0.1, z: 0.5, rot: -0.35 },
+    ],
+    trees: { count: 0, kind: 'palm' },
+    rocks: 1,
+  },
+  // Container Port Isle — Java/Docker/GHCR: flat quay, containers, crane.
+  iotbay: {
+    terrain: 'quay',
+    paletteKey: 'port',
+    structures: [
+      { kind: 'containers', x: 0.4, y: 0.38, z: -0.32 },
+      { kind: 'crane', x: -0.28, y: 0.38, z: 0.18, rot: 0.15 },
+      { kind: 'warehouse', x: -0.58, y: 0.38, z: -0.48 },
+      { kind: 'containers', x: 0.22, y: 0.38, z: 0.46, rot: 0.9, s: 0.8 },
+    ],
+    trees: { count: 0, kind: 'palm' },
+    rocks: 0,
+  },
+  // Watchtower Isle — YOLOv8 crowd detection: twin peaks, scan light, figures.
+  crowd: {
+    terrain: 'twin',
+    paletteKey: 'signal',
+    structures: [
+      { kind: 'watchtower', x: -0.42, y: 1.0, z: -0.22 },
+      { kind: 'sensorMasts', x: 0.48, y: 0.78, z: 0.28 },
+      { kind: 'figures', x: 0.05, y: 0.42, z: 0.05 },
+    ],
+    trees: { count: 2, kind: 'pine' },
+    rocks: 2,
+  },
+};
