@@ -1626,49 +1626,66 @@ button {
   gap: 16px;
 }
 
-.sal-diagram-nodes {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+/* ---------- Section drawing (단면도) — architecture-as-code ---------- */
+
+.sal-secdwg {
+  width: 100%;
 }
 
-.sal-diagram-node-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.sal-secdwg svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-.sal-diagram-node {
+.sal-secdwg-caption {
+  text-align: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12.5px;
-  padding: 9px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--c-border-strong);
-  background: var(--c-panel-2);
-  color: var(--c-text);
-  white-space: nowrap;
-}
-
-.sal-diagram-arrow {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--c-accent-text);
-}
-
-.sal-diagram-note {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--c-text-faint);
-  padding-top: 12px;
+}
+
+/* ---------- Shipping lane (선적 항로) — deployment-as-shipping ---------- */
+
+.sal-shiplane {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 14px;
   border-top: 1px dashed var(--c-border);
 }
 
+.sal-shiplane-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.sal-shiplane-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Drawing sheet: frame around the exploded axono */
 .sal-detail-axono {
+  position: relative;
   display: flex;
   justify-content: center;
   padding: 28px 0 8px;
   overflow: hidden;
+  margin-top: 8px;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+}
+
+.sal-detail-axono::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--c-border);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .sal-detail-axono-stage {
@@ -1800,6 +1817,94 @@ button {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   color: var(--c-text-faint);
+}
+
+/* Drawing-sheet dressing: title block (표제란), dimension line, datum tag */
+.sal-axono-titleblock {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  min-width: 168px;
+  border: 1px solid var(--c-border-strong);
+  background: var(--c-panel);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+}
+
+.sal-axono-titleblock > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 8px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.sal-axono-titleblock > div:last-child {
+  border-bottom: none;
+}
+
+.sal-axono-titleblock span:first-child {
+  color: var(--c-text-faint);
+}
+
+.sal-axono-titleblock span:last-child {
+  color: var(--c-accent-text);
+}
+
+.sal-axono-dimline {
+  position: absolute;
+  left: 22px;
+  top: 40px;
+  bottom: 56px;
+  width: 0;
+  border-left: 1px solid var(--c-text-faint);
+  opacity: 0.6;
+}
+
+.sal-axono-dimline::before,
+.sal-axono-dimline::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  width: 10px;
+  height: 1px;
+  background: var(--c-text-faint);
+  transform: rotate(-45deg);
+}
+
+.sal-axono-dimline::before {
+  top: 0;
+}
+
+.sal-axono-dimline::after {
+  bottom: 0;
+}
+
+.sal-axono-dimlabel {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.sal-axono-datum-tag {
+  position: absolute;
+  left: 34px;
+  bottom: 38px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--c-accent-text);
+}
+
+.sal-axono-sheet-ref {
+  margin-left: 10px;
+  color: var(--c-accent-text);
 }
 
 .sal-problem-card {
@@ -2424,6 +2529,22 @@ button {
   }
   .sal-detail-meta-row {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/* Keep drawing labels legible on narrow phones: scroll instead of shrinking */
+@media (max-width: 480px) {
+  .sal-secdwg {
+    overflow-x: auto;
+  }
+  .sal-secdwg svg {
+    min-width: 480px;
+  }
+  .sal-shiplane {
+    overflow-x: auto;
+  }
+  .sal-shiplane-svg {
+    min-width: 440px;
   }
 }
 

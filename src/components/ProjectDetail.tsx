@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Lang, ProjectKey } from '../data/types';
-import { getLocalizedProject } from '../data/projects';
+import { getLocalizedProject, PROJECT_ORDER } from '../data/projects';
+import { STRINGS } from '../data/strings';
+import { SectionDiagram } from './SectionDiagram';
+import { ShippingLane } from './ShippingLane';
 import type { ScrollControl } from '../hooks/useSmoothScroll';
 
 interface ProjectDetailProps {
@@ -75,10 +78,9 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
   };
 
   const ex = reducedMotion ? 1 : 0.25 + explode * 0.75;
-  const diagramNodes = project.diagram.map((label, i, arr) => ({
-    label,
-    arrow: i < arr.length - 1 ? '→' : '',
-  }));
+  const t = STRINGS[lang];
+  // Architectural A-series sheet number, e.g. A-101 for the first project.
+  const sheetNo = `A-${PROJECT_ORDER.indexOf(projectKey) + 1}01`;
 
   return (
     <div
@@ -155,15 +157,17 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
               <h2>System Diagram</h2>
             </div>
             <div className="sal-diagram-panel">
-              <div className="sal-diagram-nodes">
-                {diagramNodes.map((node) => (
-                  <div key={node.label} className="sal-diagram-node-group">
-                    <span className="sal-diagram-node">{node.label}</span>
-                    {node.arrow && <span className="sal-diagram-arrow">{node.arrow}</span>}
-                  </div>
-                ))}
+              <div className="sal-secdwg">
+                <SectionDiagram nodes={project.diagram} ariaLabel={`${project.title} — system section`} />
               </div>
-              <div className="sal-diagram-note">$ {project.diagramNote}</div>
+              <div className="sal-secdwg-caption">{t.detailSectionCaption}</div>
+
+              <ShippingLane
+                laneTitle={t.detailShippingLabel}
+                label={project.shipping.label}
+                ports={project.shipping.ports}
+                reducedMotion={reducedMotion}
+              />
 
               <div className="sal-detail-axono" aria-hidden="true">
                 <div className="sal-detail-axono-stage">
@@ -224,9 +228,29 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
                     />
                   </div>
                 </div>
+
+                {/* Drawing-sheet dressing: title block, dimension line, datum */}
+                <div className="sal-axono-titleblock">
+                  <div>
+                    <span>DWG</span>
+                    <span>{project.crumb.split('/')[1]}</span>
+                  </div>
+                  <div>
+                    <span>SHEET</span>
+                    <span>{sheetNo}</span>
+                  </div>
+                  <div>
+                    <span>SCALE</span>
+                    <span>NTS · EXPLODED</span>
+                  </div>
+                </div>
+                <div className="sal-axono-dimline" />
+                <span className="sal-axono-dimlabel">{`${project.layers.length} LAYERS`}</span>
+                <span className="sal-axono-datum-tag">▽ GL ±0.00</span>
               </div>
               <div className="sal-detail-axono-caption">
-                exploded axonometric — scroll to separate the layers
+                {t.detailAxonoCaption}
+                <span className="sal-axono-sheet-ref">{sheetNo}</span>
               </div>
             </div>
           </div>

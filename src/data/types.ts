@@ -18,6 +18,14 @@ export interface ProjectLayer {
   items: string[];
 }
 
+/** Deployment/pipeline leg drawn as a port-to-port shipping lane. */
+export interface ProjectShipping {
+  /** Leg name shown in the lane header, e.g. 'Training' — stays English. */
+  label: string;
+  /** 3–5 port names along the route — stay English, keep each ≤ ~16 chars. */
+  ports: string[];
+}
+
 export interface Project {
   crumb: string;
   category: string;
@@ -28,7 +36,7 @@ export interface Project {
   outcome: string;
   github: string;
   diagram: string[];
-  diagramNote: string;
+  shipping: ProjectShipping;
   period: string;
   teamSize: string;
   decisions: ProjectDecision[];
@@ -112,6 +120,9 @@ export interface Strings {
   axonoL3: string;
   axonoL3Sub: string;
   axonoRoof: string;
+  detailSectionCaption: string;
+  detailShippingLabel: string;
+  detailAxonoCaption: string;
   timelineFoundations: string;
   semesterSpr24Title: string;
   semesterSpr24Body: string;

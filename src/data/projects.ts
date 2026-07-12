@@ -14,7 +14,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     outcome: 'v2.6.0 released with a live demo',
     github: 'https://github.com/salieri009/DeepLearning42028UTS',
     diagram: ['Webcam Feed', 'React UI', 'Spring Boot API', 'FastAPI · YOLOv8', 'Proximity Alerts'],
-    diagramNote: 'Training: JRDB → DVC → SageMaker (ml.g5.xlarge) → best.pt → inference container',
+    shipping: { label: 'Training', ports: ['JRDB', 'DVC', 'SageMaker · g5', 'best.pt', 'container'] },
     period: '2026 S1 · Autumn',
     teamSize: '3 — ML lead',
     decisions: [
@@ -82,7 +82,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     outcome: '118 E2E tests passing · CI/CD to Docker/GHCR',
     github: 'https://github.com/salieri009/IoTBay',
     diagram: ['JSP Views', 'Servlet Controllers', 'Service Layer', 'DAO per Entity', 'SQLite'],
-    diagramNote: 'CI: push → GitHub Actions → 118 Selenium E2E → Docker image → GHCR',
+    shipping: { label: 'CI', ports: ['push', 'GH Actions', '118 E2E', 'Docker image', 'GHCR'] },
     period: '2025 S1 · Autumn',
     teamSize: '8',
     decisions: [
@@ -146,7 +146,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     outcome: 'Real-time seasons/weather with custom GLSL aurora',
     github: 'https://github.com/salieri009/ThreeJSUTS26-v2',
     diagram: ['React 19', 'Scene Graph', 'Season/Weather Systems', 'GLSL Shaders', 'WebGL'],
-    diagramNote: 'Optional: OpenWeatherMap API → live weather sync → scene state',
+    shipping: { label: 'Optional', ports: ['OpenWeatherMap', 'weather sync', 'scene state'] },
     period: '2025 — v2 refactor 2026',
     teamSize: 'Team — graphics lead',
     decisions: [
@@ -205,7 +205,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     outcome: 'OAuth + JWT auth running on a serverless backend',
     github: 'https://github.com/salieri009/ToyProject-Gundam',
     diagram: ['Next.js', 'Typed API Client', 'AWS Chalice', 'JWT Middleware', 'PostgreSQL'],
-    diagramNote: 'Auth: Google OAuth → server-side verify → short-lived JWT → per-request check',
+    shipping: { label: 'Auth', ports: ['Google OAuth', 'server verify', 'short-lived JWT', 'request check'] },
     period: '2025 · summer break',
     teamSize: 'Solo',
     decisions: [
@@ -264,7 +264,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
     outcome: 'Real-time fluid + audio synthesis, zero assets',
     github: 'https://github.com/salieri009/EphemeralTime',
     diagram: ['Clock Events', 'Perlin Fluid Field', 'Particle Pool', 'Render Strategies', 'Generative Audio'],
-    diagramNote: 'Layers: bgLayer (static) → historyLayer (semi-static) → activeLayer (dynamic)',
+    shipping: { label: 'Layers', ports: ['bgLayer · static', 'historyLayer', 'activeLayer'] },
     period: '2025',
     teamSize: 'Solo',
     decisions: [

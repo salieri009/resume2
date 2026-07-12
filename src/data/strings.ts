@@ -47,6 +47,9 @@ const SHARED = {
     axonoL3: 'L3 · Production',
     axonoL3Sub: 'Studio 95 HD · CI/CD · Data Eng',
     axonoRoof: 'Complete · GPA 6.00/7.0 · WAM 80.31',
+    detailSectionCaption: 'section drawing — data descends floor by floor',
+    detailShippingLabel: 'shipping route',
+    detailAxonoCaption: 'exploded axonometric — scroll to separate the layers',
     timelineFoundations:
       'Programming, Databases, Networks, Web Systems, and a few more came in through exemptions. I started mid-stream, not from week one.',
     semesterSpr24Title: 'Cloud & Architecture',
@@ -109,6 +112,9 @@ const SHARED = {
     axonoL3: 'L3 · Production',
     axonoL3Sub: 'Studio 95 HD · CI/CD · Data Eng',
     axonoRoof: '이수 완료 · GPA 6.00/7.0 · WAM 80.31',
+    detailSectionCaption: '단면도 — 데이터는 층을 따라 아래로 흐른다',
+    detailShippingLabel: '운송 항로',
+    detailAxonoCaption: '분해 액소노메트릭 — 스크롤하면 레이어가 분리된다',
     timelineFoundations:
       'Programming, DB, Networks, Web Systems는 면제로 이미 채워져 있었다. 1주차가 아니라 중간에서 시작한 셈이다.',
     semesterSpr24Title: 'Cloud & Architecture',
@@ -171,6 +177,9 @@ const SHARED = {
     axonoL3: 'L3 · Production',
     axonoL3Sub: 'Studio 95 HD · CI/CD · Data Eng',
     axonoRoof: '修了 · GPA 6.00/7.0 · WAM 80.31',
+    detailSectionCaption: '断面図 — データは階を伝って下へ流れる',
+    detailShippingLabel: '輸送航路',
+    detailAxonoCaption: '分解アクソノメトリック — スクロールでレイヤーが分離',
     timelineFoundations:
       'Programming、DB、Networks、Web Systemsなどは免除で埋まっていました。最初の週からではなく、途中から始めました。',
     semesterSpr24Title: 'Cloud & Architecture',
