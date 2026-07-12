@@ -148,7 +148,12 @@ export interface AxonoLayerDef {
   blocks: { label: string; size: number; height: number; left: number; top: number }[];
 }
 
-/** Exploded axonometric floors — degree building metaphor, bottom = oldest. */
+/**
+ * Exploded axonometric floors — degree building metaphor, bottom = oldest.
+ * Blocks are index-aligned vertical stacks (0: Prog→Cloud→DSA→Studio,
+ * 1: DB→Arch→GLSL→CI/CD, 2: Net→Game→Media→Data); HeroAxono derives its
+ * logic-flow risers and conduits from that ordering, so keep it stable.
+ */
 export const AXONO_LAYERS: AxonoLayerDef[] = [
   {
     id: 'l0',

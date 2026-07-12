@@ -767,8 +767,72 @@ button {
   align-items: center;
   justify-content: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
   color: var(--c-accent-text);
+}
+
+/* Logic-flow overlay: conduits chain the blocks on each slab, risers climb
+   between floors. Marching dashes read as signal moving through the stack. */
+.sal-axono-conduit {
+  position: absolute;
+  height: 1.5px;
+  transform-origin: left center;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--c-accent-text) 0 4px,
+    transparent 4px 9px
+  );
+  opacity: 0.75;
+}
+
+.sal-axono-node {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  box-shadow: 0 0 6px var(--c-accent);
+  opacity: 0.95;
+}
+
+.sal-axono-riser {
+  position: absolute;
+  width: 2px;
+  /* Span from this block's top to the next floor's slab; --axrise is set
+     from JS as LAYER_GAP * explode, --bh is the block's own height. */
+  height: max(0px, calc((var(--axrise, 22) - var(--bh, 0)) * 1px));
+  transform-origin: top;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--c-accent) 0 5px,
+    transparent 5px 10px
+  );
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sal-axono-conduit {
+    animation: sal-axono-flow-x 1.2s linear infinite;
+  }
+
+  .sal-axono-riser {
+    animation: sal-axono-flow-y 1.2s linear infinite;
+  }
+}
+
+@keyframes sal-axono-flow-x {
+  to {
+    background-position-x: 9px;
+  }
+}
+
+/* Dashes march downward — same story as the section drawing:
+   data descends floor by floor. */
+@keyframes sal-axono-flow-y {
+  to {
+    background-position-y: 10px;
+  }
 }
 
 .sal-axono-side-front {
@@ -811,8 +875,9 @@ button {
 .sal-axono-caption {
   position: absolute;
   left: 0;
-  width: 170px;
+  width: 212px;
   text-align: right;
+  text-wrap: balance;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   line-height: 1.5;
@@ -842,6 +907,7 @@ button {
 }
 
 .sal-axono-caption span {
+  font-size: 10px;
   color: var(--c-text-faint);
 }
 
@@ -861,8 +927,9 @@ button {
   position: absolute;
   right: 12px;
   top: 12px;
-  max-width: 200px;
+  max-width: 240px;
   text-align: right;
+  text-wrap: balance;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   color: var(--c-accent-text);
@@ -1891,9 +1958,9 @@ button {
 }
 
 .sal-detail-axono-stage {
-  width: 340px;
-  height: 300px;
-  perspective: 1200px;
+  width: 480px;
+  height: 520px;
+  perspective: 1600px;
   pointer-events: none;
 }
 
@@ -1901,10 +1968,13 @@ button {
   position: relative;
   width: 180px;
   height: 180px;
-  margin: 76px auto 0;
+  /* Top margin clears the fully exploded stack (2 gaps × 86 × 1.45 scale,
+     projected) so the roof never clips against the sheet frame. */
+  margin: 236px auto 0;
   transform-style: preserve-3d;
-  /* Same fixed axonometric angle as HeroAxono and the WebGL voyage camera. */
-  transform: rotateX(58deg) rotateZ(-45deg);
+  /* Same fixed axonometric angle as HeroAxono and the WebGL voyage camera.
+     Uniform scale3d keeps slab sizes and explode heights in proportion. */
+  transform: scale3d(1.45, 1.45, 1.45) rotateX(58deg) rotateZ(-45deg);
 }
 
 .sal-detail-axono-ground {
@@ -1998,20 +2068,40 @@ button {
   color: var(--c-accent-text);
 }
 
-.sal-axono-layer-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+/* Callout: dashed leader running out of the slab on the floor plane,
+   with a billboarded label at its end (inverse of the scene rotation,
+   so the text faces the viewer like a drawing annotation). */
+.sal-detail-axono-leader {
+  position: absolute;
+  height: 0;
+  border-top: 1px dashed var(--c-accent-dim);
+  opacity: 0.9;
 }
 
-.sal-axono-layer-tag {
+.sal-detail-axono-callout {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.sal-detail-axono-callout span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
   font-family: 'JetBrains Mono', monospace;
   font-size: 9px;
-  padding: 3px 7px;
-  border-radius: 4px;
-  background: var(--c-accent-dim);
+  letter-spacing: 0.05em;
   color: var(--c-accent-text);
-  white-space: nowrap;
+  background: color-mix(in srgb, var(--c-bg) 70%, transparent);
+  padding: 1px 4px;
+  /* Undo rotateX(58deg) rotateZ(-45deg) so the label reads upright. */
+  transform: rotateZ(45deg) rotateX(-58deg) translate(4px, -50%);
+}
+
+.sal-detail-axono-callout.is-left span {
+  transform: rotateZ(45deg) rotateX(-58deg) translate(-100%, -50%) translateX(-4px);
 }
 
 .sal-detail-axono-caption {

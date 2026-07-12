@@ -13,9 +13,35 @@ export interface ProjectProblem {
   s: string;
 }
 
+/**
+ * One component cube on an exploded-axono floor. Placement is meaningful,
+ * not decorative: size = weight in the project, height = rank within the
+ * layer, and a cube sits directly above the lower-layer cube it calls so
+ * flow risers stay vertical. Coordinates live on a 180×180 slab.
+ */
+export interface ProjectBlock {
+  label: string;
+  left: number;
+  top: number;
+  size: number;
+  height: number;
+}
+
 export interface ProjectLayer {
   label: string;
-  items: string[];
+  blocks: ProjectBlock[];
+}
+
+/**
+ * Explicit data-path edges for the exploded axono — only real call/data
+ * paths get drawn (mirrors `diagram` and `decisions`), so off-path
+ * components (e.g. a training-only service) keep a node but no riser.
+ */
+export interface ProjectFlows {
+  /** [lowerLayerIdx, lowerBlockIdx, upperBlockIdx] — the upper block (layer+1) descends into the lower block. */
+  risers: [number, number, number][];
+  /** [layerIdx, fromBlockIdx, toBlockIdx] — same-slab link between blocks that actually talk. */
+  conduits: [number, number, number][];
 }
 
 /** Bento-card manifest — curated, short; tech labels stay English. */
@@ -58,6 +84,7 @@ export interface Project {
   lessons: string[];
   future: string[];
   layers: ProjectLayer[];
+  flows: ProjectFlows;
   overview: string;
   roleDetail: string;
   problems: ProjectProblem[];

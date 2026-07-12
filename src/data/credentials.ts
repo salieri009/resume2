@@ -24,14 +24,15 @@ export const CREDENTIALS: Credential[] = [
     issuer: 'US Eighth Army — ROK/US Combined',
     title: 'Certificate of Achievement',
     detail:
-      'Awarded by the Eighth Army Chief of Staff (Lieutenant General) for two years of ROK–US liaison and interpretation duty. The citation spelled my name right — most Americans never managed to say it.',
+      'Awarded by the Eighth Army Chief of Staff (Lieutenant General) for two years of ROK–US liaison and interpretation duty.',
   },
   {
     id: 'rokbg',
     seal: 'ROK\nARMY',
     issuer: 'Republic of Korea Army',
     title: 'Certificate of Appreciation',
-    detail: 'Awarded by Brigadier General Kim for liaison and interpretation support to the command.',
+    detail:
+      'Served through two ROK–US Combined Command Post Training (CCPT) exercises — in the office early translating briefing materials, consecutive interpretation in coordination meetings, and the everyday office talk in between. Commended by Brigadier General Kim.',
   },
   {
     id: 'msshowcase',
@@ -58,13 +59,13 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
     eusa: {
       issuer: '미 제8군 — 한미연합',
       title: 'Certificate of Achievement (공로상)',
-      detail:
-        '한미 연락·통역 임무 2년에 대해 미 8군 참모장(중장) 명의로 수여. 상장에는 내 이름이 정확히 적혀 있었다 — 대부분의 미군은 끝내 제대로 발음하지 못했지만.',
+      detail: '한미 연락·통역 임무 2년에 대해 미 8군 참모장(중장) 명의로 수여.',
     },
     rokbg: {
       issuer: '대한민국 육군',
       title: '표창장 — 준장 표창',
-      detail: '연락 및 통역 지원 공로로 김 준장 명의의 표창을 받았다.',
+      detail:
+        '한미연합 지휘소훈련(CCPT)에 두 차례 참가했다. 발표 자료 번역 때문에 아침 일찍 사무실에 나와 통번역을 준비했고, 협조가 필요한 회의에서는 순차 통역을 맡았다. 일상 대화와 사무실의 소소한 이야기를 옮기는 것도 내 일이었다 — 김 준장 명의의 표창.',
     },
     msshowcase: {
       issuer: 'UTS × Microsoft Sydney',
@@ -82,13 +83,13 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
     eusa: {
       issuer: '米第8軍 — 米韓連合',
       title: 'Certificate of Achievement（功労賞）',
-      detail:
-        '韓米間の連絡・通訳任務2年に対し、米第8軍参謀長（中将）名義で授与。賞状には名前が正しく綴られていた — 発音できた米兵はほとんどいなかったが。',
+      detail: '韓米間の連絡・通訳任務2年に対し、米第8軍参謀長（中将）名義で授与。',
     },
     rokbg: {
       issuer: '大韓民国陸軍',
       title: '感謝状 — 准将表彰',
-      detail: '連絡・通訳支援の功績により、金准将名義の表彰を受けた。',
+      detail:
+        '米韓連合指揮所訓練（CCPT）に2回参加。発表資料の翻訳のため朝早く事務室に出て通訳・翻訳を準備し、調整が必要な会議では逐次通訳を担当した。日常会話や事務室のささいなやり取りを訳すのも自分の仕事だった — 金准将名義の表彰。',
     },
     msshowcase: {
       issuer: 'UTS × Microsoft Sydney',

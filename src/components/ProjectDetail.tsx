@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
@@ -192,6 +192,7 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
                         '--axstack': String(
                           Math.round((project.layers.length - 1) * (28 + ex * 58) + 44),
                         ),
+                        '--axrise': String(28 + ex * 58),
                       } as React.CSSProperties
                     }
                   >
@@ -220,17 +221,111 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
                           <div className="sal-detail-axono-slab-top">
                             <span className="sal-axono-level">{`L${i}`}</span>
                             <span className="sal-axono-layer-label">{layer.label}</span>
-                            <div className="sal-axono-layer-items">
-                              {layer.items.map((it) => (
-                                <span key={it} className="sal-axono-layer-tag">
-                                  {it}
-                                </span>
-                              ))}
-                            </div>
                           </div>
                           <div className="sal-detail-axono-slab-front" />
                           <div className="sal-detail-axono-slab-right" />
                         </div>
+
+                        {/* Component cubes — placement mirrors the real architecture,
+                            labels go out on drawing-style callouts */}
+                        {layer.blocks.map((b) => {
+                          const cx = b.left + b.size / 2;
+                          const cy = b.top + b.size / 2;
+                          const isLeft = cx <= 90;
+                          // Right-side leaders run further out so the label
+                          // clears the projected silhouette of the floor above.
+                          const endX = isLeft ? -24 : 232;
+                          return (
+                            <Fragment key={b.label}>
+                              <div
+                                className="sal-axono-block"
+                                style={{
+                                  left: b.left,
+                                  top: b.top,
+                                  width: b.size,
+                                  height: b.size,
+                                  transform: 'translateZ(8px)',
+                                }}
+                              >
+                                <div className="sal-axono-top" style={{ transform: `translateZ(${b.height}px)` }} />
+                                <div className="sal-axono-side-front" style={{ height: b.height }} />
+                                <div className="sal-axono-side-right" style={{ width: b.height }} />
+                              </div>
+                              <div
+                                className="sal-axono-node"
+                                style={{
+                                  left: cx - 2.5,
+                                  top: cy - 2.5,
+                                  transform: `translateZ(${8 + b.height + 1}px)`,
+                                }}
+                              />
+                              <div
+                                className="sal-detail-axono-leader"
+                                style={{
+                                  left: isLeft ? endX : cx,
+                                  top: cy,
+                                  width: isLeft ? cx - endX : endX - cx,
+                                  transform: `translateZ(${8 + b.height}px)`,
+                                }}
+                              />
+                              <div
+                                className={`sal-detail-axono-callout${isLeft ? ' is-left' : ''}`}
+                                style={{ left: endX, top: cy, transform: `translateZ(${8 + b.height}px)` }}
+                              >
+                                <span>{b.label}</span>
+                              </div>
+                            </Fragment>
+                          );
+                        })}
+
+                        {/* Same-slab conduits — only pairs that actually talk */}
+                        {project.flows.conduits
+                          .filter(([li]) => li === i)
+                          .map(([, from, to]) => {
+                            const a = layer.blocks[from];
+                            const b = layer.blocks[to];
+                            if (!a || !b) return null;
+                            const ax = a.left + a.size / 2;
+                            const ay = a.top + a.size / 2;
+                            const dx = b.left + b.size / 2 - ax;
+                            const dy = b.top + b.size / 2 - ay;
+                            const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+                            return (
+                              <div
+                                key={`cd-${i}-${from}-${to}`}
+                                className="sal-axono-conduit"
+                                style={{
+                                  left: ax,
+                                  top: ay,
+                                  width: Math.hypot(dx, dy),
+                                  transform: `translateZ(9px) rotate(${angle}deg)`,
+                                }}
+                              />
+                            );
+                          })}
+
+                        {/* Risers — the upper block's call descends into this floor's block */}
+                        {project.flows.risers
+                          .filter(([lower]) => lower === i)
+                          .map(([, lowerIdx, upperIdx]) => {
+                            const target = layer.blocks[lowerIdx];
+                            const upper = project.layers[i + 1]?.blocks[upperIdx];
+                            if (!target || !upper) return null;
+                            return (
+                              <div
+                                key={`rs-${i}-${lowerIdx}-${upperIdx}`}
+                                className="sal-axono-riser"
+                                style={
+                                  {
+                                    left: upper.left + upper.size / 2,
+                                    top: upper.top + upper.size / 2,
+                                    '--bh': String(target.height),
+                                    transform: `translateZ(${8 + target.height}px) rotateX(90deg)`,
+                                  } as React.CSSProperties
+                                }
+                              />
+                            );
+                          })}
                       </div>
                     ))}
 

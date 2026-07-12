@@ -54,11 +54,44 @@ export const PROJECTS: Record<ProjectKey, Project> = {
       'Cloud training paid off more in reproducibility than in raw speed.',
     ],
     future: ['Model quantization for edge devices', 'WebSocket frame streaming', 'k8s deployment with autoscaling'],
+    // Runtime path runs down the left/right columns: React UI ↧ Spring Boot ↧
+    // Docker and Alerts ↧ FastAPI·YOLO ↧ Docker. SageMaker is training-only,
+    // so it sits off in the corner with no riser.
     layers: [
-      { label: 'infra', items: ['Docker', 'SageMaker'] },
-      { label: 'services', items: ['Spring Boot', 'FastAPI·YOLO'] },
-      { label: 'interface', items: ['React UI', 'Alerts'] },
+      {
+        label: 'infra',
+        blocks: [
+          { label: 'Docker', left: 42, top: 48, size: 84, height: 26 },
+          { label: 'SageMaker', left: 126, top: 132, size: 38, height: 16 },
+        ],
+      },
+      {
+        label: 'services',
+        blocks: [
+          { label: 'Spring Boot', left: 34, top: 34, size: 54, height: 34 },
+          { label: 'FastAPI·YOLO', left: 92, top: 92, size: 60, height: 40 },
+        ],
+      },
+      {
+        label: 'interface',
+        blocks: [
+          { label: 'React UI', left: 38, top: 38, size: 56, height: 30 },
+          { label: 'Alerts', left: 100, top: 100, size: 42, height: 20 },
+        ],
+      },
     ],
+    flows: {
+      risers: [
+        [1, 0, 0], // React UI → Spring Boot
+        [1, 1, 1], // Alerts ← FastAPI·YOLO
+        [0, 0, 0], // Spring Boot → Docker
+        [0, 0, 1], // FastAPI·YOLO → Docker
+      ],
+      conduits: [
+        [1, 0, 1], // Spring Boot ↔ FastAPI·YOLO (gateway forwards frames)
+        [2, 0, 1], // React UI ↔ Alerts
+      ],
+    },
     overview:
       'Started as UTS Deep Learning (42028). YOLOv8 detects people; bounding-box proximity heuristics warn travellers with limited mobility when crowds get close. Fine-tuned on JRDB (Stanford JackRabbot data), served through React, Spring Boot, and FastAPI in Docker. Training on AWS SageMaker; datasets versioned with DVC.',
     roleDetail:
@@ -128,11 +161,41 @@ export const PROJECTS: Record<ProjectKey, Project> = {
       'Security belongs in the test suite, not on a checklist.',
     ],
     future: ['PostgreSQL migration', 'Session store hardening', 'k8s deployment'],
+    // Request walks the MVC layering: JSP ↧ Servlets ↔ Services ↧ DAO ↔ SQLite.
+    // Tailwind is styling-only — node, no riser.
     layers: [
-      { label: 'data', items: ['SQLite', 'DAO'] },
-      { label: 'logic', items: ['Servlets', 'Services'] },
-      { label: 'interface', items: ['JSP', 'Tailwind'] },
+      {
+        label: 'data',
+        blocks: [
+          { label: 'SQLite', left: 34, top: 36, size: 52, height: 22 },
+          { label: 'DAO', left: 96, top: 92, size: 56, height: 30 },
+        ],
+      },
+      {
+        label: 'logic',
+        blocks: [
+          { label: 'Servlets', left: 38, top: 40, size: 52, height: 34 },
+          { label: 'Services', left: 100, top: 96, size: 52, height: 26 },
+        ],
+      },
+      {
+        label: 'interface',
+        blocks: [
+          { label: 'JSP', left: 36, top: 38, size: 56, height: 30 },
+          { label: 'Tailwind', left: 110, top: 106, size: 38, height: 14 },
+        ],
+      },
     ],
+    flows: {
+      risers: [
+        [1, 0, 0], // JSP → Servlets
+        [0, 1, 1], // Services → DAO
+      ],
+      conduits: [
+        [1, 0, 1], // Servlets ↔ Services
+        [0, 0, 1], // DAO ↔ SQLite
+      ],
+    },
     overview:
       'UTS Introduction to Software Development team project: e-commerce for IoT devices. Registration, role-based access (Customer/Staff/Admin), full-text product search, persistent carts, multi-step checkout, order lifecycle with shipments, and an admin dashboard with KPI overviews and bulk CSV/JSON export. Layered MVC: Servlet controllers, service layer, DAO interface per entity over SQLite.',
     roleDetail:
@@ -193,11 +256,43 @@ export const PROJECTS: Record<ProjectKey, Project> = {
       'A v2 rewrite made sense once scene composition was the debt.',
     ],
     future: ['Day/night cycle interpolation', 'Save/load farm layouts', 'Mobile touch controls'],
+    // Two render columns: React 19 ↧ Three.js ↧ WebGL (scene graph to GPU)
+    // and Controls ↧ Particles ↧ GLSL (weather toggles drive shader work).
     layers: [
-      { label: 'gpu', items: ['WebGL', 'GLSL'] },
-      { label: 'scene', items: ['Three.js', 'Particles'] },
-      { label: 'interface', items: ['React 19', 'Controls'] },
+      {
+        label: 'gpu',
+        blocks: [
+          { label: 'WebGL', left: 40, top: 44, size: 64, height: 28 },
+          { label: 'GLSL', left: 106, top: 102, size: 48, height: 24 },
+        ],
+      },
+      {
+        label: 'scene',
+        blocks: [
+          { label: 'Three.js', left: 38, top: 40, size: 60, height: 36 },
+          { label: 'Particles', left: 104, top: 100, size: 46, height: 22 },
+        ],
+      },
+      {
+        label: 'interface',
+        blocks: [
+          { label: 'React 19', left: 36, top: 38, size: 58, height: 32 },
+          { label: 'Controls', left: 108, top: 104, size: 40, height: 18 },
+        ],
+      },
     ],
+    flows: {
+      risers: [
+        [1, 0, 0], // React 19 → Three.js
+        [1, 1, 1], // Controls → Particles
+        [0, 0, 0], // Three.js → WebGL
+        [0, 1, 1], // Particles → GLSL
+      ],
+      conduits: [
+        [1, 0, 1], // Three.js ↔ Particles
+        [0, 0, 1], // WebGL ↔ GLSL (shaders compiled into the GL pipeline)
+      ],
+    },
     overview:
       'UTS graphics assignment taken further than the brief. Build a 3D farm: place animals, buildings, and props on a snapping grid, expand terrain, watch the world react. Four seasons, five weather states including storms with lightning, night mode with an orbiting moon, optional live weather from OpenWeatherMap.',
     roleDetail:
@@ -257,11 +352,34 @@ export const PROJECTS: Record<ProjectKey, Project> = {
       'A thin typed client keeps backend refactors from leaking into the UI.',
     ],
     future: ['Refresh-token rotation', 'Terraform for infra', 'GitHub Actions deploy'],
+    // Single request spine: Next.js ↧ Chalice ↧ PostgreSQL, with JWT as the
+    // middleware satellite checked on the way through.
     layers: [
-      { label: 'data', items: ['PostgreSQL'] },
-      { label: 'api', items: ['Chalice', 'JWT'] },
-      { label: 'interface', items: ['Next.js'] },
+      {
+        label: 'data',
+        blocks: [{ label: 'PostgreSQL', left: 52, top: 56, size: 66, height: 28 }],
+      },
+      {
+        label: 'api',
+        blocks: [
+          { label: 'Chalice', left: 44, top: 46, size: 60, height: 32 },
+          { label: 'JWT', left: 112, top: 108, size: 42, height: 20 },
+        ],
+      },
+      {
+        label: 'interface',
+        blocks: [{ label: 'Next.js', left: 48, top: 50, size: 72, height: 34 }],
+      },
     ],
+    flows: {
+      risers: [
+        [1, 0, 0], // Next.js → Chalice
+        [0, 0, 0], // Chalice → PostgreSQL
+      ],
+      conduits: [
+        [1, 0, 1], // Chalice ↔ JWT (middleware on the request path)
+      ],
+    },
     overview:
       '2025 summer project with one rule: no shortcuts on the hard parts. CRUD board with Google OAuth and JWT sessions, Next.js frontend, Python serverless backend on AWS Chalice, PostgreSQL. Layers I had not shipped before.',
     roleDetail:
@@ -321,11 +439,43 @@ export const PROJECTS: Record<ProjectKey, Project> = {
       'Constraints like "zero assets" sharpen the aesthetic.',
     ],
     future: ['WebGL renderer strategy', 'MIDI input mapping', 'Gallery/installation mode'],
+    // p5.js ↧ Perlin Fluid ↧ Object Pool draws the field from pooled
+    // particles; Audio ↧ Clock ↧ IoC rings the hours through injected deps.
     layers: [
-      { label: 'core', items: ['IoC', 'Object Pool'] },
-      { label: 'simulation', items: ['Perlin Fluid', 'Clock'] },
-      { label: 'canvas', items: ['p5.js', 'Audio'] },
+      {
+        label: 'core',
+        blocks: [
+          { label: 'Object Pool', left: 40, top: 44, size: 60, height: 28 },
+          { label: 'IoC', left: 108, top: 104, size: 44, height: 22 },
+        ],
+      },
+      {
+        label: 'simulation',
+        blocks: [
+          { label: 'Perlin Fluid', left: 38, top: 40, size: 58, height: 32 },
+          { label: 'Clock', left: 106, top: 102, size: 46, height: 24 },
+        ],
+      },
+      {
+        label: 'canvas',
+        blocks: [
+          { label: 'p5.js', left: 36, top: 38, size: 60, height: 34 },
+          { label: 'Audio', left: 108, top: 104, size: 44, height: 20 },
+        ],
+      },
     ],
+    flows: {
+      risers: [
+        [1, 0, 0], // p5.js → Perlin Fluid
+        [1, 1, 1], // Audio ← Clock events
+        [0, 0, 0], // Perlin Fluid → Object Pool
+        [0, 1, 1], // Clock → IoC
+      ],
+      conduits: [
+        [1, 0, 1], // Perlin Fluid ↔ Clock (attention scales sim speed)
+        [0, 0, 1], // Object Pool ↔ IoC
+      ],
+    },
     overview:
       'Interactive piece that treats time as a "reservoir of attention." Leave the canvas calm and time flows slowly. Stir with fast mouse movement and turbulence hits the fluid, saturation, and sound. Every hour a sun drop drifts across; quarter-hours ring as cymatic ripples. Audio is synthesized live. Zero media assets.',
     roleDetail:

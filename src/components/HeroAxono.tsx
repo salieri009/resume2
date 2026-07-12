@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { CSSProperties } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AXONO_LAYERS, DEGREE } from '../data/academic';
@@ -32,9 +33,10 @@ const PLINE_POSITIONS = [
 
 function captionSpacing(explode: number): number {
   // Collapsed floors would stack the annotations on top of each other,
-  // so spacing interpolates 74px → 100px as the building pulls apart.
+  // so spacing interpolates 84px → 100px as the building pulls apart.
+  // The 84px floor keeps two-line captions clear of the datum below.
   const norm = Math.min(1, Math.max(0, (explode - 0.2) / 0.8));
-  return 74 + norm * 26;
+  return 84 + norm * 16;
 }
 
 interface HeroAxonoProps {
@@ -64,6 +66,8 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
         roofRef.current.style.transform = `translateZ(${roofZ}px)`;
       }
       scene.style.setProperty('--axstack', String(roofZ + 16));
+      // Riser span between floors — CSS subtracts each block's own height.
+      scene.style.setProperty('--axrise', String(LAYER_GAP * explode));
       const spacing = captionSpacing(explode);
       captionRefs.current.forEach((el, i) => {
         if (el) el.style.top = `${CAPTION_BASE_TOP - i * spacing}px`;
@@ -77,7 +81,10 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
     }
 
     const ctx = gsap.context(() => {
-      const proxy = { explode: 0.2, rot: -45 };
+      // Start half-separated and finish exploding by mid-scroll — otherwise
+      // the inter-floor risers only gain length after the building has
+      // already left the viewport.
+      const proxy = { explode: 0.45, rot: -45 };
       apply(proxy.explode, proxy.rot);
 
       gsap.to(proxy, {
@@ -87,7 +94,7 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
         scrollTrigger: {
           trigger: root.closest('.sal-hero-section') ?? root,
           start: 'top top',
-          end: 'bottom top',
+          end: '60% top',
           scrub: 0.55,
         },
         onUpdate: () => apply(proxy.explode, proxy.rot),
@@ -159,6 +166,58 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
                   <div className="sal-axono-side-right" style={{ width: block.height }} />
                 </div>
               ))}
+
+              {/* Logic flow — conduits chaining block centres across the slab */}
+              {layer.blocks.slice(0, -1).map((block, j) => {
+                const next = layer.blocks[j + 1];
+                const ax = block.left + block.size / 2;
+                const ay = block.top + block.size / 2;
+                const dx = next.left + next.size / 2 - ax;
+                const dy = next.top + next.size / 2 - ay;
+                const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+                return (
+                  <div
+                    key={`cd-${layer.id}-${block.label}`}
+                    className="sal-axono-conduit"
+                    style={{
+                      left: ax,
+                      top: ay,
+                      width: Math.hypot(dx, dy),
+                      transform: `translateZ(11px) rotate(${angle}deg)`,
+                    }}
+                  />
+                );
+              })}
+
+              {/* Junction nodes on each cube's top face — the riser tap point */}
+              {layer.blocks.map((block) => (
+                <div
+                  key={`nd-${block.label}`}
+                  className="sal-axono-node"
+                  style={{
+                    left: block.left + block.size / 2 - 2.5,
+                    top: block.top + block.size / 2 - 2.5,
+                    transform: `translateZ(${10 + block.height + 1}px)`,
+                  }}
+                />
+              ))}
+
+              {/* Logic flow — risers climbing to the same stack on the floor above */}
+              {i < AXONO_LAYERS.length - 1 &&
+                layer.blocks.map((block) => (
+                  <div
+                    key={`rs-${block.label}`}
+                    className="sal-axono-riser"
+                    style={
+                      {
+                        left: block.left + block.size / 2,
+                        top: block.top + block.size / 2,
+                        '--bh': String(block.height),
+                        transform: `translateZ(${10 + block.height}px) rotateX(90deg)`,
+                      } as CSSProperties
+                    }
+                  />
+                ))}
             </div>
           ))}
 

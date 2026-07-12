@@ -375,11 +375,11 @@ export const VoyageChart = memo(function VoyageChart({
                   x={island.svg.cx}
                   y={island.svg.cy + 16}
                   textAnchor="middle"
-                  fontSize={8}
+                  fontSize={island.label.length > 14 ? 7 : 8}
                   fontFamily="Inter, sans-serif"
                   fill="var(--c-text-muted)"
                 >
-                  {island.label.length > 14 ? island.label.slice(0, 12) + '…' : island.label}
+                  {island.label}
                 </text>
                 <title>{`${island.period} · ${island.label} — ${island.stack}`}</title>
               </g>
@@ -415,9 +415,11 @@ export const VoyageChart = memo(function VoyageChart({
                 >
                   {m.year}
                 </text>
+                {/* Staggered baselines — neighbours sit 140px apart, so long
+                    localized labels would collide on a single line. */}
                 <text
                   x={m.x}
-                  y={m.y + 24}
+                  y={m.y + (i % 2 === 0 ? 20 : 33)}
                   textAnchor="middle"
                   fontSize={9.5}
                   fontFamily="JetBrains Mono, monospace"
