@@ -92,6 +92,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
         [2, 0, 1], // React UI ↔ Alerts
       ],
     },
+    arch: 'observatory',
     overview:
       'Started as UTS Deep Learning (42028). YOLOv8 detects people; bounding-box proximity heuristics warn travellers with limited mobility when crowds get close. Fine-tuned on JRDB (Stanford JackRabbot data), served through React, Spring Boot, and FastAPI in Docker. Training on AWS SageMaker; datasets versioned with DVC.',
     roleDetail:
@@ -196,6 +197,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
         [0, 0, 1], // DAO ↔ SQLite
       ],
     },
+    arch: 'warehouse',
     overview:
       'UTS Introduction to Software Development team project: e-commerce for IoT devices. Registration, role-based access (Customer/Staff/Admin), full-text product search, persistent carts, multi-step checkout, order lifecycle with shipments, and an admin dashboard with KPI overviews and bulk CSV/JSON export. Layered MVC: Servlet controllers, service layer, DAO interface per entity over SQLite.',
     roleDetail:
@@ -293,6 +295,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
         [0, 0, 1], // WebGL ↔ GLSL (shaders compiled into the GL pipeline)
       ],
     },
+    arch: 'greenhouse',
     overview:
       'UTS graphics assignment taken further than the brief. Build a 3D farm: place animals, buildings, and props on a snapping grid, expand terrain, watch the world react. Four seasons, five weather states including storms with lightning, night mode with an orbiting moon, optional live weather from OpenWeatherMap.',
     roleDetail:
@@ -380,6 +383,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
         [1, 0, 1], // Chalice ↔ JWT (middleware on the request path)
       ],
     },
+    arch: 'housing',
     overview:
       '2025 summer project with one rule: no shortcuts on the hard parts. CRUD board with Google OAuth and JWT sessions, Next.js frontend, Python serverless backend on AWS Chalice, PostgreSQL. Layers I had not shipped before.',
     roleDetail:
@@ -476,6 +480,7 @@ export const PROJECTS: Record<ProjectKey, Project> = {
         [0, 0, 1], // Object Pool ↔ IoC
       ],
     },
+    arch: 'pavilion',
     overview:
       'Interactive piece that treats time as a "reservoir of attention." Leave the canvas calm and time flows slowly. Stir with fast mouse movement and turbulence hits the fluid, saturation, and sound. Every hour a sun drop drifts across; quarter-hours ring as cymatic ripples. Audio is synthesized live. Zero media assets.',
     roleDetail:

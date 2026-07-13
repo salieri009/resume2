@@ -2126,6 +2126,284 @@ button {
   transform: rotateZ(45deg) rotateX(-58deg) translate(-100%, -50%) translateX(-4px);
 }
 
+/* ---------- Arch typologies: five projects, five buildings ----------
+   Monochrome ink stays; materials read through drawing-convention
+   hatching, massing through the elements placed by ArchFeatures.tsx. */
+
+/* Shared massing primitives */
+.sal-arch-mast {
+  position: absolute;
+  width: 2px;
+  transform-origin: top;
+  background: var(--c-accent-text);
+  opacity: 0.9;
+}
+
+.sal-arch-crossarm {
+  position: absolute;
+  width: 18px;
+  height: 1.5px;
+  background: var(--c-accent-text);
+  opacity: 0.9;
+}
+
+.sal-arch-container {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+/* Observatory (crowd) — metal panel facade, podium ground, radar sweep */
+.sal-arch-observatory .sal-detail-axono-slab-front,
+.sal-arch-observatory .sal-detail-axono-slab-right {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--c-accent-dim) 0 1px,
+    transparent 1px 5px
+  );
+  background-color: var(--c-glow-bg);
+}
+
+.sal-arch-observatory .sal-detail-axono-ground {
+  border-width: 2px;
+  outline: 1px solid var(--c-accent-dim);
+  outline-offset: -6px;
+}
+
+.sal-arch-scan-wrap {
+  position: absolute;
+  width: 122px;
+  height: 122px;
+}
+
+.sal-arch-scan {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed var(--c-accent-dim);
+  background: conic-gradient(from 0deg, var(--c-accent) 0deg, transparent 78deg);
+  opacity: 0.16;
+}
+
+/* Warehouse (iotbay) — brick hatch, sawtooth roof, containers, dock canopy */
+.sal-arch-warehouse .sal-detail-axono-slab-front,
+.sal-arch-warehouse .sal-detail-axono-slab-right {
+  background-image: repeating-linear-gradient(0deg, var(--c-accent-dim) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(90deg, var(--c-accent-dim) 0 1px, transparent 1px 9px);
+  background-color: var(--c-glow-bg);
+}
+
+.sal-arch-saw {
+  position: absolute;
+  width: 46px;
+  height: 132px;
+  transform-origin: left;
+  background: var(--c-glow-bg);
+  border: 1px solid var(--c-accent-dim);
+}
+
+.sal-arch-corrugated {
+  background-image: repeating-linear-gradient(
+    0deg,
+    var(--c-accent-dim) 0 1.5px,
+    transparent 1.5px 4px
+  );
+}
+
+.sal-arch-canopy {
+  position: absolute;
+  width: 64px;
+  height: 14px;
+  background: var(--c-glow-bg);
+  border: 1px solid var(--c-accent-dim);
+  border-bottom-style: dashed;
+}
+
+/* Greenhouse (farm) — glass A-frame, field-row ground, weather vane */
+.sal-arch-glass {
+  position: absolute;
+  background-color: var(--c-glow-bg);
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--c-accent-dim) 0 1px,
+    transparent 1px 7px
+  );
+  border: 1px solid var(--c-accent-dim);
+}
+
+.sal-arch-greenhouse .sal-detail-axono-ground {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0 8px,
+    var(--c-accent-dim) 8px 9px
+  );
+}
+
+.sal-arch-vane-wrap {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.sal-arch-vane {
+  position: absolute;
+  left: 0;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-left: 11px solid var(--c-accent-text);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform-origin: left center;
+  opacity: 0.9;
+}
+
+/* Housing (gundam) — wood-grain facade, balcony railings, gate, stair */
+.sal-arch-housing .sal-detail-axono-slab-front,
+.sal-arch-housing .sal-detail-axono-slab-right {
+  background-image: repeating-linear-gradient(
+    0deg,
+    var(--c-accent-dim) 0 1px,
+    transparent 1px 3.5px
+  );
+  background-color: var(--c-glow-bg);
+}
+
+.sal-arch-housing .sal-detail-axono-slab-top::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 5px;
+  border-bottom: 1.5px dashed var(--c-accent-text);
+  opacity: 0.65;
+}
+
+.sal-arch-gatehouse .sal-axono-top {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--c-accent-dim) 0 1px,
+    transparent 1px 4px
+  );
+}
+
+.sal-arch-stair {
+  position: absolute;
+  width: 9px;
+  height: max(24px, calc((var(--axstack, 120) - 34) * 1px));
+  transform-origin: top;
+  border-left: 1px solid var(--c-accent-dim);
+  border-right: 1px solid var(--c-accent-dim);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--c-accent-dim) 0 1.5px,
+    transparent 1.5px 7px
+  );
+}
+
+/* Pavilion (ephemeral) — sparse grid, floating canopy, ripples, clock */
+.sal-arch-pavilion .sal-detail-axono-slab-top {
+  background-size: 45px 45px;
+}
+
+.sal-arch-pavilion .sal-detail-axono-roofplate {
+  background: none;
+  border-width: 1.5px;
+  border-radius: 42% 58% 55% 45%;
+  outline: 1px solid var(--c-accent-dim);
+  outline-offset: -6px;
+}
+
+.sal-arch-ripple-wrap {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+
+.sal-arch-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed var(--c-accent-text);
+  opacity: 0.4;
+}
+
+.sal-arch-clock-anchor {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.sal-arch-clock {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--c-accent-text);
+  background: color-mix(in srgb, var(--c-panel) 80%, transparent);
+  /* Billboard: undo the scene rotation so the face reads upright */
+  transform: rotateZ(45deg) rotateX(-58deg);
+}
+
+.sal-arch-clock::before,
+.sal-arch-clock::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 1.5px;
+  background: var(--c-accent-text);
+  transform-origin: bottom center;
+}
+
+.sal-arch-clock::before {
+  height: 4.5px;
+  transform: rotate(65deg);
+}
+
+.sal-arch-clock::after {
+  height: 6.5px;
+  transform: rotate(180deg);
+}
+
+/* Signature motions — stilled under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .sal-arch-scan {
+    animation: sal-arch-spin 4.5s linear infinite;
+  }
+
+  .sal-arch-vane {
+    animation: sal-arch-spin 14s linear infinite;
+  }
+
+  .sal-arch-ripple {
+    animation: sal-arch-ripple 5.2s ease-out infinite;
+  }
+
+  .sal-arch-clock::after {
+    animation: sal-arch-spin 60s linear infinite;
+  }
+}
+
+@keyframes sal-arch-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sal-arch-ripple {
+  from {
+    transform: scale(0.35);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(2.9);
+    opacity: 0;
+  }
+}
+
 .sal-detail-axono-caption {
   text-align: center;
   font-family: 'JetBrains Mono', monospace;

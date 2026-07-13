@@ -33,6 +33,13 @@ export interface ProjectLayer {
 }
 
 /**
+ * Architectural typology of the detail axono — which building this project
+ * is drawn as. Massing, roof, material hatching, and signature animation
+ * are keyed off this id (see ArchFeatures.tsx and the .sal-arch-* CSS).
+ */
+export type ArchTypology = 'observatory' | 'warehouse' | 'greenhouse' | 'housing' | 'pavilion';
+
+/**
  * Explicit data-path edges for the exploded axono — only real call/data
  * paths get drawn (mirrors `diagram` and `decisions`), so off-path
  * components (e.g. a training-only service) keep a node but no riser.
@@ -85,6 +92,7 @@ export interface Project {
   future: string[];
   layers: ProjectLayer[];
   flows: ProjectFlows;
+  arch: ArchTypology;
   overview: string;
   roleDetail: string;
   problems: ProjectProblem[];

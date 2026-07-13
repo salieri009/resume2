@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
+import { ArchFeatures } from './ArchFeatures';
 import { SectionDiagram } from './SectionDiagram';
 import { ShippingLane } from './ShippingLane';
 import type { ScrollControl } from '../hooks/useSmoothScroll';
@@ -186,7 +187,7 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
               <div className="sal-detail-axono" aria-hidden="true">
                 <div className="sal-detail-axono-stage">
                   <div
-                    className="sal-detail-axono-scene"
+                    className={`sal-detail-axono-scene sal-arch-${project.arch}`}
                     style={
                       {
                         '--axstack': String(
@@ -335,6 +336,8 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
                         transform: `translateZ(${Math.round((project.layers.length - 1) * (28 + ex * 58) + 36)}px)`,
                       }}
                     />
+
+                    <ArchFeatures typology={project.arch} gap={28 + ex * 58} layerCount={project.layers.length} />
                   </div>
                 </div>
 
