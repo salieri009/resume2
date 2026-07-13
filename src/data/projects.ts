@@ -537,7 +537,7 @@ export const L10N: Record<Exclude<Lang, 'en'>, Record<ProjectKey, L10NProjectOve
         },
         {
           p: '로컬 GPU로는 긴 학습 런을 버틸 수 없었습니다.',
-          s: '학습을 AWS SageMaker(ml.g5.xlarge)로 옮기고 스크립트 런처를 만들었습니다. 모든 런을 재현하고 재개할 수 있게 했습니다.',
+          s: '학습을 AWS SageMaker(ml.g5.xlarge)로 옮기고 스크립트 런처를 만들었습니다. 이제 모든 런을 재현하고 이어서 돌릴 수 있습니다.',
         },
       ],
       period: '2026년 1학기',
@@ -579,7 +579,7 @@ export const L10N: Record<Exclude<Lang, 'en'>, Record<ProjectKey, L10NProjectOve
       overview:
         'UTS 소프트웨어 개발 입문 팀 과제입니다. IoT 기기 이커머스. 회원가입, 역할별 접근, 상품 검색, 장바구니, 결제, 배송 주문, KPI 대시보드와 CSV/JSON 내보내기까지. Servlet·Service·DAO 레이어드 MVC, SQLite.',
       roleDetail:
-        '소스 파일 111개짜리 코드베이스에서 8명 중 한 명으로 주문 라이프사이클과 테스트 스위트를 맡았습니다. 팀은 10개 기능 영역을 덮는 Selenium E2E 118개와 보안 경계 테스트를 만들었고, 푸시마다 GitHub Actions가 전부 돕니다. 배포는 Docker 이미지로 GHCR까지.',
+        '소스 파일 111개짜리 코드베이스에서 8명 중 한 명으로 주문 라이프사이클과 테스트 스위트를 맡았습니다. 팀은 10개 기능 영역을 덮는 Selenium E2E 118개와 보안 경계 테스트를 만들었고, 푸시마다 GitHub Actions가 전부 돌아갑니다. 배포는 Docker 이미지로 GHCR까지.',
       problems: [
         {
           p: '8명이 한 코드베이스에서 작업하다 보니 서로의 기능을 계속 깨뜨렸습니다.',
@@ -603,7 +603,7 @@ export const L10N: Record<Exclude<Lang, 'en'>, Record<ProjectKey, L10NProjectOve
         },
         {
           choice: '유닛 위주 대신 Selenium E2E',
-          why: 'JSP UI에서 위험한 버그는 요청→렌더 전체 루프에 있습니다. 테스트도 그 루프를 끝까지 돕니다.',
+          why: 'JSP UI에서 위험한 버그는 요청→렌더 전체 루프에 있습니다. 그래서 테스트도 그 루프를 처음부터 끝까지 돌립니다.',
         },
       ],
       tradeoffs: [
@@ -623,7 +623,7 @@ export const L10N: Record<Exclude<Lang, 'en'>, Record<ProjectKey, L10NProjectOve
       future: ['PostgreSQL 마이그레이션', '세션 스토어 강화', 'k8s 배포'],
     },
     farm: {
-      summary: '브라우저 3D 농장 샌드박스입니다. 사계절, 다섯 가지 날씨, 직접 쓴 오로라 셰이더가 인터랙티브 프레임레이트로 돕니다.',
+      summary: '브라우저 3D 농장 샌드박스입니다. 사계절, 다섯 가지 날씨, 직접 쓴 오로라 셰이더가 인터랙티브 프레임레이트로 돌아갑니다.',
       role: '그래픽스 개발 — 컴퓨터 그래픽스 & 애니메이션 부전공',
       outcome: '실시간 계절/날씨 + 자작 GLSL 오로라',
       overview:
@@ -857,7 +857,7 @@ export const L10N: Record<Exclude<Lang, 'en'>, Record<ProjectKey, L10NProjectOve
         },
         {
           rejected: 'クライアントSPA',
-          why: 'フロント経験がまちまちの8人には、サーバーレンダリングのJSP + Tailwindの方が速かったです。',
+          why: 'フロント経験がまちまちの8人には、サーバーレンダリングのJSP + Tailwindの方が早く出荷できました。',
         },
       ],
       lessons: [

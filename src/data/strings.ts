@@ -132,13 +132,13 @@ const SHARED = {
       'Cloud Computing and SaaS 86점 HD(A+ 상당), Software Architecture 80점 D(A 상당). Intro to Computer Game Development로 게임 트랙도 이때 열었습니다. 과제 단위가 아니라 서비스 단위로 생각하기 시작한 학기입니다.',
     semesterAut25Title: 'Algorithms & Graphics',
     semesterAut25Body:
-      'Data Structures 92점 HD(A+ 상당), Intro Soft Dev 90점 HD, Computer Graphics 81점 D(A 상당). Game Design Methodologies는 64점 P(합격) — The Five Floors를 4인 팀이 itch.io에 올렸습니다.',
+      'Data Structures 92점 HD(A+ 상당), Intro Soft Dev 90점 HD, Computer Graphics 81점 D(A 상당). Game Design Methodologies는 64점 P(합격)로 마쳤고, 결과물인 The Five Floors를 4인 팀이 itch.io에 올렸습니다.',
     semesterSpr25Title: 'Enterprise 학기',
     semesterSpr25Body:
       'Adv Soft Dev 87점 HD(A+ 상당)의 결과물이 le-restaurant입니다. 5인 팀, Spring Boot + React, Azure 배포. Interaction Design, Interactive Media, Project Management가 같은 학기에 있었습니다.',
     semesterAut26Title: '캡스톤 학기',
     semesterAut26Body:
-      'Soft Dev Studio는 95점 HD(A+ 상당)로 끝났고, 산업 파트너 StevTech와 함께했습니다. Data Engineering과 TD가 옆에 있었고, Deep Learning은 68점 C(B 상당) — 수업 성적은 그대로이고, 이어진 이야기는 Crowd Detection 케이스에 있습니다.',
+      'Soft Dev Studio는 95점 HD(A+ 상당)로 끝났고, 산업 파트너 StevTech와 함께했습니다. Data Engineering과 TD가 옆에 있었고, Deep Learning은 68점 C(B 상당)입니다. 수업 성적은 그대로 두고, 이어진 이야기를 Crowd Detection 케이스에 담았습니다.',
     fullRecordNote: '전체 기록: 144 CP(UTS 학점) · GPA 6.00/7.0 · WAM 80.31/100 · 2026 이수 완료',
   },
   ja: {
@@ -265,11 +265,11 @@ export const STRINGS: Record<Lang, Strings> = {
     growthIntro:
       '육군 통역에서 시작해 엔터프라이즈 소프트웨어, 그다음 UTS에서 딥러닝. 학기마다 무게가 늘다가 Soft Dev Studio와 Complete로 끝났습니다.',
     aboutStory:
-      '소프트웨어는 증명 초안처럼 다룹니다. 불변항을 먼저 잡고 모호함을 걷어낸 다음, 그 안에서 남는 생각을 봅니다. 컴퓨테이셔널 디자인에 끌리는 이유도 비슷합니다 — 규칙이 단단할수록 이상한 아이디어가 설 자리가 생깁니다.',
+      '소프트웨어는 증명 초안처럼 다룹니다. 불변항을 먼저 잡고 모호함을 걷어낸 다음, 그 안에서 남는 생각을 봅니다. 컴퓨테이셔널 디자인에 끌리는 이유도 비슷합니다. 규칙이 단단할수록 이상한 아이디어가 설 자리가 생기니까요.',
     aboutHobbies:
       '키보드 밖에서는 글을 쓰고(350편 넘음), 운동하고, 사람을 만나고, 언어를 배웁니다. 한국어, 영어, 일본어, 독일어.',
     growthUts:
-      '브리프를 따라가던 쪽에서 브리프를 이끄는 쪽으로 옮겼습니다. 마지막은 Soft Dev Studio 95 HD — 팀 캡스톤 ML을 커밋 97%로 맡았습니다.',
+      '브리프를 따라가던 쪽에서 브리프를 이끄는 쪽으로 옮겼습니다. 마지막은 Soft Dev Studio 95 HD였고, 팀 캡스톤 ML을 커밋 97%로 맡았습니다.',
     growthArmy:
       '습관은 압박 속 통역에서 왔습니다. 단어 하나 틀리면 값이 컸습니다. 그 기준을 코드에도 적용합니다.',
     contactTitle: '연락 주세요',
