@@ -65,13 +65,13 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
       issuer: '대한민국 육군',
       title: '표창장 — 준장 표창',
       detail:
-        '한미연합 지휘소훈련(CCPT)에 두 차례 참가했다. 발표 자료 번역 때문에 아침 일찍 사무실에 나와 통번역을 준비했고, 협조가 필요한 회의에서는 순차 통역을 맡았다. 일상 대화와 사무실의 소소한 이야기를 옮기는 것도 내 일이었다 — 김 준장 명의의 표창.',
+        '한미연합 지휘소훈련(CCPT)에 두 차례 참가했습니다. 발표 자료 번역 때문에 아침 일찍 사무실에 나와 통번역을 준비했고, 협조가 필요한 회의에서는 순차 통역을 맡았습니다. 일상 대화와 사무실의 소소한 이야기를 옮기는 것도 제 일이었습니다 — 김 준장 명의의 표창.',
     },
     msshowcase: {
       issuer: 'UTS × Microsoft Sydney',
       title: 'Certificate of Achievement — “Shaping Technologies that Shape Us”',
       detail:
-        '620명 규모 코호트에서 선발되어 Microsoft Sydney에서 AI의 사회적 영향에 관한 융합 프로젝트를 발표했다. Microsoft와 업계 전문가들이 함께한 쇼케이스.',
+        '620명 규모 코호트에서 선발되어 Microsoft Sydney에서 AI의 사회적 영향에 관한 융합 프로젝트를 발표했습니다. Microsoft와 업계 전문가들이 함께한 쇼케이스입니다.',
     },
     build: {
       issuer: 'UTS BUILD 프로그램',
@@ -89,13 +89,13 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
       issuer: '大韓民国陸軍',
       title: '感謝状 — 准将表彰',
       detail:
-        '米韓連合指揮所訓練（CCPT）に2回参加。発表資料の翻訳のため朝早く事務室に出て通訳・翻訳を準備し、調整が必要な会議では逐次通訳を担当した。日常会話や事務室のささいなやり取りを訳すのも自分の仕事だった — 金准将名義の表彰。',
+        '米韓連合指揮所訓練（CCPT）に2回参加しました。発表資料の翻訳のため朝早く事務室に出て通訳・翻訳を準備し、調整が必要な会議では逐次通訳を担当しました。日常会話や事務室のささいなやり取りを訳すのも自分の仕事でした — 金准将名義の表彰。',
     },
     msshowcase: {
       issuer: 'UTS × Microsoft Sydney',
       title: 'Certificate of Achievement — “Shaping Technologies that Shape Us”',
       detail:
-        '620名のコホートから選抜され、Microsoft SydneyでAIの社会的影響に関する学際プロジェクトを発表。Microsoftと業界の専門家とともに登壇した。',
+        '620名のコホートから選抜され、Microsoft SydneyでAIの社会的影響に関する学際プロジェクトを発表しました。Microsoftと業界の専門家とともに登壇しています。',
     },
     build: {
       issuer: 'UTS BUILDプログラム',

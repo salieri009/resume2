@@ -42,6 +42,12 @@ export default function App() {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  // Keep <html lang> in sync so :lang(ko) CSS (keep-all word breaking)
+  // and assistive tech track the active language.
+  useLayoutEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
   const toggleTheme = useCallback(() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark')), []);
   const toggleMobile = useCallback(() => setMobileOpen((prev) => !prev), []);
   const openProject = useCallback((key: ProjectKey) => setActiveProject(key), []);

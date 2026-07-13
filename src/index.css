@@ -53,6 +53,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Korean line breaking: never split inside a word; only break a word as a
+   last resort when it alone exceeds the line. Scoped to :lang(ko) — Japanese
+   has no inter-word spaces, so keep-all there would forbid wrapping entirely. */
+:root:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -575,6 +583,7 @@ button {
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .sal-hero-actions {
