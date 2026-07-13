@@ -36,6 +36,15 @@
   --c-glow-bg: rgba(200, 30, 48, 0.05);
 }
 
+/* The 10%-alpha accent wash that draws the axonometrics disappears on a
+   white ground, so both drawings get a stronger ink locally — scoped so
+   tags, cards, and other accent-dim consumers keep the pale wash. */
+:root[data-theme='light'] .sal-axono,
+:root[data-theme='light'] .sal-detail-axono {
+  --c-accent-dim: rgba(200, 30, 48, 0.34);
+  --c-glow-bg: rgba(200, 30, 48, 0.1);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1273,6 +1282,19 @@ button {
 
 .sal-bento-a .sal-bento-body {
   gap: 14px;
+}
+
+/* Hero-card results strip — fills the tall A card with shipped metrics */
+.sal-bento-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 16px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--c-border-strong);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--c-text-muted);
 }
 
 .sal-bento-chips .sal-tag {

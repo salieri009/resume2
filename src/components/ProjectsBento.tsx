@@ -69,6 +69,13 @@ export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRe
                   ))}
                 </div>
               </div>
+              {cls === 'sal-bento-a' && (
+                <div className="sal-bento-stats">
+                  {project.results.slice(0, 4).map((r) => (
+                    <span key={r}>{r}</span>
+                  ))}
+                </div>
+              )}
               <div className="sal-bento-footer">
                 <span>{m.footer}</span>
                 <span className="sal-case-study-link">Open →</span>
