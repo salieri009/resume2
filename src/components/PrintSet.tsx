@@ -34,6 +34,15 @@ const issued = () => new Date().toISOString().slice(0, 10);
 const projectSheetNo = (key: ProjectKey) =>
   `A-1${String(PROJECT_ORDER.indexOf(key) + 1).padStart(2, '0')}`;
 
+/** Localized one-liners for the résumé's selected-work register. */
+const SUMMARY_KEY: Record<ProjectKey, keyof Strings> = {
+  crowd: 'crowdSummary',
+  iotbay: 'iotbaySummary',
+  farm: 'farmSummary',
+  gundam: 'gundamSummary',
+  ephemeral: 'ephemeralSummary',
+};
+
 interface SheetProps {
   no: string;
   /** Chrome label, drawing-convention English (TITLE SHEET, CASE STUDY …). */
@@ -78,14 +87,119 @@ function skillMatrix(t: Strings, lang: Lang) {
   ];
 }
 
+export type PrintVariant = 'resume' | 'set';
+
 interface PrintSetProps {
   lang: Lang;
   /** True when shown via ?sheets — adds the on-screen preview frame. */
   preview: boolean;
+  /**
+   * What printing emits. `resume` is the default — two R-series pages, the
+   * Western-convention résumé. The full A-000–A-600 set prints only from the
+   * `?sheets` preview, where the reader has already chosen the deep dive.
+   */
+  variant: PrintVariant;
 }
 
-export function PrintSet({ lang, preview }: PrintSetProps) {
+export function PrintSet({ lang, preview, variant }: PrintSetProps) {
   const t = STRINGS[lang];
+
+  if (variant === 'resume') {
+    return (
+      <div className={`sal-print${preview ? ' is-preview' : ''}`} aria-hidden="true">
+        {/* R-001 — who, the thesis, the stamps, education, the skill matrix. */}
+        <Sheet no="R-001" kind="RÉSUMÉ · 1 OF 2" title={PROFILE.name}>
+          <p className="sal-sheet-alias">{PROFILE.alias}</p>
+          <h1 className="sal-sheet-thesis sal-sheet-thesis--resume">{t.tagline}</h1>
+          <p className="sal-sheet-registry">
+            <strong>{PROFILE.name}</strong> — {t.heroRegistryLine}
+          </p>
+
+          <p className="sal-sheet-stamp">
+            <span className="sal-sheet-stamp-rev">Rev A</span>
+            {t.heroProofMicrosoft}
+          </p>
+
+          <ul className="sal-sheet-proofs">
+            {HERO_PROOFS.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+
+          <SheetBlock label="EDUCATION">
+            <p className="sal-sheet-prose">{formatDegreePlate(lang)}</p>
+            <p className="sal-sheet-prose">{t.fullRecordNote}</p>
+          </SheetBlock>
+
+          <SheetBlock label="SKILLS">
+            <table className="sal-sheet-table sal-sheet-table--skills">
+              <tbody>
+                {skillMatrix(t, lang).map((row) => (
+                  <tr key={row.label}>
+                    <td>{row.label}</td>
+                    <td>{row.tags}</td>
+                    <td>{`${row.proof} → ${row.ref}`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </SheetBlock>
+
+          <dl className="sal-sheet-links">
+            <div>
+              <dt>EMAIL</dt>
+              <dd>{LINKS.email}</dd>
+            </div>
+            <div>
+              <dt>GITHUB</dt>
+              <dd>{LINKS.github}</dd>
+            </div>
+            <div>
+              <dt>LINKEDIN</dt>
+              <dd>{LINKS.linkedin}</dd>
+            </div>
+            <div>
+              <dt>BLOG</dt>
+              <dd>{LINKS.blog}</dd>
+            </div>
+          </dl>
+        </Sheet>
+
+        {/* R-002 — selected work, prior service, and where the full set lives. */}
+        <Sheet no="R-002" kind="RÉSUMÉ · 2 OF 2" title={t.sectionProjects}>
+          <div className="sal-sheet-work">
+            {PROJECT_ORDER.map((key) => {
+              const p = getLocalizedProject(key, lang);
+              return (
+                <div key={key} className="sal-sheet-work-row">
+                  <p className="sal-sheet-caseline">
+                    <span className="sal-sheet-td-no">{projectSheetNo(key)}</span>
+                    <strong>{p.title}</strong>
+                    {` · ${p.period} · ${p.teamSize}`}
+                    <span className="sal-sheet-badge">{p.manifest.badge}</span>
+                  </p>
+                  <p className="sal-sheet-workline">{t[SUMMARY_KEY[key]]}</p>
+                  <p className="sal-sheet-workmeta">
+                    {`${p.role} · ${p.results[0]} · ${p.github}`}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <SheetBlock label={t.priorService.toUpperCase()}>
+            <p className="sal-sheet-prose">
+              <strong>{t.armyName}</strong> — {t.armyRole} {t.growthArmy}
+            </p>
+          </SheetBlock>
+
+          <p className="sal-sheet-issue">
+            {`SHEET REFS A-101–A-105 → FULL DRAWING SET: ${typeof window !== 'undefined' ? window.location.origin : ''}/?sheets · PRINTED ${issued()}`}
+          </p>
+        </Sheet>
+      </div>
+    );
+  }
 
   const indexTitles: Record<SheetId, string> = {
     top: t.courseTop,

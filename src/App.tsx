@@ -21,6 +21,7 @@ import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
 import { ProjectDetail } from './components/ProjectDetail';
 import { PrintSet } from './components/PrintSet';
+import type { PrintVariant } from './components/PrintSet';
 
 const REVEAL_KEYS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
 
@@ -46,13 +47,22 @@ const LANG_KEY = 'sal-lang';
  * first visit — the KO/JA copy was written for exactly that recruiter, and
  * greeting them in English wastes it. Everyone else gets English.
  */
-const PRINT_TITLE = 'Jungwook Van — Résumé · Drawing Set A-000–A-600';
-
-/** `?sheets` shows the print set on screen — the only way to inspect the
- *  sheets without a print dialog, for development and for the curious. */
-function sheetsPreviewRequested(): boolean {
-  return new URLSearchParams(window.location.search).has('sheets');
+/**
+ * `?sheets` shows the full A-series set on screen (and printing from there
+ * emits it); `?sheets=r` previews the résumé. Without the param, printing
+ * emits the two-page R-series résumé — Western convention: nobody reads a
+ * twelve-sheet résumé, so the full set is the appendix, not the default.
+ */
+function printSetup(): { preview: boolean; variant: PrintVariant } {
+  const param = new URLSearchParams(window.location.search).get('sheets');
+  if (param === null) return { preview: false, variant: 'resume' };
+  return { preview: true, variant: param === 'r' ? 'resume' : 'set' };
 }
+
+const PRINT_TITLES: Record<PrintVariant, string> = {
+  resume: 'Jungwook Van — Résumé',
+  set: 'Jungwook Van — Résumé · Drawing Set A-000–A-600',
+};
 
 function initialLang(): Lang {
   try {
@@ -75,7 +85,7 @@ export default function App() {
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [closing, setClosing] = useState(false);
   const [printing, setPrinting] = useState(false);
-  const [sheetsPreview] = useState(sheetsPreviewRequested);
+  const [{ preview: sheetsPreview, variant: printVariant }] = useState(printSetup);
 
   // The print set mounts on demand — the case-study sheets otherwise only
   // exist inside the modal. beforeprint fires synchronously inside
@@ -86,7 +96,7 @@ export default function App() {
     let screenTitle = document.title;
     const before = () => {
       screenTitle = document.title;
-      document.title = PRINT_TITLE; // becomes the suggested PDF filename
+      document.title = PRINT_TITLES[printVariant]; // suggested PDF filename
       flushSync(() => setPrinting(true));
     };
     const after = () => {
@@ -99,7 +109,7 @@ export default function App() {
       window.removeEventListener('beforeprint', before);
       window.removeEventListener('afterprint', after);
     };
-  }, []);
+  }, [printVariant]);
 
   const printResume = useCallback(() => window.print(), []);
 
@@ -183,8 +193,6 @@ export default function App() {
 
       <CourseLine t={t} scrollP={scrollP} activeSection={activeSection} reducedMotion={reducedMotion} />
 
-      <div className="sal-glow-bg" aria-hidden="true" />
-
       <Nav
         t={t}
         activeSection={activeSection}
@@ -222,7 +230,9 @@ export default function App() {
 
       <BackToTop visible={scrollP > 0.5} label={t.backToTop} />
 
-      {(printing || sheetsPreview) && <PrintSet lang={lang} preview={sheetsPreview} />}
+      {(printing || sheetsPreview) && (
+        <PrintSet lang={lang} preview={sheetsPreview} variant={printVariant} />
+      )}
 
       {activeProject && (
         <ProjectDetail
