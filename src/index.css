@@ -15,6 +15,12 @@
   --c-accent-dim: rgba(255, 77, 94, 0.12);
   --c-glow: rgba(255, 77, 94, 0.35);
   --c-glow-bg: rgba(255, 77, 94, 0.06);
+
+  --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.26);
+  --shadow-2: 0 12px 32px rgba(0, 0, 0, 0.28);
+  --shadow-3: 0 16px 40px rgba(0, 0, 0, 0.3);
+  --sel-bg: #ff4d5e;
+  --sel-fg: #1a0509;
 }
 
 :root[data-theme='light'] {
@@ -34,6 +40,14 @@
   --c-accent-dim: rgba(200, 30, 48, 0.1);
   --c-glow: rgba(200, 30, 48, 0.28);
   --c-glow-bg: rgba(200, 30, 48, 0.05);
+
+  /* Pure black at 0.28 over #f4f5f6 reads as a muddy smear, not a lift.
+     Light-theme elevation wants far less alpha and the ink hue, not black. */
+  --shadow-1: 0 8px 24px rgba(10, 11, 13, 0.08);
+  --shadow-2: 0 12px 32px rgba(10, 11, 13, 0.1);
+  --shadow-3: 0 16px 40px rgba(10, 11, 13, 0.12);
+  --sel-bg: #c81e30;
+  --sel-fg: #ffffff;
 }
 
 /* The 10%-alpha accent wash that draws the axonometrics disappears on a
@@ -43,6 +57,40 @@
 :root[data-theme='light'] .sal-detail-axono {
   --c-accent-dim: rgba(200, 30, 48, 0.34);
   --c-glow-bg: rgba(200, 30, 48, 0.1);
+}
+
+/* Shape and motion, theme-independent. Every value below was already in this
+   file as a literal — this names what was there rather than inventing a scale.
+   Colors deliberately stay above: three/voyage/palette.ts reads --c-accent and
+   --c-bg off the root via getComputedStyle, so those names are load-bearing. */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 100px;
+
+  /* The one bezier already in this file (the section-reveal curve), promoted
+     so every hover and transition can share the site's single motion voice. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 0.2s;
+  --dur-base: 0.25s;
+  --dur-slow: 0.7s;
+
+  /* .sal-header is sticky and therefore in flow: the hero starts this far down.
+     The hero subtracts it so its fold lands on the viewport, not below it.
+     Measured against the rendered header — keep in sync if nav padding changes. */
+  --nav-h: 69px;
 }
 
 * {
@@ -61,11 +109,49 @@ html {
   overflow-wrap: break-word;
 }
 
+/* Inter and JetBrains Mono carry no Hangul or kana, so CJK copy fell through
+   to whatever the OS had. Pick the CJK face by document language rather than
+   stacking both: Noto Sans KR and JP both cover Han, and whichever is listed
+   first wins — a KR-first stack renders Japanese kanji in Korean forms, which
+   a Japanese reader reads as wrong. Latin always resolves to Inter/JetBrains
+   first, so this only ever catches the glyphs they don't have.
+   The `sans-serif` default matters: an empty var() would void the whole
+   font-family declaration rather than fall through. */
+:root {
+  --font-cjk: sans-serif;
+  --font-cjk-mono: monospace;
+}
+
+:root:lang(ko) {
+  --font-cjk: 'Noto Sans KR';
+  --font-cjk-mono: 'Noto Sans KR';
+}
+
+:root:lang(ja) {
+  --font-cjk: 'Noto Sans JP';
+  --font-cjk-mono: 'Noto Sans JP';
+}
+
+/* The drawings label themselves through SVG font-family *attributes*, which
+   can't take a var(). Presentation attributes lose to any CSS rule, so one
+   rule here reaches all of them — several carry localized copy (island names,
+   voyage datums) and would otherwise drop to a system font in ko/ja. */
+.sal-voyage-svg text,
+.sal-secdwg text,
+.sal-shiplane-svg text {
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+}
+
+/* The one label in those drawings that is prose, not chrome. */
+.sal-voyage-svg text.sal-voyage-island-label {
+  font-family: 'Inter', var(--font-cjk), sans-serif;
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   background: var(--c-bg);
   color: var(--c-text);
 }
@@ -79,19 +165,8 @@ button {
 }
 
 ::selection {
-  background: #ff4d5e;
-  color: #1a0509;
-}
-
-@keyframes blink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
+  background: var(--sel-bg);
+  color: var(--sel-fg);
 }
 
 @keyframes pulse-dot {
@@ -140,7 +215,7 @@ button {
 }
 
 .sal-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
 }
 
 /* ---------- Header ---------- */
@@ -166,7 +241,7 @@ button {
 }
 
 .sal-logo {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-weight: 700;
   font-size: 20px;
   color: var(--c-text);
@@ -181,10 +256,10 @@ button {
 }
 
 .sal-nav-link {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color var(--dur-fast) var(--ease-out);
   color: var(--c-text-muted);
 }
 
@@ -222,7 +297,7 @@ button {
 }
 
 .sal-status-text {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-muted);
   letter-spacing: 0.02em;
@@ -244,12 +319,12 @@ button {
   cursor: pointer;
   padding: 5px 9px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   font-weight: 500;
   background: transparent;
   color: var(--c-text-muted);
-  transition: background 0.2s, color 0.2s;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
 .sal-lang-btn.is-active {
@@ -269,7 +344,7 @@ button {
   background: var(--c-panel-2);
   color: var(--c-text-muted);
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 
 .sal-icon-btn:hover {
@@ -286,12 +361,12 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
-  transition: background 0.2s;
+  transition: background var(--dur-fast) var(--ease-out);
 }
 
 .sal-download-btn:hover {
@@ -321,7 +396,7 @@ button {
 
 .sal-mobile-nav a {
   padding: 12px 4px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 15px;
   color: var(--c-text);
   text-decoration: none;
@@ -335,18 +410,18 @@ button {
   font-size: 13px;
 }
 
-/* ---------- Course line (waypoint nav) ---------- */
+/* ---------- Sheet index (drawing-set nav) ---------- */
 
 .sal-course {
   position: fixed;
-  left: 30px;
+  left: var(--space-6);
   top: 50%;
   transform: translateY(-50%);
   height: 46vh;
   z-index: 90;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .sal-course-track {
@@ -372,17 +447,21 @@ button {
   transition: height 0.15s linear;
 }
 
-.sal-course-ship {
+/* Datum mark — the drawing convention for "you are at this elevation". */
+.sal-course-datum {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--c-accent);
   transition: top 0.15s linear;
   filter: drop-shadow(0 0 4px var(--c-glow));
   pointer-events: none;
 }
 
-.sal-course-ship.is-static {
+.sal-course-datum.is-static {
   transition: none;
 }
 
@@ -396,17 +475,46 @@ button {
 }
 
 .sal-course-dot {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  transition: color var(--dur-base) var(--ease-out);
+  color: var(--c-text-faint);
+}
+
+.sal-course-tick {
   width: 9px;
   height: 9px;
   margin-left: -4px;
+  flex-shrink: 0;
   border-radius: 50%;
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel-2);
-  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  transition: background var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+
+.sal-course-no {
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.sal-course-dot:hover {
+  color: var(--c-text);
+}
+
+.sal-course-dot:hover .sal-course-tick {
+  border-color: var(--c-accent);
 }
 
 .sal-course-dot.is-active {
+  color: var(--c-accent-text);
+}
+
+.sal-course-dot.is-active .sal-course-tick {
   border-color: var(--c-accent);
   background: var(--c-accent);
   box-shadow: 0 0 8px var(--c-glow);
@@ -418,17 +526,24 @@ button {
   position: relative;
   z-index: 1;
   overflow: hidden;
+  /* Own the fold: the first screen ends where we say it ends, not wherever
+     the content happens to run out. svh, not vh — vh jumps when the mobile
+     URL bar retracts and the drawing would lurch mid-scroll. */
+  min-height: calc(100svh - var(--nav-h));
+  display: flex;
+  align-items: center;
 }
 
 .sal-hero-layout {
   position: relative;
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 72px 24px 64px;
+  padding: var(--space-7) var(--space-5);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 460px);
-  gap: 24px;
-  align-items: start;
+  gap: var(--space-5);
+  align-items: center;
 }
 
 .sal-hero-grid-bg {
@@ -475,7 +590,7 @@ button {
   margin: 8px 0 0;
   padding-top: 18px;
   border-top: 1px solid var(--c-border);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   letter-spacing: 0.02em;
   color: var(--c-text-muted);
@@ -491,7 +606,7 @@ button {
 }
 
 .sal-proof-chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 4px 10px;
   border-radius: 100px;
@@ -499,12 +614,6 @@ button {
   background: var(--c-panel-2);
   color: var(--c-text-muted);
   white-space: nowrap;
-}
-
-.sal-proof-chip--flag {
-  border-color: transparent;
-  background: var(--c-accent-dim);
-  color: var(--c-accent-text);
 }
 
 /* Cargo manifest — the 3-second skill read under the degree plate */
@@ -524,20 +633,35 @@ button {
 .sal-hero-eyebrow {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   color: var(--c-accent-text);
 }
 
+/* The alias is a mark, not a headline. It identifies the drawing; it does not
+   argue anything. The <h1> below does the arguing. */
+.sal-hero-mark {
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.sal-hero-role {
+  color: var(--c-text-muted);
+  letter-spacing: 0.04em;
+}
+
 .sal-hero-title {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 800;
-  font-size: clamp(3.5rem, 11vw, 8rem);
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
   color: var(--c-text);
+  max-width: 24ch;
+  text-wrap: balance;
 }
 
 /* Ship's registry — registered name next to the call sign */
@@ -547,7 +671,7 @@ button {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13.5px;
   color: var(--c-text-faint);
 }
@@ -558,27 +682,38 @@ button {
   letter-spacing: 0.04em;
 }
 
-.sal-hero-tagline {
+/* Revision stamp — the one credential worth reading before the CTA. It was an
+   11px chip in a row of four; nothing about "1 of 620" belongs at 11px. */
+.sal-hero-stamp {
   margin: 0;
-  max-width: 780px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(14px, 2.2vw, 18px);
-  color: var(--c-text-muted);
-  min-height: 1.6em;
-}
-
-.sal-hero-tagline .sal-typed {
-  color: var(--c-text);
-}
-
-.sal-hero-cursor {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  background: var(--c-accent-dim);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
   color: var(--c-accent-text);
-  animation: blink 1s step-end infinite;
+}
+
+.sal-hero-stamp-rev {
+  flex-shrink: 0;
+  padding: 2px var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 
 .sal-hero-subtag {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
@@ -602,12 +737,12 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 600;
   font-size: 15px;
   border: none;
   cursor: pointer;
-  transition: box-shadow 0.25s, transform 0.2s;
+  transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-btn-primary:hover {
@@ -625,10 +760,10 @@ button {
   border: 1px solid var(--c-border-strong);
   color: var(--c-text);
   text-decoration: none;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 600;
   font-size: 15px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
 
 .sal-btn-secondary:hover {
@@ -678,7 +813,7 @@ button {
   position: absolute;
   left: 8px;
   bottom: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.08em;
   color: var(--c-text-faint);
@@ -747,7 +882,7 @@ button {
   position: absolute;
   left: 7px;
   top: 5px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.06em;
   color: var(--c-text-faint);
@@ -784,7 +919,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
   letter-spacing: 0.04em;
   color: var(--c-accent-text);
@@ -896,7 +1031,7 @@ button {
   width: 212px;
   text-align: right;
   text-wrap: balance;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   line-height: 1.5;
   color: var(--c-accent-text);
@@ -948,7 +1083,7 @@ button {
   max-width: 240px;
   text-align: right;
   text-wrap: balance;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-accent-text);
   opacity: 0.85;
@@ -972,13 +1107,13 @@ button {
 }
 
 .sal-axono-mobile-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
 }
 
 .sal-axono-mobile-sub {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 13px;
   color: var(--c-text-muted);
 }
@@ -991,7 +1126,7 @@ button {
 }
 
 .sal-axono-mobile-roof {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
   padding: 4px 4px 0;
@@ -999,7 +1134,7 @@ button {
 
 .sal-timeline-foundations {
   margin: 0 0 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1009,7 +1144,7 @@ button {
   margin: 28px 0 0;
   padding-top: 18px;
   border-top: 1px dashed var(--c-border);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -1060,7 +1195,7 @@ button {
   place-items: center;
   text-align: center;
   white-space: pre-line;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.1em;
   color: var(--c-accent-text);
@@ -1071,7 +1206,7 @@ button {
 .sal-cred-title {
   margin: 0;
   padding-right: 64px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 15.5px;
   color: var(--c-text);
@@ -1080,7 +1215,7 @@ button {
 
 .sal-cred-detail {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-muted);
   line-height: 1.6;
@@ -1097,7 +1232,8 @@ button {
   padding: 64px 24px;
   opacity: 0;
   transform: translateY(28px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  /* This is the curve --ease-out was named after; --dur-slow is its 0.7s. */
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
 }
 
 .sal-section.is-revealed {
@@ -1113,14 +1249,14 @@ button {
 }
 
 .sal-section-num {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 14px;
   color: var(--c-accent-text);
 }
 
 .sal-section-title {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: clamp(24px, 3.5vw, 32px);
   color: var(--c-text);
@@ -1136,7 +1272,7 @@ button {
 .sal-section-intro {
   margin: -24px 0 36px;
   max-width: 680px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1152,35 +1288,42 @@ button {
 }
 
 .sal-bento-card {
+  /* Positioned + clipped so the key plan anchors to the card and can't spill
+     past its rounded corner. */
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 14px;
   padding: 26px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--c-border);
   background: var(--c-panel);
   text-decoration: none;
   cursor: pointer;
-  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  transition: border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 
 .sal-bento-card:hover {
   border-color: var(--c-accent);
   transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-2);
 }
 
+/* The hero card used to be marked out by an accent gradient wash — the least
+   architectural gesture on the page. It earns its weight with linework now:
+   the key plan sits where the glow was. */
 .sal-bento-a {
   grid-column: span 4;
   grid-row: span 2;
   gap: 20px;
   padding: 32px;
-  background: linear-gradient(160deg, var(--c-panel) 60%, var(--c-accent-dim));
 }
 
 .sal-bento-a:hover {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-3);
 }
 
 .sal-bento-b,
@@ -1201,7 +1344,7 @@ button {
   border: 1px dashed var(--c-border-strong);
   background: transparent;
   text-decoration: none;
-  transition: border-color 0.25s, background 0.25s;
+  transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
 
 .sal-bento-e:hover {
@@ -1210,13 +1353,13 @@ button {
 }
 
 .sal-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
 
 .sal-badge {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: 100px;
@@ -1227,7 +1370,7 @@ button {
 
 .sal-bento-a h3 {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(24px, 3vw, 34px);
   color: var(--c-text);
@@ -1237,7 +1380,7 @@ button {
 
 .sal-bento-card h3 {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 20px;
   color: var(--c-text);
@@ -1246,7 +1389,7 @@ button {
 .sal-bento-a p {
   margin: 0;
   max-width: 520px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
   line-height: 1.6;
@@ -1254,7 +1397,7 @@ button {
 
 .sal-bento-card p {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-muted);
   line-height: 1.55;
@@ -1267,7 +1410,7 @@ button {
 }
 
 .sal-tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 4px 9px;
   border-radius: 6px;
@@ -1300,7 +1443,7 @@ button {
   gap: 8px 16px;
   padding-top: 14px;
   border-top: 1px dashed var(--c-border-strong);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   letter-spacing: 0.02em;
   color: var(--c-text-muted);
@@ -1326,7 +1469,7 @@ button {
 }
 
 .sal-bento-footer span:first-child {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 12px;
   color: var(--c-text);
 }
@@ -1336,7 +1479,7 @@ button {
 }
 
 .sal-case-study-link {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   color: var(--c-accent-text);
 }
@@ -1398,7 +1541,7 @@ button {
 
 .sal-timeline-h3 {
   margin: 8px 0 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 19px;
   color: var(--c-text);
@@ -1406,28 +1549,28 @@ button {
 
 .sal-timeline-p1 {
   margin: 0 0 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
 }
 
 .sal-timeline-p2 {
   margin: 0 0 4px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-faint);
 }
 
 .sal-timeline-p3 {
   margin: 0 0 16px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--c-text-muted);
 }
 
 .sal-pill-outline {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
   border-radius: 100px;
@@ -1437,7 +1580,7 @@ button {
 
 /* Shipped artifact / industry partner link on a timeline waypoint */
 .sal-artifact-chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
   border-radius: 100px;
@@ -1445,7 +1588,7 @@ button {
   background: var(--c-accent-dim);
   color: var(--c-accent-text);
   text-decoration: none;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
 
 .sal-artifact-chip:hover {
@@ -1472,14 +1615,14 @@ button {
 }
 
 .sal-skill-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
 }
 
 .sal-skill-desc {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -1494,7 +1637,7 @@ button {
 }
 
 .sal-skill-tag {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 4px 10px;
   border-radius: 6px;
@@ -1517,7 +1660,7 @@ button {
   background: none;
   padding: 0;
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
   text-decoration: none;
@@ -1562,7 +1705,7 @@ button {
 }
 
 .sal-about-story {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: clamp(16px, 2vw, 19px);
   line-height: 1.75;
   color: var(--c-text);
@@ -1574,7 +1717,7 @@ button {
 }
 
 .sal-about-hobbies {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   line-height: 1.7;
   color: var(--c-text-muted);
@@ -1633,7 +1776,7 @@ button {
 
 .sal-contact-title {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(28px, 5vw, 48px);
   color: var(--c-text);
@@ -1642,7 +1785,7 @@ button {
 
 .sal-contact-name {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-faint);
   letter-spacing: 0.04em;
@@ -1651,7 +1794,7 @@ button {
 .sal-contact-sub {
   margin: 0;
   max-width: 480px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
 }
@@ -1666,10 +1809,10 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-weight: 700;
   font-size: 15px;
-  transition: box-shadow 0.25s, transform 0.2s;
+  transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-contact-cta:hover {
@@ -1686,11 +1829,11 @@ button {
 }
 
 .sal-contact-links a {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-muted);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .sal-contact-links a:hover {
@@ -1709,7 +1852,7 @@ button {
 
 .sal-footer p {
   margin: 0;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -1755,9 +1898,9 @@ button {
   background: transparent;
   color: var(--c-text);
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
 
 .sal-back-btn:hover {
@@ -1784,14 +1927,14 @@ button {
 }
 
 .sal-detail-category {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-accent-text);
 }
 
 .sal-detail-title {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(30px, 3.5vw, 44px);
   line-height: 1.08;
@@ -1801,7 +1944,7 @@ button {
 
 .sal-detail-summary {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1823,7 +1966,7 @@ button {
 }
 
 .sal-detail-meta-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
   text-transform: uppercase;
@@ -1831,7 +1974,7 @@ button {
 }
 
 .sal-detail-meta-value {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14px;
   color: var(--c-text);
   line-height: 1.5;
@@ -1846,7 +1989,7 @@ button {
 }
 
 .sal-receipt-link {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: 6px;
@@ -1854,7 +1997,7 @@ button {
   background: var(--c-panel-2);
   color: var(--c-text-muted);
   text-decoration: none;
-  transition: border-color 0.2s, color 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
 .sal-receipt-link:hover {
@@ -1864,7 +2007,7 @@ button {
 
 .sal-receipt-note {
   margin-top: 6px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 10.5px;
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
@@ -1895,14 +2038,14 @@ button {
 }
 
 .sal-detail-letter {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-accent-text);
 }
 
 .sal-detail-block h2 {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 24px;
   color: var(--c-text);
@@ -1910,7 +2053,7 @@ button {
 
 .sal-detail-block p {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15.5px;
   line-height: 1.75;
   color: var(--c-text-muted);
@@ -1940,7 +2083,7 @@ button {
 
 .sal-secdwg-caption {
   text-align: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
 }
@@ -2094,7 +2237,7 @@ button {
 }
 
 .sal-axono-layer-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
   color: var(--c-accent-text);
 }
@@ -2121,7 +2264,7 @@ button {
   left: 0;
   top: 0;
   white-space: nowrap;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.05em;
   color: var(--c-accent-text);
@@ -2415,7 +2558,7 @@ button {
 
 .sal-detail-axono-caption {
   text-align: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
 }
@@ -2428,7 +2571,7 @@ button {
   min-width: 168px;
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.05em;
 }
@@ -2488,7 +2631,7 @@ button {
   top: 50%;
   transform: translateY(-50%);
   writing-mode: vertical-rl;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.12em;
   color: var(--c-text-faint);
@@ -2498,7 +2641,7 @@ button {
   position: absolute;
   left: 34px;
   bottom: 38px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   color: var(--c-accent-text);
 }
@@ -2526,7 +2669,7 @@ button {
 
 .sal-problem-row p {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2535,14 +2678,14 @@ button {
 
 .sal-solution-row p {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
   line-height: 1.65;
 }
 
 .sal-pill-accent {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: 100px;
@@ -2552,7 +2695,7 @@ button {
 }
 
 .sal-pill-muted {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: 100px;
@@ -2573,7 +2716,7 @@ button {
 
 .sal-decision-card p:first-child {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2595,7 +2738,7 @@ button {
 }
 
 .sal-tradeoff-rejected {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2603,7 +2746,7 @@ button {
 }
 
 .sal-tradeoff-why {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
   line-height: 1.65;
@@ -2616,7 +2759,7 @@ button {
 }
 
 .sal-result-chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   padding: 8px 14px;
   border-radius: 100px;
@@ -2632,7 +2775,7 @@ button {
 
 .sal-lessons p {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
   line-height: 1.65;
@@ -2650,13 +2793,13 @@ button {
 }
 
 .sal-next-label {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
 
 .sal-next-chip {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   padding: 5px 11px;
   border-radius: 6px;
@@ -2682,10 +2825,10 @@ button {
   color: var(--c-accent-contrast);
   border: none;
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   font-weight: 600;
-  transition: box-shadow 0.25s;
+  transition: box-shadow var(--dur-base) var(--ease-out);
 }
 
 .sal-next-project-btn:hover {
@@ -2702,9 +2845,9 @@ button {
   background: transparent;
   color: var(--c-text);
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
 
 .sal-close-btn:hover {
@@ -2712,40 +2855,139 @@ button {
   background: var(--c-panel-2);
 }
 
-/* ---------- Nautical hero overlay ---------- */
+/* Sheet number on the card — the same A-1xx the index lists and the modal stamps. */
+.sal-bento-sheet {
+  color: var(--c-accent-text);
+  margin-right: var(--space-2);
+  letter-spacing: 0.1em;
+}
 
-.sal-nautical {
+/* ---------- Key plan (card massing) ---------- */
+
+.sal-keyplan {
   position: absolute;
-  inset: 0;
+  right: var(--space-6);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 190px;
+  height: 190px;
   pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+  user-select: none;
+  perspective: 900px;
+  opacity: 0.55;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
-.sal-nautical-svg {
+/* The card's copy yields a right-hand gutter for the drawing rather than
+   letting it land on the shipped-metrics strip. Only the hero card is wide
+   enough to give this up. */
+.sal-bento-a .sal-bento-body,
+.sal-bento-a .sal-bento-stats {
+  max-width: 63%;
+}
+
+.sal-bento-card:hover .sal-keyplan,
+.sal-bento-card:focus-visible .sal-keyplan {
+  opacity: 0.9;
+}
+
+.sal-keyplan-scene {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  transform-style: preserve-3d;
+  /* Same axonometric as HeroAxono, the detail axono, and the WebGL camera:
+     elevation 32°, azimuth 45°. The card is the same building seen small. */
+  transform: scale(var(--kp-scale, 0.42)) rotateX(58deg) rotateZ(-45deg);
+}
+
+.sal-keyplan-floor {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.55;
-  mask-image: radial-gradient(ellipse 85% 75% at 65% 30%, black 10%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 65% 30%, black 10%, transparent 72%);
+  transform-style: preserve-3d;
 }
 
-.sal-nautical-rose {
+.sal-keyplan-slab {
   position: absolute;
-  left: 24px;
-  bottom: 28px;
-  width: 96px;
-  height: 96px;
-  opacity: 0.55;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.sal-keyplan-slab-top {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--c-border-strong);
+  background: color-mix(in srgb, var(--c-panel) 60%, transparent);
+}
+
+.sal-keyplan-slab-front,
+.sal-keyplan-slab-right {
+  position: absolute;
+  background: var(--c-panel-2);
+  border: 1px solid var(--c-border);
+}
+
+.sal-keyplan-slab-front {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 5px;
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+}
+
+.sal-keyplan-slab-right {
+  right: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  transform-origin: right;
+  transform: rotateY(90deg);
+}
+
+.sal-keyplan-block {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.sal-keyplan-top {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--c-accent);
+  background: var(--c-accent-dim);
+}
+
+.sal-keyplan-side-front,
+.sal-keyplan-side-right {
+  position: absolute;
+  background: var(--c-accent-dim);
+  border: 1px solid var(--c-accent);
+}
+
+.sal-keyplan-side-front {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+}
+
+.sal-keyplan-side-right {
+  right: 0;
+  top: 0;
+  height: 100%;
+  transform-origin: right;
+  transform: rotateY(90deg);
 }
 
 /* ---------- Voyage chart ---------- */
 
 .sal-voyage-hint {
   margin: -20px 0 28px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -2812,7 +3054,7 @@ button {
   background: var(--c-nav-bg);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 0.66rem;
   letter-spacing: 0.06em;
   color: var(--c-muted);
@@ -2841,12 +3083,12 @@ button {
   background: var(--c-nav-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   line-height: 1.45;
   color: var(--c-text);
   pointer-events: none;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-1);
 }
 
 .sal-voyage-svg {
@@ -2861,7 +3103,7 @@ button {
 .sal-voyage-island {
   cursor: pointer;
   outline: none;
-  transition: opacity 0.25s ease, filter 0.25s ease;
+  transition: opacity var(--dur-base) var(--ease-out), filter var(--dur-base) var(--ease-out);
 }
 
 .sal-voyage-island:hover,
@@ -2919,7 +3161,7 @@ button {
   color: var(--c-text);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.2s, transform 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-voyage-card:hover {
@@ -2928,12 +3170,12 @@ button {
 }
 
 .sal-voyage-card strong {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', var(--font-cjk), sans-serif;
   font-size: 16px;
 }
 
 .sal-voyage-card-stack {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   color: var(--c-text-muted);
 }
@@ -2950,7 +3192,7 @@ button {
 .sal-voyage-ports {
   margin: 0;
   padding-left: 18px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-muted);
   line-height: 1.8;
@@ -3008,10 +3250,11 @@ button {
   -webkit-backdrop-filter: blur(12px);
   color: var(--c-text);
   text-decoration: none;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  box-shadow: var(--shadow-1);
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-back-to-top:hover {
@@ -3032,7 +3275,29 @@ button {
   .sal-hero-layout {
     grid-template-columns: 1fr;
   }
+  /* The drawing used to be deleted here, which meant everyone on a laptop or
+     phone — most visitors — never saw the one thing this site is built around.
+     It stays, scaled to fit, at rest (HeroAxono skips the scrub at this same
+     width). transform-origin is top-centre so the scaled drawing sits under
+     the copy instead of drifting off the left edge. */
   .sal-axono {
+    height: 340px;
+    transform: scale(0.58);
+    transform-origin: 50% 0;
+  }
+  /* The desktop `left: 160px` was tuned against the 460px axono column; in a
+     single-column layout it throws the drawing off to the right and past the
+     edge. Centre the scene on its own box so the scale keeps it centred at
+     any width. JS owns this element's `transform`, not its position. */
+  .sal-axono-scene {
+    left: 50%;
+    margin-left: -115px;
+    top: 96px;
+  }
+  /* Captions need a column of their own and leader lines need somewhere to
+     lead. Neither survives the narrow layout; the chip list carries the story. */
+  .sal-axono-caption,
+  .sal-axono-roof {
     display: none !important;
   }
   .sal-axono-mobile {
@@ -3040,7 +3305,10 @@ button {
   }
 }
 
-@media (max-width: 1320px) {
+/* Raised from 1320: the sheet index now carries its numbers, so it needs real
+   width. Below this the 1200px content column runs into it, and an index that
+   overlaps the drawing is worse than no index. */
+@media (max-width: 1400px) {
   .sal-course {
     display: none !important;
   }
@@ -3091,19 +3359,11 @@ button {
   .sal-detail-axono {
     display: none !important;
   }
-  .sal-hero-title {
-    font-size: clamp(3rem, 18vw, 6rem) !important;
-  }
   .sal-stat-strip {
     flex-wrap: wrap !important;
   }
   .sal-cred-grid {
     grid-template-columns: 1fr;
-  }
-  .sal-nautical-rose {
-    width: 64px;
-    height: 64px;
-    opacity: 0.4;
   }
   .sal-voyage-desktop {
     display: none !important;

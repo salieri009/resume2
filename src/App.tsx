@@ -22,11 +22,28 @@ import { ProjectDetail } from './components/ProjectDetail';
 
 const REVEAL_KEYS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
 
+const THEME_KEY = 'sal-theme';
+
+/** Page background per theme, mirrored into <meta name="theme-color"> so mobile
+ *  browser chrome matches the page instead of staying dark in light mode. */
+const THEME_COLOR: Record<Theme, string> = { dark: '#0a0b0d', light: '#f4f5f6' };
+
+/**
+ * The boot script in index.html already resolved this before first paint
+ * (stored choice, else OS preference). Adopt its answer instead of deciding
+ * twice — two decision points would eventually disagree.
+ */
+function initialTheme(): Theme {
+  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+}
+
 export default function App() {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme, setTheme] = useState<Theme>(initialTheme);
   const [lang, setLang] = useState<Lang>('en');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<ProjectKey | null>(null);
+  const [originRect, setOriginRect] = useState<DOMRect | null>(null);
+  const [closing, setClosing] = useState(false);
 
   const reducedMotion = useReducedMotion();
   const scrollControl = useSmoothScroll(reducedMotion);
@@ -40,6 +57,12 @@ export default function App() {
   // effects (VoyageScene samples them when rebuilding for a theme change).
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLOR[theme]);
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      /* Private mode or blocked storage — the toggle still works this session. */
+    }
   }, [theme]);
 
   // Keep <html lang> in sync so :lang(ko) CSS (keep-all word breaking)
@@ -50,9 +73,28 @@ export default function App() {
 
   const toggleTheme = useCallback(() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark')), []);
   const toggleMobile = useCallback(() => setMobileOpen((prev) => !prev), []);
-  const openProject = useCallback((key: ProjectKey) => setActiveProject(key), []);
-  const closeProject = useCallback(() => setActiveProject(null), []);
+
+  // `origin` is the rect of the card that was clicked; the overlay grows out
+  // of it. Skills and the voyage chart open the same case studies without one,
+  // so it's optional and the overlay just fades in that case.
+  const openProject = useCallback((key: ProjectKey, origin?: DOMRect) => {
+    setOriginRect(origin ?? null);
+    setClosing(false);
+    setActiveProject(key);
+  }, []);
+
+  // Closing is a two-step: ask, animate, then unmount. Rendering the overlay
+  // on `activeProject` alone meant it vanished the instant state cleared and
+  // no exit animation was possible.
+  const closeProject = useCallback(() => setClosing(true), []);
+  const finishClose = useCallback(() => {
+    setClosing(false);
+    setActiveProject(null);
+    setOriginRect(null);
+  }, []);
+
   const nextProject = useCallback(() => {
+    setOriginRect(null);
     setActiveProject((prev) => {
       if (!prev) return prev;
       const idx = PROJECT_ORDER.indexOf(prev);
@@ -122,6 +164,9 @@ export default function App() {
           lang={lang}
           reducedMotion={reducedMotion}
           scrollControl={scrollControl}
+          origin={originRect}
+          closing={closing}
+          onClosed={finishClose}
           onClose={closeProject}
           onNext={nextProject}
         />

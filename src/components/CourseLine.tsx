@@ -1,4 +1,3 @@
-import { CompassIcon, ShipMarker } from './Icons';
 import type { Strings } from '../data/types';
 
 interface CourseLineProps {
@@ -8,37 +7,61 @@ interface CourseLineProps {
   reducedMotion: boolean;
 }
 
+/**
+ * Sheet index for the drawing set — a set has one, and this is where the
+ * A-series numbering becomes a system rather than a label on a modal.
+ * Each section owns a hundred; the case studies' individual sheets (A-101…)
+ * are numbered inside that series by ProjectDetail.
+ */
+const SHEETS = [
+  { id: 'top', no: 'A-000' },
+  { id: 'projects', no: 'A-100' },
+  { id: 'experience', no: 'A-200' },
+  { id: 'skills', no: 'A-300' },
+  { id: 'voyage', no: 'A-400' },
+  { id: 'about', no: 'A-500' },
+  { id: 'contact', no: 'A-600' },
+] as const;
+
 export function CourseLine({ t, scrollP, activeSection, reducedMotion }: CourseLineProps) {
-  const waypoints = [
-    { id: 'top', title: t.courseTop },
-    { id: 'projects', title: `WP-01 · ${t.sectionProjects}` },
-    { id: 'experience', title: `WP-02 · ${t.sectionExperience}` },
-    { id: 'skills', title: `WP-03 · ${t.sectionSkills}` },
-    { id: 'voyage', title: `WP-04 · ${t.voyageTitle}` },
-    { id: 'about', title: `WP-05 · ${t.sectionAbout}` },
-    { id: 'contact', title: `WP-06 · ${t.navContact}` },
-  ];
+  const titles: Record<(typeof SHEETS)[number]['id'], string> = {
+    top: t.courseTop,
+    projects: t.sectionProjects,
+    experience: t.sectionExperience,
+    skills: t.sectionSkills,
+    voyage: t.voyageTitle,
+    about: t.sectionAbout,
+    contact: t.navContact,
+  };
 
   return (
-    <nav className="sal-course" aria-label="Section waypoints">
-      <CompassIcon />
+    <nav className="sal-course" aria-label="Sheet index">
       <div className="sal-course-track">
         <div className="sal-course-dashes" />
         <div className="sal-course-fill" style={{ height: `${scrollP * 100}%` }} />
+        {/* Datum mark — reads the elevation of the sheet you're on. */}
         <div
-          className={`sal-course-ship${reducedMotion ? ' is-static' : ''}`}
+          className={`sal-course-datum${reducedMotion ? ' is-static' : ''}`}
           style={{ top: `${scrollP * 100}%` }}
+          aria-hidden="true"
         >
-          <ShipMarker />
+          ▽
         </div>
         <div className="sal-course-dots">
-          {waypoints.map((wp) => (
+          {SHEETS.map((s) => (
             <a
-              key={wp.id}
-              href={`#${wp.id}`}
-              title={wp.title}
-              className={`sal-course-dot sal-focus${activeSection === wp.id ? ' is-active' : ''}`}
-            />
+              key={s.id}
+              href={`#${s.id}`}
+              /* The dot carries no text, so without this the link has no
+                 accessible name at all — it announced as "link" before. */
+              aria-label={`${s.no} — ${titles[s.id]}`}
+              className={`sal-course-dot sal-focus${activeSection === s.id ? ' is-active' : ''}`}
+            >
+              <span className="sal-course-tick" aria-hidden="true" />
+              <span className="sal-course-no" aria-hidden="true">
+                {s.no}
+              </span>
+            </a>
           ))}
         </div>
       </div>

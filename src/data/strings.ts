@@ -14,7 +14,7 @@ const SHARED = {
     sectionExperience: 'Timeline',
     sectionSkills: 'Arsenal',
     sectionAbout: 'About',
-    courseTop: 'Port — Hero',
+    courseTop: 'Title sheet',
     priorService: 'Prior Service',
     armyName: 'Republic of Korea Army',
     armyRole: 'Interpreter / translator. English liaison work.',
@@ -33,8 +33,8 @@ const SHARED = {
     lighthouseStatus: 'status: online',
     lighthouseUptime: 'done for now · systems look fine',
     backToTop: 'Back to top',
-    heroEyebrow: 'voyage log · UTS BIT complete',
-    heroCtaPrimary: 'Start Voyage →',
+    heroEyebrow: 'Enterprise software developer',
+    heroCtaPrimary: 'Open the drawings →',
     heroCtaSecondary: 'Download Résumé',
     heroSrStory:
       'Degree stack drawn as an exploded axonometric. Foundations from exemptions; Systems via Cloud and Architecture; Algorithms and Graphics for the sub-major; Production in Software Development Studio. UTS Bachelor of Information Technology, complete. GPA 6.00/7.0, WAM 80.31, 144 credit points.',
@@ -84,7 +84,7 @@ const SHARED = {
     sectionExperience: '타임라인',
     sectionSkills: '무기고',
     sectionAbout: '소개',
-    courseTop: '출항지 — Hero',
+    courseTop: '표제 도면',
     priorService: '이전 복무',
     armyName: '대한민국 육군',
     armyRole: '통역병. 영어 연락 업무.',
@@ -103,8 +103,8 @@ const SHARED = {
     lighthouseStatus: 'status: online',
     lighthouseUptime: '일단 여기까지 · 시스템 정상',
     backToTop: '맨 위로',
-    heroEyebrow: 'voyage log · UTS BIT complete',
-    heroCtaPrimary: '항해 시작 →',
+    heroEyebrow: '엔터프라이즈 소프트웨어 개발자',
+    heroCtaPrimary: '도면 보기 →',
     heroCtaSecondary: '이력서 다운로드',
     heroSrStory:
       '학위를 층으로 나눈 악소노메트릭입니다. Foundations는 면제, Systems는 Cloud와 Architecture, Algorithms·Graphics는 서브메이저, Production은 Soft Dev Studio. UTS 정보기술 학사 이수. GPA 6.00/7.0, WAM 80.31/100, 144 CP(UTS 학점).',
@@ -154,7 +154,7 @@ const SHARED = {
     sectionExperience: 'タイムライン',
     sectionSkills: '武器庫',
     sectionAbout: '紹介',
-    courseTop: '出港地 — Hero',
+    courseTop: '表題図面',
     priorService: '以前の服務',
     armyName: '大韓民国陸軍',
     armyRole: '通訳兵。英語リエゾン業務。',
@@ -173,8 +173,8 @@ const SHARED = {
     lighthouseStatus: 'status: online',
     lighthouseUptime: 'ひとまずここまで · システム正常',
     backToTop: '一番上へ',
-    heroEyebrow: 'voyage log · UTS BIT complete',
-    heroCtaPrimary: '航海を始める →',
+    heroEyebrow: 'エンタープライズ・ソフトウェア開発者',
+    heroCtaPrimary: '図面を見る →',
     heroCtaSecondary: '履歴書をダウンロード',
     heroSrStory:
       '学位を層に分けたアクソノメトリックです。Foundationsは免除、SystemsはCloudとArchitecture、AlgorithmsとGraphicsは副専攻、ProductionはSoft Dev Studio。UTS情報技術学士修了。GPA 6.00/7.0、WAM 80.31/100、144 CP（UTS単位）。',
@@ -215,7 +215,7 @@ const SHARED = {
 
 export const STRINGS: Record<Lang, Strings> = {
   en: {
-    tagline: 'Enterprise software developer. Deep learning classwork on one side; production infra on the other.',
+    tagline: 'Deep learning classwork on one side; production infra on the other.',
     subTagline: 'Cares about correctness. Ships anyway.',
     skillsIntro: 'Each line ties to a project I shipped or a subject on the transcript.',
     skillA: 'Backend work with layered architecture, tests, and CI/CD. The dull parts that keep systems honest.',
@@ -246,7 +246,7 @@ export const STRINGS: Record<Lang, Strings> = {
     ...SHARED.en,
   },
   ko: {
-    tagline: '엔터프라이즈 소프트웨어 개발자. 한쪽은 딥러닝 수업, 다른 쪽은 프로덕션 인프라.',
+    tagline: '한쪽은 딥러닝 수업, 다른 쪽은 프로덕션 인프라.',
     subTagline: '정확함을 중요하게 봅니다. 그래도 배포는 합니다.',
     skillsIntro: '아래 항목은 제가 만든 프로젝트나 성적표와 연결돼 있습니다.',
     skillA: '레이어드 아키텍처, 테스트, CI/CD. 시스템이 거짓말하지 못하게 붙잡아 두는 백엔드 작업.',
@@ -277,7 +277,7 @@ export const STRINGS: Record<Lang, Strings> = {
     ...SHARED.ko,
   },
   ja: {
-    tagline: 'エンタープライズ・ソフトウェア開発者。片側に深層学習の授業、もう片側にプロダクションインフラ。',
+    tagline: '片側に深層学習の授業、もう片側にプロダクションインフラ。',
     subTagline: '正確さを気にします。それでも出荷はします。',
     skillsIntro: '下の項目は、自分で作ったプロジェクトか成績表につながっています。',
     skillA: 'レイヤードアーキテクチャ、テスト、CI/CD。システムが嘘をつかないようにする、地味なバックエンド作業。',

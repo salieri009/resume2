@@ -1,29 +1,48 @@
 import { memo } from 'react';
 import type { ProjectKey, Strings } from '../data/types';
-import { PROJECTS } from '../data/projects';
+import { PROJECTS, PROJECT_ORDER } from '../data/projects';
+import { KeyPlan } from './KeyPlan';
 
 interface ProjectsBentoProps {
   t: Strings;
   revealed: boolean;
   revealRef: (el: HTMLElement | null) => void;
-  onOpenProject: (key: ProjectKey) => void;
+  onOpenProject: (key: ProjectKey, origin?: DOMRect) => void;
 }
 
-/** Card order/placement in the bento grid; summaries stay i18n-keyed. */
-const BENTO_META: { key: ProjectKey; cls: string; eyebrow: string; summaryKey: keyof Strings }[] = [
-  { key: 'crowd', cls: 'sal-bento-a', eyebrow: 'WP-01 · Deep Learning', summaryKey: 'crowdSummary' },
-  { key: 'iotbay', cls: 'sal-bento-b', eyebrow: 'WP-02 · Enterprise Platform', summaryKey: 'iotbaySummary' },
-  { key: 'farm', cls: 'sal-bento-c', eyebrow: 'WP-03 · Graphics', summaryKey: 'farmSummary' },
-  { key: 'gundam', cls: 'sal-bento-d', eyebrow: 'WP-04 · Full-Stack · Solo', summaryKey: 'gundamSummary' },
-  { key: 'ephemeral', cls: 'sal-bento-f', eyebrow: 'WP-05 · Computational Design', summaryKey: 'ephemeralSummary' },
+/**
+ * Card order/placement in the bento grid; summaries stay i18n-keyed.
+ *
+ * `plan` is only on the hero card. The span-2 cards are ~370px wide and the
+ * massing lands straight on top of their summary text — reserving a third of
+ * a small card for a decorative drawing costs more than the drawing earns.
+ */
+const BENTO_META: {
+  key: ProjectKey;
+  cls: string;
+  eyebrow: string;
+  summaryKey: keyof Strings;
+  plan?: boolean;
+}[] = [
+  { key: 'crowd', cls: 'sal-bento-a', eyebrow: 'Deep Learning', summaryKey: 'crowdSummary', plan: true },
+  { key: 'iotbay', cls: 'sal-bento-b', eyebrow: 'Enterprise Platform', summaryKey: 'iotbaySummary' },
+  { key: 'farm', cls: 'sal-bento-c', eyebrow: 'Graphics', summaryKey: 'farmSummary' },
+  { key: 'gundam', cls: 'sal-bento-d', eyebrow: 'Full-Stack · Solo', summaryKey: 'gundamSummary' },
+  { key: 'ephemeral', cls: 'sal-bento-f', eyebrow: 'Computational Design', summaryKey: 'ephemeralSummary' },
 ];
 
+/** Same A-100 series the sheet index points at and ProjectDetail stamps. */
+const sheetNo = (key: ProjectKey) => `A-1${String(PROJECT_ORDER.indexOf(key) + 1).padStart(2, '0')}`;
+
 export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRef, onOpenProject }: ProjectsBentoProps) {
-  const open = (key: ProjectKey) => () => onOpenProject(key);
-  const openKey = (key: ProjectKey) => (e: React.KeyboardEvent) => {
+  // The card's own rect is where the overlay grows from — keyboard opens get
+  // it too, so Enter and a click read the same.
+  const open = (key: ProjectKey) => (e: React.MouseEvent<HTMLElement>) =>
+    onOpenProject(key, e.currentTarget.getBoundingClientRect());
+  const openKey = (key: ProjectKey) => (e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onOpenProject(key);
+      onOpenProject(key, e.currentTarget.getBoundingClientRect());
     }
   };
 
@@ -41,7 +60,7 @@ export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRe
       </div>
 
       <div className="sal-bento">
-        {BENTO_META.map(({ key, cls, eyebrow, summaryKey }) => {
+        {BENTO_META.map(({ key, cls, eyebrow, summaryKey, plan }) => {
           const project = PROJECTS[key];
           const m = project.manifest;
           return (
@@ -55,9 +74,15 @@ export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRe
               onKeyDown={openKey(key)}
             >
               <div className="sal-bento-head">
-                <span className="sal-eyebrow">{eyebrow}</span>
+                <span className="sal-eyebrow">
+                  <span className="sal-bento-sheet">{sheetNo(key)}</span>
+                  {eyebrow}
+                </span>
                 <span className="sal-badge">{m.badge}</span>
               </div>
+              {/* The building this case study is, drawn small. Opening the card
+                  is a zoom into it — same geometry, same axonometric. */}
+              {plan && <KeyPlan layers={project.layers} arch={project.arch} scale={0.62} />}
               <div className="sal-bento-body">
                 <h3>{project.title}</h3>
                 <p>{t[summaryKey]}</p>
@@ -92,10 +117,10 @@ export const ProjectsBento = memo(function ProjectsBento({ t, revealed, revealRe
         >
           <span className="sal-eyebrow">85 repositories</span>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <h3 style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 20, color: 'var(--c-text)' }}>
+            <h3 style={{ margin: 0, fontFamily: "'Inter', var(--font-cjk), sans-serif", fontWeight: 700, fontSize: 20, color: 'var(--c-text)' }}>
               More on GitHub
             </h3>
-            <p style={{ margin: 0, fontFamily: "'Inter', sans-serif", fontSize: '13.5px', color: 'var(--c-text-muted)', lineHeight: 1.55 }}>
+            <p style={{ margin: 0, fontFamily: "'Inter', var(--font-cjk), sans-serif", fontSize: '13.5px', color: 'var(--c-text-muted)', lineHeight: 1.55 }}>
               {t.githubTile}
             </p>
           </div>

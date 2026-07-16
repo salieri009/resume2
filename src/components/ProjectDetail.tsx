@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
@@ -12,16 +13,94 @@ interface ProjectDetailProps {
   lang: Lang;
   reducedMotion: boolean;
   scrollControl: ScrollControl;
+  /** Rect of the card that opened this, if any — the overlay grows out of it. */
+  origin: DOMRect | null;
+  closing: boolean;
+  onClosed: () => void;
   onClose: () => void;
   onNext: () => void;
 }
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, onClose, onNext }: ProjectDetailProps) {
+const REVEAL_S = 0.55;
+
+/** clip-path inset that frames `rect` within the viewport, in %. */
+function insetFor(rect: DOMRect): string {
+  const t = (rect.top / window.innerHeight) * 100;
+  const r = ((window.innerWidth - rect.right) / window.innerWidth) * 100;
+  const b = ((window.innerHeight - rect.bottom) / window.innerHeight) * 100;
+  const l = (rect.left / window.innerWidth) * 100;
+  return `inset(${t}% ${r}% ${b}% ${l}% round 16px)`;
+}
+
+export function ProjectDetail({
+  projectKey,
+  lang,
+  reducedMotion,
+  scrollControl,
+  origin,
+  closing,
+  onClosed,
+  onClose,
+  onNext,
+}: ProjectDetailProps) {
   const project = getLocalizedProject(projectKey, lang);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const [explode, setExplode] = useState(0);
+
+  // Zoom into the drawing: the overlay is opaque and fixed, so clipping it back
+  // to the card's rect and opening it out reads as the case study growing from
+  // where the card was. Flip is deliberately not used — the axono scenes carry
+  // rotateX/rotateZ + preserve-3d and have their transform written every frame,
+  // so a 2D matrix from Flip would fight them for the same property.
+  useLayoutEffect(() => {
+    const el = dialogRef.current;
+    if (!el || reducedMotion || !origin) return;
+    const stage = el.querySelector('.sal-detail-axono-stage');
+    const tl = gsap.timeline();
+    tl.fromTo(
+      el,
+      { clipPath: insetFor(origin) },
+      { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: REVEAL_S, ease: 'power2.inOut' },
+      0,
+    );
+    if (stage) {
+      tl.fromTo(stage, { scale: 0.72 }, { scale: 1, duration: REVEAL_S, ease: 'power2.out' }, 0);
+    }
+    return () => {
+      tl.kill();
+      gsap.set(el, { clearProps: 'clipPath' });
+    };
+    // Enter runs once per mount; `origin` is fixed for the life of the overlay.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Exit. The unmount is owned by whatever finishes first: the tween, or the
+  // fallback timer. Without the timer a dropped onComplete — a paused ticker,
+  // a GSAP failure — would leave the overlay stuck open over the whole page,
+  // which is a far worse bug than a missing animation.
+  useEffect(() => {
+    if (!closing) return;
+    const el = dialogRef.current;
+    if (!el || reducedMotion || !origin) {
+      onClosed();
+      return;
+    }
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      onClosed();
+    };
+    const tl = gsap.timeline({ onComplete: finish });
+    tl.to(el, { clipPath: insetFor(origin), duration: 0.4, ease: 'power2.inOut' }, 0);
+    const bail = window.setTimeout(finish, 700);
+    return () => {
+      window.clearTimeout(bail);
+      tl.kill();
+    };
+  }, [closing, reducedMotion, origin, onClosed]);
 
   // Freeze the page behind the overlay: native overflow AND the Lenis engine.
   useEffect(() => {
@@ -80,8 +159,10 @@ export function ProjectDetail({ projectKey, lang, reducedMotion, scrollControl, 
 
   const ex = reducedMotion ? 1 : 0.25 + explode * 0.75;
   const t = STRINGS[lang];
-  // Architectural A-series sheet number, e.g. A-101 for the first project.
-  const sheetNo = `A-${PROJECT_ORDER.indexOf(projectKey) + 1}01`;
+  // Sheet within the A-100 case-study series: A-101, A-102, … Numbering runs
+  // inside the hundred, not across it — A-201 is the Experience sheet in the
+  // index (see CourseLine), so the old A-${n}01 scheme collided with it.
+  const sheetNo = `A-1${String(PROJECT_ORDER.indexOf(projectKey) + 1).padStart(2, '0')}`;
 
   return (
     <div

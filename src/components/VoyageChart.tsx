@@ -372,11 +372,11 @@ export const VoyageChart = memo(function VoyageChart({
                   {`WP-0${island.order}`}
                 </text>
                 <text
+                  className="sal-voyage-island-label"
                   x={island.svg.cx}
                   y={island.svg.cy + 16}
                   textAnchor="middle"
                   fontSize={island.label.length > 14 ? 7 : 8}
-                  fontFamily="Inter, sans-serif"
                   fill="var(--c-text-muted)"
                 >
                   {island.label}

@@ -1,9 +1,7 @@
 import { memo } from 'react';
-import { NauticalBg } from './NauticalBg';
 import { HeroAxono } from './HeroAxono';
 import { formatDegreePlate } from '../data/academic';
 import { HERO_CARGO, HERO_PROOFS, PROFILE, RESUME_PDF } from '../data/profile';
-import { useTypewriter } from '../hooks/useTypewriter';
 import type { Lang, Strings } from '../data/types';
 
 interface HeroProps {
@@ -13,43 +11,43 @@ interface HeroProps {
 }
 
 /**
- * Typewriter state lives here (not in App) so its 28ms ticks
- * re-render only the hero, not the whole tree.
+ * The title block of the drawing set: who drew it, what it argues, and the
+ * one stamp worth reading before the CTA. Everything here is static text —
+ * the only motion in the first screen is the axonometric assembling itself.
  */
 export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
-  const { typed, done: typingDone } = useTypewriter(t.tagline, reducedMotion);
-
   return (
     <section id="top" className="sal-hero-section">
       <div className="sal-hero-grid-bg" aria-hidden="true" />
-      <NauticalBg />
 
       <div className="sal-hero-layout">
         <div className="sal-hero-inner">
           <div className="sal-hero-eyebrow">
-            <span>&gt;</span>
-            <span>{t.heroEyebrow}</span>
+            <span className="sal-hero-mark">{PROFILE.alias}</span>
+            <span aria-hidden="true">·</span>
+            <span className="sal-hero-role">{t.heroEyebrow}</span>
           </div>
 
-          <h1 className="sal-hero-title">{PROFILE.alias}</h1>
+          <h1 className="sal-hero-title">{t.tagline}</h1>
 
-          {/* Ship's registry — call sign on the bow, registered name in the papers. */}
           <p className="sal-hero-registry">
             <span className="sal-hero-registry-name">{PROFILE.name}</span>
             <span aria-hidden="true">—</span>
             <span>{t.heroRegistryLine}</span>
           </p>
 
-          <p className="sal-hero-tagline">
-            <span className="sal-typed">{typed}</span>
-            <span className="sal-hero-cursor" style={{ display: typingDone ? 'none' : 'inline' }}>
-              ▌
-            </span>
-          </p>
-
           <p className="sal-hero-subtag">{t.subTagline}</p>
 
           <p className="sal-sr-only">{t.heroSrStory}</p>
+
+          {/* Revision stamp — pulled out of the chip row. "1 of 620" is the
+              claim that stops a reader, and it does not belong at 11px. */}
+          <p className="sal-hero-stamp">
+            <span className="sal-hero-stamp-rev" aria-hidden="true">
+              Rev A
+            </span>
+            <span>{t.heroProofMicrosoft}</span>
+          </p>
 
           <div className="sal-hero-actions">
             <a href="#projects" className="sal-btn-primary sal-focus">
@@ -62,11 +60,9 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
             )}
           </div>
 
-          {/* Harbor log — proof points a recruiter can verify. */}
+          {/* Engineering proofs a recruiter can verify. The Microsoft one is
+              stamped above; these are the supporting receipts. */}
           <div className="sal-proof-row" role="list" aria-label="Selected proof points">
-            <span role="listitem" className="sal-proof-chip sal-proof-chip--flag">
-              {t.heroProofMicrosoft}
-            </span>
             {HERO_PROOFS.map((p) => (
               <span role="listitem" key={p} className="sal-proof-chip">
                 {p}

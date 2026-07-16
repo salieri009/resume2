@@ -9,6 +9,27 @@
       content="Jungwook Van (Salieri) — UTS BIT Complete · GPA 6.00 · WAM 80.31. Enterprise software, graphics, deep learning, production infrastructure."
     />
     <meta name="theme-color" content="#0a0b0d" />
+    <!--
+      Resolve the theme before first paint, or every light-mode visitor gets a
+      dark flash. This is the single decision point: App.tsx reads the result
+      off data-theme rather than deciding again. The `dark` on <html> stays as
+      the fallback for when localStorage/matchMedia throw.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('sal-theme');
+          document.documentElement.dataset.theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+        } catch (e) {
+          /* Private mode or blocked storage — keep the markup default. */
+        }
+      })();
+    </script>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Jungwook Van (Salieri) — Enterprise Software Developer" />
     <meta
@@ -26,7 +47,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400..800&family=Noto+Sans+KR:wght@400..800&display=swap"
       rel="stylesheet"
     />
   </head>

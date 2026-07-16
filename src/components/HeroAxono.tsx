@@ -3,9 +3,15 @@ import type { CSSProperties } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AXONO_LAYERS, DEGREE } from '../data/academic';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { Strings } from '../data/types';
 
 gsap.registerPlugin(ScrollTrigger);
+
+/** Below this the drawing is scaled down and shown at rest — see the CSS at
+ *  the same width. Keep the two in sync: JS decides whether to scrub, CSS
+ *  decides how big, and they must agree on where the change happens. */
+const NARROW_QUERY = '(max-width: 1180px)';
 
 /** Distance between floor plates when fully exploded (scene px along Z). */
 const LAYER_GAP = 110;
@@ -45,6 +51,7 @@ interface HeroAxonoProps {
 }
 
 export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
+  const narrow = useMediaQuery(NARROW_QUERY);
   const rootRef = useRef<HTMLDivElement | null>(null);
   const sceneRef = useRef<HTMLDivElement | null>(null);
   const floorRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -75,7 +82,10 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
       scene.style.transform = `rotateX(58deg) rotateZ(${rot}deg)`;
     };
 
-    if (reducedMotion) {
+    // Narrow viewports get the finished drawing rather than a scrub: on a
+    // phone the hero occupies the whole screen, so scrubbing it means the
+    // building is still assembling for the entire time anyone looks at it.
+    if (reducedMotion || narrow) {
       apply(1, -36);
       return;
     }
@@ -87,22 +97,63 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
       const proxy = { explode: 0.45, rot: -45 };
       apply(proxy.explode, proxy.rot);
 
-      gsap.to(proxy, {
-        explode: 1,
-        rot: -28,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root.closest('.sal-hero-section') ?? root,
-          start: 'top top',
-          end: '60% top',
-          scrub: 0.55,
-        },
-        onUpdate: () => apply(proxy.explode, proxy.rot),
-      });
+      const buildScrollTween = () =>
+        gsap.to(proxy, {
+          explode: 1,
+          rot: -28,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: root.closest('.sal-hero-section') ?? root,
+            start: 'top top',
+            end: '60% top',
+            scrub: 0.55,
+          },
+          onUpdate: () => apply(proxy.explode, proxy.rot),
+        });
+
+      // The drawing assembles itself once, then hands the same proxy to the
+      // scroll scrub. The tween is built in onComplete rather than up front:
+      // both drive `proxy`, and a scrub attached while the intro is still
+      // running would fight it for the same two numbers.
+      //
+      // Structure animates through apply(), never through per-part opacity.
+      // .sal-axono-floor/-slab/-col/-block are all transform-style:preserve-3d,
+      // and opacity < 1 forces transform-style to flat — fading them would
+      // collapse every cube mid-assembly and pop it back at the end.
+      //
+      // The drawing itself is never faded either. gsap applies a from-state at
+      // creation, so an opacity-0 start means the signature of the whole site
+      // is blank until a tween ticks — and it stays blank if GSAP ever fails
+      // to run. apply() has already put a visible building on screen above;
+      // the intro only rearranges it. Captions are outside the 3D scene and
+      // duplicated in the sr-only story, so they can afford to fade.
+      const intro = gsap.timeline({ onComplete: buildScrollTween });
+
+      intro
+        .fromTo(
+          proxy,
+          { explode: 0, rot: -54 },
+          {
+            explode: 0.45,
+            rot: -45,
+            duration: 1.15,
+            ease: 'power2.out',
+            onUpdate: () => apply(proxy.explode, proxy.rot),
+          },
+          0,
+        )
+        .from(
+          captionRefs.current.filter(Boolean),
+          { opacity: 0, x: -8, duration: 0.4, stagger: 0.08, ease: 'power1.out' },
+          0.55,
+        );
+
+      const roofLabel = root.querySelector('.sal-axono-roof');
+      if (roofLabel) intro.from(roofLabel, { opacity: 0, duration: 0.4 }, 0.95);
     }, root);
 
     return () => ctx.revert();
-  }, [reducedMotion]);
+  }, [reducedMotion, narrow]);
 
   const captions = CAPTION_KEYS.map((key, i) => ({
     label: t[key],

@@ -26,8 +26,8 @@ export const HERO_CARGO = [
 ] as const;
 
 /**
- * Harbor log — engineering proof chips. The Microsoft showcase chip is
- * localized (t.heroProofMicrosoft) and rendered before these.
+ * Engineering proof chips. The Microsoft showcase claim is localized
+ * (t.heroProofMicrosoft) and stamped above these, not chipped alongside them.
  */
 export const HERO_PROOFS = [
   '118 E2E · CI → GHCR',

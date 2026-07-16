@@ -119,7 +119,7 @@ export const Experience = memo(function Experience({ t, lang, revealed, revealRe
             <p
               style={{
                 margin: 0,
-                fontFamily: "'Inter', sans-serif",
+                fontFamily: "'Inter', var(--font-cjk), sans-serif",
                 fontSize: 14,
                 lineHeight: 1.6,
                 color: 'var(--c-text-muted)',
