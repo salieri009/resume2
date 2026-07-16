@@ -3466,7 +3466,8 @@ button {
   background: var(--c-bg);
   font-family: 'Inter', var(--font-cjk), sans-serif;
   break-after: page;
-  break-inside: avoid;
+  /* A case-study sheet can legitimately run past one page — let the sheet
+     break and keep the avoid rules on its blocks instead. */
   orphans: 3;
   widows: 3;
 }
@@ -3606,6 +3607,150 @@ button {
 .sal-sheet-links dd {
   margin: 2px 0 0;
   color: var(--c-text);
+}
+
+/* --- Shared sheet furniture (A-100 onward) --- */
+
+.sal-sheet-prose {
+  margin: 0 0 var(--space-4);
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: var(--c-text);
+  max-width: 70ch;
+}
+
+.sal-sheet-block {
+  margin-bottom: var(--space-5);
+  break-inside: avoid;
+}
+
+.sal-sheet-block-label {
+  margin-bottom: var(--space-2);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: var(--c-accent-text);
+}
+
+.sal-sheet-table {
+  width: 100%;
+  margin-bottom: var(--space-5);
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  line-height: 1.45;
+  break-inside: avoid;
+}
+
+.sal-sheet-table th {
+  padding: var(--space-1) var(--space-3) var(--space-1) 0;
+  border-bottom: 1.5px solid var(--c-text);
+  text-align: left;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.sal-sheet-table td {
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-bottom: 1px solid var(--c-border);
+  vertical-align: top;
+}
+
+.sal-sheet-td-no {
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--c-accent-text);
+  white-space: nowrap;
+}
+
+.sal-sheet-table--skills td {
+  font-size: 8.5pt;
+}
+
+.sal-sheet-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--space-6);
+}
+
+.sal-sheet-list {
+  margin: 0;
+  padding: 0 0 0 1.1em;
+  font-size: 9pt;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+.sal-sheet-list li {
+  margin-bottom: var(--space-2);
+}
+
+.sal-sheet-list strong {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+/* A rejected alternative is struck the way a superseded drawing note is. */
+.sal-sheet-strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--c-text-faint);
+}
+
+.sal-sheet-caseline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9px;
+  color: var(--c-text-muted);
+}
+
+.sal-sheet-badge {
+  padding: 1px var(--space-2);
+  border: 1px solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  color: var(--c-accent-text);
+}
+
+/* The section drawing is the centrepiece of a case-study sheet — the one
+   drawing that prints exactly as authored (pure SVG on theme vars). */
+.sal-sheet-dwg {
+  margin-bottom: var(--space-4);
+  break-inside: avoid;
+}
+
+.sal-sheet-dwg svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sal-sheet-lane {
+  margin-bottom: var(--space-5);
+  break-inside: avoid;
+}
+
+.sal-sheet-receipts {
+  margin: 0;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 8px;
+  line-height: 1.7;
+  color: var(--c-text-muted);
+  word-break: break-all;
+}
+
+.sal-sheet-issue {
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--c-text);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--c-text-faint);
 }
 
 /* --- The actual print swap --- */

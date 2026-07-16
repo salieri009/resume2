@@ -1,3 +1,5 @@
+import { SHEETS } from '../data/sheets';
+import type { SheetId } from '../data/sheets';
 import type { Strings } from '../data/types';
 
 interface CourseLineProps {
@@ -10,21 +12,10 @@ interface CourseLineProps {
 /**
  * Sheet index for the drawing set — a set has one, and this is where the
  * A-series numbering becomes a system rather than a label on a modal.
- * Each section owns a hundred; the case studies' individual sheets (A-101…)
- * are numbered inside that series by ProjectDetail.
+ * The numbering itself lives in data/sheets.ts, shared with the printed set.
  */
-const SHEETS = [
-  { id: 'top', no: 'A-000' },
-  { id: 'projects', no: 'A-100' },
-  { id: 'experience', no: 'A-200' },
-  { id: 'skills', no: 'A-300' },
-  { id: 'voyage', no: 'A-400' },
-  { id: 'about', no: 'A-500' },
-  { id: 'contact', no: 'A-600' },
-] as const;
-
 export function CourseLine({ t, scrollP, activeSection, reducedMotion }: CourseLineProps) {
-  const titles: Record<(typeof SHEETS)[number]['id'], string> = {
+  const titles: Record<SheetId, string> = {
     top: t.courseTop,
     projects: t.sectionProjects,
     experience: t.sectionExperience,
