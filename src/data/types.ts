@@ -112,7 +112,6 @@ export interface Strings {
   navAbout: string;
   navContact: string;
   navDownload: string;
-  navOnline: string;
   sectionProjects: string;
   sectionExperience: string;
   sectionSkills: string;
@@ -152,8 +151,6 @@ export interface Strings {
   voyageIslandHint: string;
   voyageStart: string;
   voyageNow: string;
-  lighthouseStatus: string;
-  lighthouseUptime: string;
   backToTop: string;
   heroEyebrow: string;
   heroCtaPrimary: string;

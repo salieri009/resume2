@@ -2,7 +2,7 @@
   --c-bg: #0a0b0d;
   --c-panel: #14161a;
   --c-panel-2: #1b1e23;
-  --c-nav-bg: rgba(10, 11, 13, 0.72);
+  --c-nav-bg: rgba(10, 11, 13, 0.94);
   --c-border: rgba(230, 232, 235, 0.1);
   --c-border-strong: rgba(230, 232, 235, 0.2);
   --c-text: #e6e8eb;
@@ -13,8 +13,8 @@
   --c-accent-text: #ff6b7a;
   --c-accent-contrast: #1a0509;
   --c-accent-dim: rgba(255, 77, 94, 0.12);
-  --c-glow: rgba(255, 77, 94, 0.35);
-  --c-glow-bg: rgba(255, 77, 94, 0.06);
+  /* Pale ink fill for drawings — not a soft outer glow (Mormal: 2-colour restraint). */
+  --c-accent-wash: rgba(255, 77, 94, 0.06);
 
   --shadow-1: 0 8px 24px rgba(0, 0, 0, 0.26);
   --shadow-2: 0 12px 32px rgba(0, 0, 0, 0.28);
@@ -27,7 +27,7 @@
   --c-bg: #f4f5f6;
   --c-panel: #ffffff;
   --c-panel-2: #eef0f1;
-  --c-nav-bg: rgba(244, 245, 246, 0.78);
+  --c-nav-bg: rgba(244, 245, 246, 0.96);
   --c-border: rgba(10, 11, 13, 0.08);
   --c-border-strong: rgba(10, 11, 13, 0.16);
   --c-text: #14161a;
@@ -38,8 +38,7 @@
   --c-accent-text: #b91c1c;
   --c-accent-contrast: #ffffff;
   --c-accent-dim: rgba(200, 30, 48, 0.1);
-  --c-glow: rgba(200, 30, 48, 0.28);
-  --c-glow-bg: rgba(200, 30, 48, 0.05);
+  --c-accent-wash: rgba(200, 30, 48, 0.05);
 
   /* Pure black at 0.28 over #f4f5f6 reads as a muddy smear, not a lift.
      Light-theme elevation wants far less alpha and the ink hue, not black. */
@@ -56,7 +55,7 @@
 :root[data-theme='light'] .sal-axono,
 :root[data-theme='light'] .sal-detail-axono {
   --c-accent-dim: rgba(200, 30, 48, 0.34);
-  --c-glow-bg: rgba(200, 30, 48, 0.1);
+  --c-accent-wash: rgba(200, 30, 48, 0.1);
 }
 
 /* Shape and motion, theme-independent. Every value below was already in this
@@ -169,22 +168,6 @@ button {
   color: var(--sel-fg);
 }
 
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
-}
-
-@keyframes sweep {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -224,8 +207,6 @@ button {
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   background: var(--c-nav-bg);
   border-bottom: 1px solid var(--c-border);
 }
@@ -275,33 +256,6 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.sal-nav-pill {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 100px;
-  border: 1px solid var(--c-border);
-  background: var(--c-panel-2);
-}
-
-.sal-status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--c-accent);
-  box-shadow: 0 0 8px var(--c-glow);
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-
-.sal-status-text {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
-  font-size: 11px;
-  color: var(--c-text-muted);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
 }
 
 .sal-lang-group {
@@ -443,7 +397,6 @@ button {
   top: 0;
   width: 1px;
   background: var(--c-accent);
-  box-shadow: 0 0 6px var(--c-glow);
   transition: height 0.15s linear;
 }
 
@@ -457,7 +410,6 @@ button {
   line-height: 1;
   color: var(--c-accent);
   transition: top 0.15s linear;
-  filter: drop-shadow(0 0 4px var(--c-glow));
   pointer-events: none;
 }
 
@@ -508,7 +460,7 @@ button {
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel-2);
   transition: background var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+    border-color var(--dur-base) var(--ease-out);
 }
 
 .sal-course-no {
@@ -533,7 +485,6 @@ button {
 .sal-course-dot.is-active .sal-course-tick {
   border-color: var(--c-accent);
   background: var(--c-accent);
-  box-shadow: 0 0 8px var(--c-glow);
 }
 
 /* ---------- Hero ---------- */
@@ -547,7 +498,8 @@ button {
      URL bar retracts and the drawing would lurch mid-scroll. */
   min-height: calc(100svh - var(--nav-h));
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .sal-hero-layout {
@@ -555,11 +507,29 @@ button {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-7) var(--space-5);
+  padding: var(--space-7) var(--space-5) var(--space-5);
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 460px);
   gap: var(--space-5);
   align-items: center;
+}
+
+.sal-hero-drawing {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.sal-hero-below-fold {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-5) var(--space-7);
 }
 
 .sal-hero-grid-bg {
@@ -598,8 +568,8 @@ button {
 }
 
 .sal-degree-plate {
-  margin: 8px 0 0;
-  padding-top: 18px;
+  margin: 0;
+  padding-top: 12px;
   border-top: 1px solid var(--c-border);
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
@@ -608,19 +578,18 @@ button {
   line-height: 1.5;
 }
 
-/* Harbor log — verifiable proof chips under the CTAs */
+/* Proof chips live below the fold — receipts, not title-block chrome */
 .sal-proof-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 6px;
 }
 
 .sal-proof-chip {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 4px 10px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   background: var(--c-panel-2);
   color: var(--c-text-muted);
@@ -753,11 +722,11 @@ button {
   font-size: 15px;
   border: none;
   cursor: pointer;
-  transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-btn-primary:hover {
-  box-shadow: 0 0 24px var(--c-glow);
+  background: var(--c-accent-hover);
   transform: translateY(-1px);
 }
 
@@ -880,7 +849,7 @@ button {
   height: 10px;
   transform: rotateX(-90deg);
   transform-origin: bottom;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -892,7 +861,7 @@ button {
   height: 100%;
   transform: rotateY(90deg);
   transform-origin: right;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -964,7 +933,6 @@ button {
   height: 5px;
   border-radius: 50%;
   background: var(--c-accent);
-  box-shadow: 0 0 6px var(--c-accent);
   opacity: 0.95;
 }
 
@@ -983,29 +951,7 @@ button {
   opacity: 0.85;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .sal-axono-conduit {
-    animation: sal-axono-flow-x 1.2s linear infinite;
-  }
-
-  .sal-axono-riser {
-    animation: sal-axono-flow-y 1.2s linear infinite;
-  }
-}
-
-@keyframes sal-axono-flow-x {
-  to {
-    background-position-x: 9px;
-  }
-}
-
-/* Dashes march downward — same story as the section drawing:
-   data descends floor by floor. */
-@keyframes sal-axono-flow-y {
-  to {
-    background-position-y: 10px;
-  }
-}
+/* Conduit/riser dashes stay static — ambient march was non-data motion. */
 
 .sal-axono-side-front {
   position: absolute;
@@ -1014,7 +960,7 @@ button {
   width: 100%;
   transform: rotateX(-90deg);
   transform-origin: bottom;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -1025,7 +971,7 @@ button {
   height: 100%;
   transform: rotateY(90deg);
   transform-origin: right;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -1321,28 +1267,22 @@ button {
   background: var(--c-panel);
   text-decoration: none;
   cursor: pointer;
-  transition: border-color var(--dur-base) var(--ease-out),
-    transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
 
 .sal-bento-card:hover {
   border-color: var(--c-accent);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-2);
+  background: color-mix(in srgb, var(--c-panel) 92%, var(--c-accent-wash));
 }
 
 /* The hero card used to be marked out by an accent gradient wash — the least
    architectural gesture on the page. It earns its weight with linework now:
-   the key plan sits where the glow was. */
+   the key plan sits where the soft glow was. */
 .sal-bento-a {
   grid-column: span 4;
   grid-row: span 2;
   gap: 20px;
   padding: 32px;
-}
-
-.sal-bento-a:hover {
-  box-shadow: var(--shadow-3);
 }
 
 .sal-bento-b,
@@ -1381,7 +1321,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   background: var(--c-accent-dim);
   color: var(--c-accent-text);
   white-space: nowrap;
@@ -1533,7 +1473,6 @@ button {
 
 .sal-timeline-dot.is-current {
   background: var(--c-accent);
-  box-shadow: 0 0 10px var(--c-glow);
 }
 
 .sal-timeline-dot.is-past {
@@ -1592,7 +1531,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-border);
   color: var(--c-text-muted);
 }
@@ -1602,7 +1541,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-accent-dim);
   background: var(--c-accent-dim);
   color: var(--c-accent-text);
@@ -1612,7 +1551,7 @@ button {
 
 .sal-artifact-chip:hover {
   border-color: var(--c-accent);
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
 }
 
 /* ---------- Skills ---------- */
@@ -1765,34 +1704,6 @@ button {
   gap: 20px;
 }
 
-.sal-beacon {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--c-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sal-beacon-sweep {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, transparent 320deg, var(--c-glow) 360deg);
-  animation: sweep 4s linear infinite;
-}
-
-.sal-beacon-dot {
-  position: relative;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--c-accent);
-  box-shadow: 0 0 10px var(--c-glow);
-}
-
 .sal-contact-title {
   margin: 0;
   font-family: 'Inter', var(--font-cjk), sans-serif;
@@ -1831,11 +1742,11 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-weight: 700;
   font-size: 15px;
-  transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .sal-contact-cta:hover {
-  box-shadow: 0 0 28px var(--c-glow);
+  background: var(--c-accent-hover);
   transform: translateY(-1px);
 }
 
@@ -1891,8 +1802,6 @@ button {
   position: sticky;
   top: 0;
   z-index: 10;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   background: var(--c-nav-bg);
   border-bottom: 1px solid var(--c-border);
 }
@@ -2286,7 +2195,7 @@ button {
   height: 8px;
   transform: rotateX(-90deg);
   transform-origin: bottom;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -2298,7 +2207,7 @@ button {
   height: 100%;
   transform: rotateY(90deg);
   transform-origin: right;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -2398,7 +2307,7 @@ button {
     var(--c-accent-dim) 0 1px,
     transparent 1px 5px
   );
-  background-color: var(--c-glow-bg);
+  background-color: var(--c-accent-wash);
 }
 
 .sal-arch-observatory .sal-detail-axono-ground {
@@ -2418,8 +2327,9 @@ button {
   inset: 0;
   border-radius: 50%;
   border: 1px dashed var(--c-accent-dim);
-  background: conic-gradient(from 0deg, var(--c-accent) 0deg, transparent 78deg);
-  opacity: 0.16;
+  /* Static dish — no conic sweep (radar trope / ambient motion). */
+  background: transparent;
+  opacity: 0.35;
 }
 
 /* Warehouse (iotbay) — brick hatch, sawtooth roof, containers, dock canopy */
@@ -2427,7 +2337,7 @@ button {
 .sal-arch-warehouse .sal-detail-axono-slab-right {
   background-image: repeating-linear-gradient(0deg, var(--c-accent-dim) 0 1px, transparent 1px 5px),
     repeating-linear-gradient(90deg, var(--c-accent-dim) 0 1px, transparent 1px 9px);
-  background-color: var(--c-glow-bg);
+  background-color: var(--c-accent-wash);
 }
 
 .sal-arch-saw {
@@ -2435,7 +2345,7 @@ button {
   width: 46px;
   height: 132px;
   transform-origin: left;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
 }
 
@@ -2451,7 +2361,7 @@ button {
   position: absolute;
   width: 64px;
   height: 14px;
-  background: var(--c-glow-bg);
+  background: var(--c-accent-wash);
   border: 1px solid var(--c-accent-dim);
   border-bottom-style: dashed;
 }
@@ -2459,7 +2369,7 @@ button {
 /* Greenhouse (farm) — glass A-frame, field-row ground, weather vane */
 .sal-arch-glass {
   position: absolute;
-  background-color: var(--c-glow-bg);
+  background-color: var(--c-accent-wash);
   background-image: repeating-linear-gradient(
     45deg,
     var(--c-accent-dim) 0 1px,
@@ -2503,7 +2413,7 @@ button {
     var(--c-accent-dim) 0 1px,
     transparent 1px 3.5px
   );
-  background-color: var(--c-glow-bg);
+  background-color: var(--c-accent-wash);
 }
 
 .sal-arch-housing .sal-detail-axono-slab-top::after {
@@ -2606,41 +2516,7 @@ button {
   transform: rotate(180deg);
 }
 
-/* Signature motions — stilled under reduced motion */
-@media (prefers-reduced-motion: no-preference) {
-  .sal-arch-scan {
-    animation: sal-arch-spin 4.5s linear infinite;
-  }
-
-  .sal-arch-vane {
-    animation: sal-arch-spin 14s linear infinite;
-  }
-
-  .sal-arch-ripple {
-    animation: sal-arch-ripple 5.2s ease-out infinite;
-  }
-
-  .sal-arch-clock::after {
-    animation: sal-arch-spin 60s linear infinite;
-  }
-}
-
-@keyframes sal-arch-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes sal-arch-ripple {
-  from {
-    transform: scale(0.35);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(2.9);
-    opacity: 0;
-  }
-}
+/* Arch ornaments stay static — no ambient spin/ripple (Snellenberg: intentional motion only). */
 
 .sal-detail-axono-caption {
   text-align: center;
@@ -2774,7 +2650,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   background: var(--c-accent-dim);
   color: var(--c-accent-text);
   white-space: nowrap;
@@ -2784,7 +2660,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-border-strong);
   color: var(--c-text-muted);
   white-space: nowrap;
@@ -2848,7 +2724,7 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   padding: 8px 14px;
-  border-radius: 100px;
+  border-radius: var(--radius-sm);
   background: var(--c-accent-dim);
   color: var(--c-accent-text);
 }
@@ -2914,11 +2790,11 @@ button {
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   font-weight: 600;
-  transition: box-shadow var(--dur-base) var(--ease-out);
+  transition: background var(--dur-base) var(--ease-out);
 }
 
 .sal-next-project-btn:hover {
-  box-shadow: 0 0 24px var(--c-glow);
+  background: var(--c-accent-hover);
 }
 
 .sal-close-btn {
@@ -2997,8 +2873,7 @@ button {
   max-width: 168px;
   border: 1px solid var(--c-border-strong);
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--c-panel) 88%, transparent);
-  backdrop-filter: blur(6px);
+  background: var(--c-panel);
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 10px;
   line-height: 1.45;
@@ -3173,15 +3048,13 @@ button {
   overflow: hidden;
 }
 
-/* Diorama vignette — bottom only; the chart-table scene has no sky/horizon. */
+/* Bottom edge fade into the panel — no dark vignette wash. */
 .sal-voyage-horizon {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  background:
-    linear-gradient(0deg, var(--c-panel) 0%, transparent 12%),
-    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 0, 0, 0.14) 0%, transparent 55%);
+  background: linear-gradient(0deg, var(--c-panel) 0%, transparent 14%);
 }
 
 .sal-voyage-scene {
@@ -3198,8 +3071,7 @@ button {
 }
 
 .sal-voyage-scene--loading {
-  background: linear-gradient(160deg, var(--c-panel) 40%, var(--c-accent-dim));
-  animation: pulse-dot 1.6s ease-in-out infinite;
+  background: var(--c-panel);
 }
 
 /* Start / now corner chips — the voyage narrative anchors. */
@@ -3207,11 +3079,9 @@ button {
   position: absolute;
   z-index: 3;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-border-strong);
-  background: var(--c-nav-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--c-panel);
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 0.66rem;
   letter-spacing: 0.06em;
@@ -3236,17 +3106,14 @@ button {
   z-index: 5;
   max-width: 260px;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--c-border-strong);
-  background: var(--c-nav-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--c-panel);
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   line-height: 1.45;
   color: var(--c-text);
   pointer-events: none;
-  box-shadow: var(--shadow-1);
 }
 
 .sal-voyage-svg {
@@ -3255,18 +3122,18 @@ button {
   display: block;
   border-radius: 12px;
   border: 1px solid var(--c-border);
-  background: linear-gradient(165deg, var(--c-panel) 0%, color-mix(in srgb, var(--c-panel) 88%, var(--c-bg)) 100%);
+  background: var(--c-panel);
 }
 
 .sal-voyage-island {
   cursor: pointer;
   outline: none;
-  transition: opacity var(--dur-base) var(--ease-out), filter var(--dur-base) var(--ease-out);
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
 .sal-voyage-island:hover,
 .sal-voyage-island:focus-visible {
-  filter: drop-shadow(0 0 10px var(--c-glow));
+  opacity: 0.92;
 }
 
 .sal-voyage-island:focus-visible > path:nth-of-type(4) {
@@ -3295,10 +3162,6 @@ button {
   width: 100%;
   height: auto;
   display: block;
-}
-
-.sal-voyage-cargo {
-  filter: drop-shadow(0 0 6px var(--c-glow));
 }
 
 .sal-voyage-mobile {
@@ -3356,39 +3219,7 @@ button {
   line-height: 1.8;
 }
 
-/* ---------- Lighthouse / contact ---------- */
-
-.sal-lighthouse {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-
-.sal-lighthouse-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sal-lighthouse-ok {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #3dd68c;
-  box-shadow: 0 0 8px rgba(61, 214, 140, 0.55);
-}
-
-.sal-sparkline {
-  width: 140px;
-  height: 28px;
-  opacity: 0.85;
-}
-
-.sal-sparkline-tip {
-  animation: pulse-dot 2s ease-in-out infinite;
-}
+/* ---------- Contact ---------- */
 
 /* ---------- Back to top ---------- */
 
@@ -3401,24 +3232,19 @@ button {
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  border-radius: 100px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--c-border-strong);
-  background: var(--c-nav-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--c-panel);
   color: var(--c-text);
   text-decoration: none;
   font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
-  box-shadow: var(--shadow-1);
-  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 
 .sal-back-to-top:hover {
   border-color: var(--c-accent);
   color: var(--c-accent-text);
-  transform: translateY(-2px);
 }
 
 /* ---------- Print set — the site is the document ---------- */
@@ -3816,12 +3642,6 @@ button {
 }
 
 /* ---------- Responsive ---------- */
-
-@media (max-width: 1100px) {
-  .sal-nav-pill {
-    display: none !important;
-  }
-}
 
 @media (max-width: 1180px) {
   .sal-hero-layout {

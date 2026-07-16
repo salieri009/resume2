@@ -185,7 +185,6 @@ export default function App() {
           height: 2,
           width: `${scrollP * 100}%`,
           background: 'var(--c-accent)',
-          boxShadow: '0 0 8px var(--c-glow)',
           zIndex: 300,
           pointerEvents: 'none',
         }}

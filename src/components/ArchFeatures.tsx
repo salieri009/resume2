@@ -35,7 +35,7 @@ export function ArchFeatures({ typology }: ArchFeaturesProps) {
             style={{ left: 88, top: 88, height: 28, transform: `${z(ROOF)} rotateX(90deg)` }}
           />
           <div className="sal-arch-crossarm" style={{ left: 79, top: 87, transform: z(`${ROOF} + 22`) }} />
-          {/* Radar sweep over the top slab — the detector's gaze */}
+          {/* Static dish over the top slab — the detector's footprint, not a radar sweep */}
           <div className="sal-arch-scan-wrap" style={{ left: 29, top: 29, transform: z(`${TOP_SLAB} + 2`) }}>
             <div className="sal-arch-scan" />
           </div>

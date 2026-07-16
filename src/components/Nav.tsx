@@ -22,7 +22,7 @@ interface NavProps {
   setLang: (lang: Lang) => void;
   mobileOpen: boolean;
   toggleMobile: () => void;
-  /** Prints the drawing set — the résumé is the site itself (see PrintSet). */
+  /** Prints the two-page R-series résumé (PrintSet). */
   onPrint: () => void;
 }
 
@@ -59,11 +59,6 @@ export const Nav = memo(function Nav({
         </nav>
 
         <div className="sal-header-actions">
-          <div className="sal-nav-pill sal-desktop-nav">
-            <span className="sal-status-dot" />
-            <span className="sal-status-text">{t.navOnline}</span>
-          </div>
-
           <div role="group" aria-label="Language" className="sal-lang-group">
             {(['en', 'ko', 'ja'] as const).map((code) => (
               <button

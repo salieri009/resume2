@@ -8,22 +8,18 @@ interface HeroProps {
   t: Strings;
   lang: Lang;
   reducedMotion: boolean;
-  /** Prints the drawing set — the résumé is the site itself (see PrintSet). */
+  /** Prints the two-page R-series résumé (PrintSet). */
   onPrint: () => void;
 }
 
 /**
- * The title block of the drawing set: who drew it, what it argues, and the
- * one stamp worth reading before the CTA. Everything here is static text —
- * the only motion in the first screen is the axonometric assembling itself.
+ * Title sheet of the drawing set. Fold budget (Lazarieva / hero rules):
+ * brand eyebrow · thesis · one supporting line · stamp · CTAs · axono.
+ * Proof chips sit below the fold; degree/cargo caption the drawing column.
  */
 export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: HeroProps) {
   const gridRef = useRef<HTMLDivElement | null>(null);
 
-  // The graph paper scrolls a shade slower than the content, so the sheet
-  // reads as sitting behind the drawing. The one scroll-depth cue on the
-  // site, kept imperative: piping scrollP through props would defeat this
-  // component's memo and re-render the whole hero every frame.
   useEffect(() => {
     if (reducedMotion) return;
     const grid = gridRef.current;
@@ -34,7 +30,6 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: Hero
       raf = requestAnimationFrame(() => {
         raf = 0;
         const y = window.scrollY;
-        // Past the first viewport the hero is gone; stop writing.
         if (y < window.innerHeight * 1.2) {
           grid.style.transform = `translateY(${y * 0.12}px)`;
         }
@@ -71,8 +66,6 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: Hero
 
           <p className="sal-sr-only">{t.heroSrStory}</p>
 
-          {/* Revision stamp — pulled out of the chip row. "1 of 620" is the
-              claim that stops a reader, and it does not belong at 11px. */}
           <p className="sal-hero-stamp">
             <span className="sal-hero-stamp-rev" aria-hidden="true">
               Rev A
@@ -84,23 +77,14 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: Hero
             <a href="#projects" className="sal-btn-primary sal-focus">
               {t.heroCtaPrimary}
             </a>
-            {/* Not a file download: printing emits the site as an A-000–A-600
-                drawing set (PrintSet), so the résumé is always current. */}
             <button type="button" onClick={onPrint} className="sal-btn-secondary sal-focus">
               {t.heroCtaSecondary}
             </button>
           </div>
+        </div>
 
-          {/* Engineering proofs a recruiter can verify. The Microsoft one is
-              stamped above; these are the supporting receipts. */}
-          <div className="sal-proof-row" role="list" aria-label="Selected proof points">
-            {HERO_PROOFS.map((p) => (
-              <span role="listitem" key={p} className="sal-proof-chip">
-                {p}
-              </span>
-            ))}
-          </div>
-
+        <div className="sal-hero-drawing">
+          <HeroAxono t={t} reducedMotion={reducedMotion} />
           <div className="sal-degree-plate">
             <span>{formatDegreePlate(lang)}</span>
             <span className="sal-cargo-line">
@@ -109,8 +93,16 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: Hero
             </span>
           </div>
         </div>
+      </div>
 
-        <HeroAxono t={t} reducedMotion={reducedMotion} />
+      <div className="sal-hero-below-fold">
+        <div className="sal-proof-row" role="list" aria-label="Selected proof points">
+          {HERO_PROOFS.map((p) => (
+            <span role="listitem" key={p} className="sal-proof-chip">
+              {p}
+            </span>
+          ))}
+        </div>
       </div>
     </section>
   );

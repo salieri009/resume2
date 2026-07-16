@@ -1,9 +1,8 @@
 # Salieri — Resume Site
 
-Personal resume / portfolio site, built with Vite + React + TypeScript. Implements the "Voyage" design
-as a deployable codebase: hero with **exploded axonometric degree stack** (UTS transcript storytelling),
-nautical-chart backdrop, project case studies, semester timeline, skills arsenal, an interactive
-**Voyage Chart** (project archipelago + real IoTBay CI/CD route), about, and contact lighthouse —
+Personal resume / portfolio site, built with Vite + React + TypeScript. The governing concept is a
+**drawing set** (도면집): sheet numbers, datum marks, and an exploded axonometric degree stack as the
+signature — not a 3D world to explore. Voyage chart and case studies sit inside that document metaphor,
 with English/Korean/Japanese localization and a light/dark theme.
 
 Smooth scrolling via Lenis; Hero axonometric + Voyage Chart scrub via GSAP ScrollTrigger; desktop Voyage
