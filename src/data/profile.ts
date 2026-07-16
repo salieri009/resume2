@@ -7,10 +7,17 @@ export const PROFILE = {
   githubUser: 'salieri009',
 } as const;
 
-/** Flip `available` to true the moment public/resume.pdf exists — nothing else to change. */
-export const RESUME_PDF = {
-  available: false as boolean,
-  href: '/resume.pdf',
+/**
+ * Public registry — one source for every URL the site links or prints.
+ * The résumé is no longer a PDF waiting to be uploaded: printing the site
+ * emits the drawing set itself (see PrintSet), so the old RESUME_PDF flag
+ * is gone for good.
+ */
+export const LINKS = {
+  email: 'kordalek@naver.com',
+  github: 'https://github.com/salieri009',
+  linkedin: 'https://www.linkedin.com/in/jungwookvan/',
+  blog: 'https://igewaedam630.tistory.com',
 } as const;
 
 /** Hero cargo manifest — the 3-second skill read. Tech labels stay English. */

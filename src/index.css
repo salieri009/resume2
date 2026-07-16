@@ -3429,6 +3429,220 @@ button {
   transform: translateY(-2px);
 }
 
+/* ---------- Print set — the site is the document ---------- */
+
+/* The sheets carry paper values themselves, scoped here rather than under
+   @media print, so the ?sheets preview shows exactly what the printer gets:
+   white sheets, ink text, in either screen theme. Token NAMES stay untouched
+   (palette.ts reads them off :root, which this never shadows for the page). */
+.sal-print {
+  display: none;
+  --c-bg: #ffffff;
+  --c-panel: #ffffff;
+  --c-panel-2: #f2f3f4;
+  --c-border: rgba(10, 11, 13, 0.16);
+  --c-border-strong: rgba(10, 11, 13, 0.34);
+  --c-text: #14161a;
+  --c-text-muted: #454a50;
+  --c-text-faint: #676d74;
+  --c-accent: #c81e30;
+  --c-accent-text: #a01626;
+  --c-accent-dim: rgba(200, 30, 48, 0.12);
+  color: var(--c-text);
+}
+
+/* On-screen inspection (?sheets): paper sheets laid on the desk. */
+.sal-print.is-preview {
+  display: block;
+  position: relative;
+  z-index: 200;
+  padding: var(--space-6) var(--space-4) var(--space-9);
+}
+
+.sal-sheet {
+  width: 100%;
+  max-width: 186mm; /* A4 210mm − 2 × 12mm hard margin */
+  margin: 0 auto;
+  background: var(--c-bg);
+  font-family: 'Inter', var(--font-cjk), sans-serif;
+  break-after: page;
+  break-inside: avoid;
+  orphans: 3;
+  widows: 3;
+}
+
+.sal-print.is-preview .sal-sheet {
+  margin-bottom: var(--space-6);
+  border: 1px solid rgba(10, 11, 13, 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  padding: 12mm;
+  min-height: 262mm; /* preview approximates the A4 page body */
+}
+
+/* Title block along the top edge, like the strip on a real sheet. */
+.sal-sheet-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-5);
+  border-bottom: 2px solid var(--c-text);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.sal-sheet-no {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c-accent-text);
+}
+
+.sal-sheet-kind {
+  color: var(--c-text-faint);
+}
+
+.sal-sheet-title {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+.sal-sheet-meta {
+  margin-left: auto;
+  color: var(--c-text-faint);
+}
+
+/* --- A-000 title sheet --- */
+
+.sal-sheet-alias {
+  margin: 0 0 var(--space-2);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--c-accent-text);
+}
+
+.sal-sheet-thesis {
+  margin: 0 0 var(--space-3);
+  font-size: 26pt;
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+
+.sal-sheet-registry {
+  margin: 0 0 var(--space-5);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10px;
+  color: var(--c-text-muted);
+}
+
+.sal-sheet-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10.5px;
+  color: var(--c-accent-text);
+}
+
+.sal-sheet-stamp-rev {
+  padding: 1px var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.sal-sheet-proofs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9.5px;
+  color: var(--c-text-muted);
+}
+
+.sal-sheet-plate {
+  margin-bottom: var(--space-6);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--c-border);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--c-text-muted);
+}
+
+.sal-sheet-plate-label {
+  margin-right: var(--space-3);
+  letter-spacing: 0.12em;
+  color: var(--c-accent-text);
+}
+
+.sal-sheet-links {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2) var(--space-5);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9.5px;
+}
+
+.sal-sheet-links dt {
+  letter-spacing: 0.12em;
+  color: var(--c-text-faint);
+}
+
+.sal-sheet-links dd {
+  margin: 2px 0 0;
+  color: var(--c-text);
+}
+
+/* --- The actual print swap --- */
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  /* Everything the screen owns disappears; only the sheets print. */
+  .sal-root > *:not(.sal-print) {
+    display: none !important;
+  }
+
+  .sal-print {
+    display: block;
+  }
+
+  .sal-sheet {
+    max-width: none;
+  }
+
+  /* Ink accents (the Rev stamp border, sheet numbers) must survive printers
+     that strip backgrounds; scoped, not global. */
+  .sal-sheet-stamp,
+  .sal-sheet-no,
+  .sal-sheet-stamp-rev {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1100px) {

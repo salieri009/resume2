@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { Lang, ProjectKey, Theme } from './data/types';
 import { PROJECT_ORDER } from './data/projects';
 import { STRINGS } from './data/strings';
@@ -19,6 +20,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { BackToTop } from './components/BackToTop';
 import { ProjectDetail } from './components/ProjectDetail';
+import { PrintSet } from './components/PrintSet';
 
 const REVEAL_KEYS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
 
@@ -44,6 +46,14 @@ const LANG_KEY = 'sal-lang';
  * first visit — the KO/JA copy was written for exactly that recruiter, and
  * greeting them in English wastes it. Everyone else gets English.
  */
+const PRINT_TITLE = 'Jungwook Van — Résumé · Drawing Set A-000–A-600';
+
+/** `?sheets` shows the print set on screen — the only way to inspect the
+ *  sheets without a print dialog, for development and for the curious. */
+function sheetsPreviewRequested(): boolean {
+  return new URLSearchParams(window.location.search).has('sheets');
+}
+
 function initialLang(): Lang {
   try {
     const stored = localStorage.getItem(LANG_KEY);
@@ -64,6 +74,34 @@ export default function App() {
   const [activeProject, setActiveProject] = useState<ProjectKey | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [closing, setClosing] = useState(false);
+  const [printing, setPrinting] = useState(false);
+  const [sheetsPreview] = useState(sheetsPreviewRequested);
+
+  // The print set mounts on demand — the case-study sheets otherwise only
+  // exist inside the modal. beforeprint fires synchronously inside
+  // window.print(), so flushSync guarantees the sheets are in the DOM before
+  // the dialog snapshots the page. This one listener covers both the résumé
+  // buttons (which just call window.print()) and a bare Ctrl+P.
+  useEffect(() => {
+    let screenTitle = document.title;
+    const before = () => {
+      screenTitle = document.title;
+      document.title = PRINT_TITLE; // becomes the suggested PDF filename
+      flushSync(() => setPrinting(true));
+    };
+    const after = () => {
+      document.title = screenTitle;
+      setPrinting(false);
+    };
+    window.addEventListener('beforeprint', before);
+    window.addEventListener('afterprint', after);
+    return () => {
+      window.removeEventListener('beforeprint', before);
+      window.removeEventListener('afterprint', after);
+    };
+  }, []);
+
+  const printResume = useCallback(() => window.print(), []);
 
   const reducedMotion = useReducedMotion();
   const scrollControl = useSmoothScroll(reducedMotion);
@@ -156,9 +194,10 @@ export default function App() {
         setLang={setLang}
         mobileOpen={mobileOpen}
         toggleMobile={toggleMobile}
+        onPrint={printResume}
       />
 
-      <Hero t={t} lang={lang} reducedMotion={reducedMotion} />
+      <Hero t={t} lang={lang} reducedMotion={reducedMotion} onPrint={printResume} />
 
       <ProjectsBento t={t} revealed={revealed.projects} revealRef={refs.projects} onOpenProject={openProject} />
 
@@ -182,6 +221,8 @@ export default function App() {
       <Footer />
 
       <BackToTop visible={scrollP > 0.5} label={t.backToTop} />
+
+      {(printing || sheetsPreview) && <PrintSet lang={lang} preview={sheetsPreview} />}
 
       {activeProject && (
         <ProjectDetail

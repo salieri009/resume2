@@ -1,6 +1,5 @@
 import { memo } from 'react';
 import type { Lang, Strings, Theme } from '../data/types';
-import { RESUME_PDF } from '../data/profile';
 import { SunIcon, MoonIcon, MenuIcon, CloseIcon } from './Icons';
 
 const NAV_IDS = ['projects', 'experience', 'skills', 'voyage', 'about', 'contact'] as const;
@@ -23,6 +22,8 @@ interface NavProps {
   setLang: (lang: Lang) => void;
   mobileOpen: boolean;
   toggleMobile: () => void;
+  /** Prints the drawing set — the résumé is the site itself (see PrintSet). */
+  onPrint: () => void;
 }
 
 export const Nav = memo(function Nav({
@@ -34,6 +35,7 @@ export const Nav = memo(function Nav({
   setLang,
   mobileOpen,
   toggleMobile,
+  onPrint,
 }: NavProps) {
   const isDark = theme === 'dark';
 
@@ -84,11 +86,13 @@ export const Nav = memo(function Nav({
             {isDark ? <MoonIcon /> : <SunIcon />}
           </button>
 
-          {RESUME_PDF.available && (
-            <a href={RESUME_PDF.href} className="sal-download-btn sal-desktop-nav sal-focus">
-              {t.navDownload}
-            </a>
-          )}
+          <button
+            type="button"
+            onClick={onPrint}
+            className="sal-download-btn sal-desktop-nav sal-focus"
+          >
+            {t.navDownload}
+          </button>
 
           <button
             type="button"
@@ -109,11 +113,9 @@ export const Nav = memo(function Nav({
               {t[NAV_LABEL_KEYS[id]]}
             </a>
           ))}
-          {RESUME_PDF.available && (
-            <a href={RESUME_PDF.href} className="sal-download-btn">
-              {t.navDownload}
-            </a>
-          )}
+          <button type="button" onClick={onPrint} className="sal-download-btn">
+            {t.navDownload}
+          </button>
         </nav>
       )}
     </header>

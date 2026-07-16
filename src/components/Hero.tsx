@@ -1,13 +1,15 @@
 import { memo, useEffect, useRef } from 'react';
 import { HeroAxono } from './HeroAxono';
 import { formatDegreePlate } from '../data/academic';
-import { HERO_CARGO, HERO_PROOFS, PROFILE, RESUME_PDF } from '../data/profile';
+import { HERO_CARGO, HERO_PROOFS, PROFILE } from '../data/profile';
 import type { Lang, Strings } from '../data/types';
 
 interface HeroProps {
   t: Strings;
   lang: Lang;
   reducedMotion: boolean;
+  /** Prints the drawing set — the résumé is the site itself (see PrintSet). */
+  onPrint: () => void;
 }
 
 /**
@@ -15,7 +17,7 @@ interface HeroProps {
  * one stamp worth reading before the CTA. Everything here is static text —
  * the only motion in the first screen is the axonometric assembling itself.
  */
-export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
+export const Hero = memo(function Hero({ t, lang, reducedMotion, onPrint }: HeroProps) {
   const gridRef = useRef<HTMLDivElement | null>(null);
 
   // The graph paper scrolls a shade slower than the content, so the sheet
@@ -82,23 +84,11 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
             <a href="#projects" className="sal-btn-primary sal-focus">
               {t.heroCtaPrimary}
             </a>
-            {/* A lone primary button under the thesis reads unfinished, so the
-                row always gets a second anchor: the résumé once it exists,
-                GitHub until then. */}
-            {RESUME_PDF.available ? (
-              <a href={RESUME_PDF.href} className="sal-btn-secondary sal-focus">
-                {t.heroCtaSecondary}
-              </a>
-            ) : (
-              <a
-                href={`https://github.com/${PROFILE.githubUser}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sal-btn-secondary sal-focus"
-              >
-                GitHub ↗
-              </a>
-            )}
+            {/* Not a file download: printing emits the site as an A-000–A-600
+                drawing set (PrintSet), so the résumé is always current. */}
+            <button type="button" onClick={onPrint} className="sal-btn-secondary sal-focus">
+              {t.heroCtaSecondary}
+            </button>
           </div>
 
           {/* Engineering proofs a recruiter can verify. The Microsoft one is
