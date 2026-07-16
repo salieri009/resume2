@@ -773,6 +773,14 @@ button {
 
 /* ---------- Axono (hero 3D stack) ---------- */
 
+/* Host for the drawing + its CAD cursor. It's the element pointer events land
+   on (.sal-axono itself is pointer-events: none so it can't eat taps), and the
+   positioning context the cursor overlay fills. */
+.sal-axono-host {
+  position: relative;
+  width: 100%;
+}
+
 .sal-axono {
   position: relative;
   width: 100%;
@@ -2860,6 +2868,78 @@ button {
   color: var(--c-accent-text);
   margin-right: var(--space-2);
   letter-spacing: 0.1em;
+}
+
+/* ---------- CAD cursor (drawing surfaces only) ---------- */
+
+.sal-cursor {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+  z-index: 3;
+}
+
+.sal-cursor.is-active {
+  opacity: 1;
+}
+
+.sal-cursor-v,
+.sal-cursor-h {
+  position: absolute;
+  will-change: transform;
+}
+
+.sal-cursor-v {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-left: 1px dashed var(--c-accent);
+  opacity: 0.45;
+}
+
+.sal-cursor-h {
+  left: 0;
+  right: 0;
+  top: 0;
+  border-top: 1px dashed var(--c-accent);
+  opacity: 0.45;
+}
+
+.sal-cursor-readout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  max-width: 168px;
+  border: 1px solid var(--c-border-strong);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--c-panel) 88%, transparent);
+  backdrop-filter: blur(6px);
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10px;
+  line-height: 1.45;
+  opacity: 0;
+  will-change: transform;
+}
+
+.sal-cursor-datum {
+  color: var(--c-accent-text);
+  letter-spacing: 0.08em;
+}
+
+.sal-cursor-label {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+.sal-cursor-sub {
+  color: var(--c-text-muted);
 }
 
 /* ---------- Key plan (card massing) ---------- */

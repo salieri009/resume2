@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AXONO_LAYERS, DEGREE } from '../data/academic';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { DrawingCursor } from './DrawingCursor';
 import type { Strings } from '../data/types';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -161,9 +162,18 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
     session: AXONO_LAYERS[i].session,
   }));
 
+  // CAD-cursor bands: every string here comes from the data layer — the level
+  // datum, the localized storey name, and the actual program blocks.
+  const cursorBands = captions.map((c, i) => ({
+    datum: `▽ ${c.session}`,
+    label: c.label,
+    sub: AXONO_LAYERS[i].blocks.map((b) => b.label).join(' · '),
+  }));
+
   return (
     <>
-      <div ref={rootRef} className="sal-axono" aria-hidden="true">
+      <div className="sal-axono-host">
+        <div ref={rootRef} className="sal-axono" aria-hidden="true">
         <div ref={sceneRef} className="sal-axono-scene">
           {/* Site plate — the ground the building sits on */}
           <div className="sal-axono-ground">
@@ -293,6 +303,9 @@ export function HeroAxono({ t, reducedMotion }: HeroAxonoProps) {
           </div>
         ))}
         <div className="sal-axono-roof">{t.axonoRoof}</div>
+        </div>
+
+        <DrawingCursor bands={cursorBands} bandTargets={() => floorRefs.current} />
       </div>
 
       {/* Mobile / narrow: flattened stack so the story survives without 3D */}

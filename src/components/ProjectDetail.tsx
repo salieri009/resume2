@@ -4,6 +4,7 @@ import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
 import { ArchFeatures } from './ArchFeatures';
+import { DrawingCursor } from './DrawingCursor';
 import { SectionDiagram } from './SectionDiagram';
 import { ShippingLane } from './ShippingLane';
 import type { ScrollControl } from '../hooks/useSmoothScroll';
@@ -455,6 +456,19 @@ export function ProjectDetail({
                 <div className="sal-axono-dimline" />
                 <span className="sal-axono-dimlabel">{`${project.layers.length} LAYERS`}</span>
                 <span className="sal-axono-datum-tag">▽ GL ±0.00</span>
+
+                <DrawingCursor
+                  bands={project.layers.map((layer, i) => ({
+                    datum: `▽ L${i}`,
+                    label: layer.label,
+                    sub: layer.blocks.map((b) => b.label).join(' · '),
+                  }))}
+                  bandTargets={() =>
+                    Array.from(
+                      sceneRef.current?.querySelectorAll<HTMLElement>('.sal-detail-axono-floor') ?? [],
+                    )
+                  }
+                />
               </div>
               <div className="sal-detail-axono-caption">
                 {t.detailAxonoCaption}
