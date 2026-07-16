@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { HeroAxono } from './HeroAxono';
 import { formatDegreePlate } from '../data/academic';
 import { HERO_CARGO, HERO_PROOFS, PROFILE, RESUME_PDF } from '../data/profile';
@@ -16,9 +16,38 @@ interface HeroProps {
  * the only motion in the first screen is the axonometric assembling itself.
  */
 export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
+  const gridRef = useRef<HTMLDivElement | null>(null);
+
+  // The graph paper scrolls a shade slower than the content, so the sheet
+  // reads as sitting behind the drawing. The one scroll-depth cue on the
+  // site, kept imperative: piping scrollP through props would defeat this
+  // component's memo and re-render the whole hero every frame.
+  useEffect(() => {
+    if (reducedMotion) return;
+    const grid = gridRef.current;
+    if (!grid) return;
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY;
+        // Past the first viewport the hero is gone; stop writing.
+        if (y < window.innerHeight * 1.2) {
+          grid.style.transform = `translateY(${y * 0.12}px)`;
+        }
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [reducedMotion]);
+
   return (
     <section id="top" className="sal-hero-section">
-      <div className="sal-hero-grid-bg" aria-hidden="true" />
+      <div ref={gridRef} className="sal-hero-grid-bg" aria-hidden="true" />
 
       <div className="sal-hero-layout">
         <div className="sal-hero-inner">

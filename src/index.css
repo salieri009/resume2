@@ -548,13 +548,16 @@ button {
 
 .sal-hero-grid-bg {
   position: absolute;
-  inset: 0;
+  /* Bleeds past the section so the parallax drift (Hero.tsx writes a
+     translateY on scroll) never exposes a bare edge of the sheet. */
+  inset: -160px 0;
   pointer-events: none;
   background-image: linear-gradient(var(--c-border) 1px, transparent 1px),
     linear-gradient(90deg, var(--c-border) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 90% 80% at 70% 20%, black 0%, transparent 70%);
   -webkit-mask-image: radial-gradient(ellipse 90% 80% at 70% 20%, black 0%, transparent 70%);
+  will-change: transform;
 }
 
 .sal-glow-bg {
