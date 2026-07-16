@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
@@ -47,7 +47,7 @@ export function ProjectDetail({
 }: ProjectDetailProps) {
   const project = getLocalizedProject(projectKey, lang);
   const dialogRef = useRef<HTMLDivElement | null>(null);
-  const [explode, setExplode] = useState(0);
+  const sceneRef = useRef<HTMLDivElement | null>(null);
 
   // Zoom into the drawing: the overlay is opaque and fixed, so clipping it back
   // to the card's rect and opening it out reads as the case study growing from
@@ -144,20 +144,32 @@ export function ProjectDetail({
     };
   }, [onClose]);
 
+  /** Gap at rest: fully exploded under reduced motion, collapsed otherwise. */
+  const initialGap = reducedMotion ? 28 + 58 : 28 + 0.25 * 58;
+
   useEffect(() => {
-    setExplode(0);
     if (dialogRef.current) dialogRef.current.scrollTop = 0;
-  }, [projectKey]);
+    sceneRef.current?.style.setProperty('--axgap', String(initialGap));
+  }, [projectKey, initialGap]);
 
+  // The explode used to be React state, which re-rendered this entire ~400-line
+  // tree 50 times per scroll. Every consumer reduces to one number — the
+  // inter-floor gap — so scrolling now writes a single CSS custom property and
+  // the calc() chains below do the rest. Zero re-renders.
+  const rafId = useRef(0);
   const handleScroll = () => {
-    const el = dialogRef.current;
-    if (!el) return;
-    const p = Math.min(1, el.scrollTop / 500);
-    const rounded = Math.round(p * 50) / 50;
-    setExplode((prev) => (prev !== rounded ? rounded : prev));
+    if (reducedMotion || rafId.current) return;
+    rafId.current = requestAnimationFrame(() => {
+      rafId.current = 0;
+      const el = dialogRef.current;
+      const scene = sceneRef.current;
+      if (!el || !scene) return;
+      const p = Math.min(1, el.scrollTop / 500);
+      const ex = 0.25 + p * 0.75;
+      scene.style.setProperty('--axgap', String(28 + ex * 58));
+    });
   };
-
-  const ex = reducedMotion ? 1 : 0.25 + explode * 0.75;
+  useEffect(() => () => cancelAnimationFrame(rafId.current), []);
   const t = STRINGS[lang];
   // Sheet within the A-100 case-study series: A-101, A-102, … Numbering runs
   // inside the hundred, not across it — A-201 is the Experience sheet in the
@@ -268,13 +280,18 @@ export function ProjectDetail({
               <div className="sal-detail-axono" aria-hidden="true">
                 <div className="sal-detail-axono-stage">
                   <div
+                    ref={sceneRef}
                     className={`sal-detail-axono-scene sal-arch-${project.arch}`}
                     style={
                       {
-                        '--axstack': String(
-                          Math.round((project.layers.length - 1) * (28 + ex * 58) + 44),
-                        ),
-                        '--axrise': String(28 + ex * 58),
+                        // One source of truth: scrolling writes --axgap
+                        // imperatively; everything else derives from it in CSS
+                        // so no scroll position ever re-renders this tree.
+                        '--axgap': String(initialGap),
+                        '--axstack': `calc(var(--axgap) * ${project.layers.length - 1} + 44)`,
+                        '--axrise': 'var(--axgap)',
+                        '--axroof': `calc(var(--axgap) * ${project.layers.length - 1} + 36)`,
+                        '--axtopslab': `calc(var(--axgap) * ${project.layers.length - 1} + 8)`,
                       } as React.CSSProperties
                     }
                   >
@@ -297,7 +314,7 @@ export function ProjectDetail({
                       <div
                         key={layer.label}
                         className="sal-detail-axono-floor"
-                        style={{ transform: `translateZ(${Math.round(i * (28 + ex * 58))}px)` }}
+                        style={{ transform: `translateZ(calc(var(--axgap) * ${i} * 1px))` }}
                       >
                         <div className="sal-detail-axono-slab">
                           <div className="sal-detail-axono-slab-top">
@@ -413,12 +430,10 @@ export function ProjectDetail({
 
                     <div
                       className="sal-detail-axono-roofplate"
-                      style={{
-                        transform: `translateZ(${Math.round((project.layers.length - 1) * (28 + ex * 58) + 36)}px)`,
-                      }}
+                      style={{ transform: 'translateZ(calc(var(--axroof) * 1px))' }}
                     />
 
-                    <ArchFeatures typology={project.arch} gap={28 + ex * 58} layerCount={project.layers.length} />
+                    <ArchFeatures typology={project.arch} />
                   </div>
                 </div>
 

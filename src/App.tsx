@@ -37,9 +37,29 @@ function initialTheme(): Theme {
   return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
 }
 
+const LANG_KEY = 'sal-lang';
+
+/**
+ * Stored choice wins; otherwise a ko/ja browser gets its own language on
+ * first visit — the KO/JA copy was written for exactly that recruiter, and
+ * greeting them in English wastes it. Everyone else gets English.
+ */
+function initialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(LANG_KEY);
+    if (stored === 'en' || stored === 'ko' || stored === 'ja') return stored;
+  } catch {
+    /* Private mode — fall through to detection. */
+  }
+  const nav = (navigator.language || '').toLowerCase();
+  if (nav.startsWith('ko')) return 'ko';
+  if (nav.startsWith('ja')) return 'ja';
+  return 'en';
+}
+
 export default function App() {
   const [theme, setTheme] = useState<Theme>(initialTheme);
-  const [lang, setLang] = useState<Lang>('en');
+  const [lang, setLang] = useState<Lang>(initialLang);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<ProjectKey | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
@@ -65,10 +85,15 @@ export default function App() {
     }
   }, [theme]);
 
-  // Keep <html lang> in sync so :lang(ko) CSS (keep-all word breaking)
-  // and assistive tech track the active language.
+  // Keep <html lang> in sync so :lang(ko) CSS (keep-all word breaking, the
+  // CJK font pick) and assistive tech track the active language.
   useLayoutEffect(() => {
     document.documentElement.lang = lang;
+    try {
+      localStorage.setItem(LANG_KEY, lang);
+    } catch {
+      /* Private mode — the choice still holds for this session. */
+    }
   }, [lang]);
 
   const toggleTheme = useCallback(() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark')), []);

@@ -7,21 +7,24 @@ import type { ArchTypology } from '../data/types';
  * drawn in the scene's 180×180 plan coordinates; z rises off the slab plane.
  * Material hatching lives in the scoped .sal-arch-* CSS — this component only
  * places the massing elements that need per-explode z positions.
+ *
+ * Explode-dependent elevations come from the scene's CSS custom properties
+ * (--axgap / --axroof / --axtopslab, set by ProjectDetail), so scrolling the
+ * overlay never re-renders this component.
  */
+
+/** Roofplate elevation — same var the roofplate transform uses. */
+const ROOF = 'var(--axroof)';
+/** Top-floor slab surface elevation. */
+const TOP_SLAB = 'var(--axtopslab)';
+
+const z = (expr: string) => `translateZ(calc((${expr}) * 1px))`;
 
 interface ArchFeaturesProps {
   typology: ArchTypology;
-  /** Current inter-floor gap in scene px (28 + ex * 58). */
-  gap: number;
-  layerCount: number;
 }
 
-export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
-  /** Roofplate elevation — same formula as the roofplate transform. */
-  const roofZ = (layerCount - 1) * gap + 36;
-  /** Top-floor slab surface elevation. */
-  const topSlabZ = (layerCount - 1) * gap + 8;
-
+export function ArchFeatures({ typology }: ArchFeaturesProps) {
   switch (typology) {
     case 'observatory':
       return (
@@ -29,11 +32,11 @@ export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
           {/* Sensor mast with crossarm on the roof */}
           <div
             className="sal-arch-mast"
-            style={{ left: 88, top: 88, height: 28, transform: `translateZ(${roofZ}px) rotateX(90deg)` }}
+            style={{ left: 88, top: 88, height: 28, transform: `${z(ROOF)} rotateX(90deg)` }}
           />
-          <div className="sal-arch-crossarm" style={{ left: 79, top: 87, transform: `translateZ(${roofZ + 22}px)` }} />
+          <div className="sal-arch-crossarm" style={{ left: 79, top: 87, transform: z(`${ROOF} + 22`) }} />
           {/* Radar sweep over the top slab — the detector's gaze */}
-          <div className="sal-arch-scan-wrap" style={{ left: 29, top: 29, transform: `translateZ(${topSlabZ + 2}px)` }}>
+          <div className="sal-arch-scan-wrap" style={{ left: 29, top: 29, transform: z(`${TOP_SLAB} + 2`) }}>
             <div className="sal-arch-scan" />
           </div>
         </>
@@ -47,7 +50,7 @@ export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
             <div
               key={`saw-${x}`}
               className="sal-arch-saw"
-              style={{ left: x, top: 24, transform: `translateZ(${roofZ}px) rotateY(-38deg)` }}
+              style={{ left: x, top: 24, transform: `${z(ROOF)} rotateY(-38deg)` }}
             />
           ))}
           {/* Container stack on the apron — image out to the registry */}
@@ -62,7 +65,7 @@ export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
             <div className="sal-axono-side-right" style={{ width: 11 }} />
           </div>
           {/* Loading-dock canopy cantilevered off the front */}
-          <div className="sal-arch-canopy" style={{ left: 34, top: 178, transform: `translateZ(${gap + 10}px)` }} />
+          <div className="sal-arch-canopy" style={{ left: 34, top: 178, transform: z('var(--axgap) + 10') }} />
         </>
       );
 
@@ -72,18 +75,18 @@ export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
           {/* A-frame glass roof — eaves pinned at the roofplate, ridge lifted */}
           <div
             className="sal-arch-glass"
-            style={{ left: 12, top: 18, width: 156, height: 74, transformOrigin: 'top', transform: `translateZ(${roofZ}px) rotateX(38deg)` }}
+            style={{ left: 12, top: 18, width: 156, height: 74, transformOrigin: 'top', transform: `${z(ROOF)} rotateX(38deg)` }}
           />
           <div
             className="sal-arch-glass"
-            style={{ left: 12, top: 90, width: 156, height: 74, transformOrigin: 'bottom', transform: `translateZ(${roofZ}px) rotateX(-38deg)` }}
+            style={{ left: 12, top: 90, width: 156, height: 74, transformOrigin: 'bottom', transform: `${z(ROOF)} rotateX(-38deg)` }}
           />
           {/* Weather vane on the roof corner */}
           <div
             className="sal-arch-mast"
-            style={{ left: 20, top: 20, height: 20, transform: `translateZ(${roofZ}px) rotateX(90deg)` }}
+            style={{ left: 20, top: 20, height: 20, transform: `${z(ROOF)} rotateX(90deg)` }}
           />
-          <div className="sal-arch-vane-wrap" style={{ left: 20, top: 20, transform: `translateZ(${roofZ + 18}px)` }}>
+          <div className="sal-arch-vane-wrap" style={{ left: 20, top: 20, transform: z(`${ROOF} + 18`) }}>
             <div className="sal-arch-vane" />
           </div>
         </>
@@ -115,9 +118,9 @@ export function ArchFeatures({ typology, gap, layerCount }: ArchFeaturesProps) {
           {/* Clock mast — the piece's actual subject, kept ticking */}
           <div
             className="sal-arch-mast"
-            style={{ left: 148, top: 26, height: 24, transform: `translateZ(${roofZ}px) rotateX(90deg)` }}
+            style={{ left: 148, top: 26, height: 24, transform: `${z(ROOF)} rotateX(90deg)` }}
           />
-          <div className="sal-arch-clock-anchor" style={{ left: 148, top: 26, transform: `translateZ(${roofZ + 24}px)` }}>
+          <div className="sal-arch-clock-anchor" style={{ left: 148, top: 26, transform: z(`${ROOF} + 24`) }}>
             <div className="sal-arch-clock" />
           </div>
         </>

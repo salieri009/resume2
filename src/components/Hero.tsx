@@ -53,9 +53,21 @@ export const Hero = memo(function Hero({ t, lang, reducedMotion }: HeroProps) {
             <a href="#projects" className="sal-btn-primary sal-focus">
               {t.heroCtaPrimary}
             </a>
-            {RESUME_PDF.available && (
+            {/* A lone primary button under the thesis reads unfinished, so the
+                row always gets a second anchor: the résumé once it exists,
+                GitHub until then. */}
+            {RESUME_PDF.available ? (
               <a href={RESUME_PDF.href} className="sal-btn-secondary sal-focus">
                 {t.heroCtaSecondary}
+              </a>
+            ) : (
+              <a
+                href={`https://github.com/${PROFILE.githubUser}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="sal-btn-secondary sal-focus"
+              >
+                GitHub ↗
               </a>
             )}
           </div>
