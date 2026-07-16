@@ -1,9 +1,14 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
+import type { SectionNote } from '../lib/sectionNotes';
 
 interface SectionDiagramProps {
   /** Architecture nodes, top floor first — data enters at the top and descends. */
   nodes: string[];
   ariaLabel: string;
+  /** Design notes per node (index-aligned). Floors with notes become interactive. */
+  notes?: SectionNote[][];
+  /** Localized hint under the drawing when nothing is focused. */
+  notesHint?: string;
 }
 
 const W = 560;
@@ -17,14 +22,18 @@ const STOREY_M = 2.9;
 
 /**
  * Architectural section drawing (단면도) of a project's system: each diagram
- * node is a building floor and the data flow descends like gravity. Static by
- * design — a drawing is a document. All colors come from CSS theme vars.
+ * node is a building floor and the data flow descends like gravity. The
+ * geometry never animates — a drawing is a document — but floors that carry
+ * design notes (decisions/rejected alternatives naming that component) can be
+ * hovered or focused to read them, the way a set gets read with a finger on
+ * the sheet. All colors come from CSS theme vars.
  */
-export function SectionDiagram({ nodes, ariaLabel }: SectionDiagramProps) {
+export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDiagramProps) {
   const uid = useId().replace(/:/g, '');
   const gridId = `secgrid-${uid}`;
   const hatchId = `sechatch-${uid}`;
   const arrowId = `secarrow-${uid}`;
+  const [active, setActive] = useState(-1);
 
   const n = nodes.length;
   const groundY = TOP + n * FLOOR_H;
@@ -32,8 +41,10 @@ export function SectionDiagram({ nodes, ariaLabel }: SectionDiagramProps) {
   const flowX = 404;
 
   const slabYs = Array.from({ length: n + 1 }, (_, i) => TOP + i * FLOOR_H);
+  const activeNotes = active >= 0 ? (notes?.[active] ?? []) : [];
 
   return (
+    <>
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ariaLabel}>
       <defs>
         <pattern id={gridId} width="28" height="28" patternUnits="userSpaceOnUse">
@@ -75,12 +86,17 @@ export function SectionDiagram({ nodes, ariaLabel }: SectionDiagramProps) {
       <line x1={BX + 6} y1={TOP} x2={BX + 6} y2={groundY} stroke="var(--c-border)" strokeWidth="0.75" />
       <line x1={BX + BW - 6} y1={TOP} x2={BX + BW - 6} y2={groundY} stroke="var(--c-border)" strokeWidth="0.75" />
 
-      {/* Floors: slab lines, labels, floor tags */}
+      {/* Floors: slab lines, labels, floor tags, note hit-areas */}
       {nodes.map((label, i) => {
         const yTop = TOP + i * FLOOR_H;
         const level = n - 1 - i;
+        const floorNotes = notes?.[i] ?? [];
+        const hasNotes = floorNotes.length > 0;
         return (
           <g key={label}>
+            {active === i && hasNotes && (
+              <rect x={BX} y={yTop} width={BW} height={FLOOR_H} fill="var(--c-accent-dim)" />
+            )}
             <line
               x1={BX - 8}
               y1={yTop}
@@ -108,6 +124,36 @@ export function SectionDiagram({ nodes, ariaLabel }: SectionDiagramProps) {
             >
               {`FL ${level}`}
             </text>
+            {hasNotes && (
+              <>
+                <text
+                  x={BX + BW - 12}
+                  y={yTop + 14}
+                  textAnchor="end"
+                  fontSize="8.5"
+                  fontFamily="JetBrains Mono, monospace"
+                  fill="var(--c-accent-text)"
+                >
+                  {`◆ ${floorNotes.length}`}
+                </text>
+                {/* Transparent hit-area over the whole storey. Keyboard gets the
+                    same disclosure as hover: focus shows the notes. */}
+                <rect
+                  x={BX}
+                  y={yTop}
+                  width={BW}
+                  height={FLOOR_H}
+                  fill="transparent"
+                  className="sal-secdwg-hit sal-focus"
+                  tabIndex={0}
+                  aria-label={`${label} — ${floorNotes.length} design notes`}
+                  onMouseEnter={() => setActive(i)}
+                  onMouseLeave={() => setActive((prev) => (prev === i ? -1 : prev))}
+                  onFocus={() => setActive(i)}
+                  onBlur={() => setActive((prev) => (prev === i ? -1 : prev))}
+                />
+              </>
+            )}
           </g>
         );
       })}
@@ -210,5 +256,26 @@ export function SectionDiagram({ nodes, ariaLabel }: SectionDiagramProps) {
         opacity="0.6"
       />
     </svg>
+
+    {/* Notes ledger under the sheet. Fixed min-height so disclosure never
+        shifts the layout; aria-live announces the change to screen readers. */}
+    {notes && (
+      <div className="sal-secdwg-notes" aria-live="polite">
+        {activeNotes.length > 0 ? (
+          activeNotes.map((note) => (
+            <div key={note.title} className="sal-secdwg-note">
+              <span className={`sal-secdwg-note-kind${note.kind === 'tradeoff' ? ' is-rejected' : ''}`}>
+                {note.kind === 'tradeoff' ? 'REJECTED' : 'DECISION'}
+              </span>
+              <span className="sal-secdwg-note-title">{note.title}</span>
+              <span className="sal-secdwg-note-body">{note.body}</span>
+            </div>
+          ))
+        ) : (
+          <span className="sal-secdwg-notes-hint">{notesHint}</span>
+        )}
+      </div>
+    )}
+    </>
   );
 }

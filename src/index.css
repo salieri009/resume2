@@ -2096,6 +2096,73 @@ button {
   color: var(--c-text-faint);
 }
 
+/* Storey hit-areas: a crosshair on a drawing surface, per the CAD-cursor rule. */
+.sal-secdwg-hit {
+  cursor: crosshair;
+  outline-offset: -2px;
+}
+
+/* Notes ledger — fixed floor so hover disclosure never shifts the sheet. */
+.sal-secdwg-notes {
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px dashed var(--c-border-strong);
+}
+
+.sal-secdwg-notes-hint {
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 10.5px;
+  color: var(--c-text-faint);
+  text-align: center;
+}
+
+.sal-secdwg-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: var(--space-3);
+  row-gap: 2px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.sal-secdwg-note-kind {
+  flex-shrink: 0;
+  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  padding: 1px var(--space-2);
+  border: 1px solid var(--c-accent);
+  border-radius: var(--radius-sm);
+  color: var(--c-accent-text);
+}
+
+/* A rejected alternative is struck the way a superseded drawing note is. */
+.sal-secdwg-note-kind.is-rejected {
+  border-color: var(--c-border-strong);
+  color: var(--c-text-muted);
+}
+
+.sal-secdwg-note-kind.is-rejected + .sal-secdwg-note-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--c-text-faint);
+}
+
+.sal-secdwg-note-title {
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.sal-secdwg-note-body {
+  flex-basis: 100%;
+  color: var(--c-text-muted);
+  font-size: 12px;
+}
+
 /* ---------- Shipping lane (선적 항로) — deployment-as-shipping ---------- */
 
 .sal-shiplane {

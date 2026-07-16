@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import type { Lang, ProjectKey } from '../data/types';
 import { getLocalizedProject, getReceipts, PROJECT_ORDER } from '../data/projects';
 import { STRINGS } from '../data/strings';
+import { notesForNodes } from '../lib/sectionNotes';
 import { ArchFeatures } from './ArchFeatures';
 import { DrawingCursor } from './DrawingCursor';
 import { SectionDiagram } from './SectionDiagram';
@@ -267,7 +268,12 @@ export function ProjectDetail({
             </div>
             <div className="sal-diagram-panel">
               <div className="sal-secdwg">
-                <SectionDiagram nodes={project.diagram} ariaLabel={`${project.title} — system section`} />
+                <SectionDiagram
+                  nodes={project.diagram}
+                  ariaLabel={`${project.title} — system section`}
+                  notes={notesForNodes(project.diagram, project.decisions, project.tradeoffs)}
+                  notesHint={t.sectionNotesHint}
+                />
               </div>
               <div className="sal-secdwg-caption">{t.detailSectionCaption}</div>
 

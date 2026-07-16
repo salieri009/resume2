@@ -169,6 +169,7 @@ export interface Strings {
   axonoL3Sub: string;
   axonoRoof: string;
   detailSectionCaption: string;
+  sectionNotesHint: string;
   detailShippingLabel: string;
   detailAxonoCaption: string;
   heroRegistryLine: string;
