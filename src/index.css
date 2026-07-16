@@ -3774,11 +3774,15 @@ button {
     max-width: none;
   }
 
-  /* Ink accents (the Rev stamp border, sheet numbers) must survive printers
-     that strip backgrounds; scoped, not global. */
+  /* Ink accents (the Rev stamp, sheet numbers, badges, table rules) must
+     survive printers that strip backgrounds; scoped, not global. SVG fills
+     are painted content, not backgrounds — the drawings need no help. */
   .sal-sheet-stamp,
   .sal-sheet-no,
-  .sal-sheet-stamp-rev {
+  .sal-sheet-stamp-rev,
+  .sal-sheet-badge,
+  .sal-sheet-td-no,
+  .sal-sheet-block-label {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
