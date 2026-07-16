@@ -3,6 +3,21 @@
 > 작성: 2026-07-16. 도면집(drawing set) 1차 개편(토큰/히어로/CJK/시트 인덱스/모바일 axono/카드 도면/전환) 완료 직후.
 > 전제: 1차 개편이 육안 확인·커밋된 상태에서 시작한다.
 
+## ⚡ 실행 결과 (2026-07-16, `redesign/drawing-set` 브랜치)
+
+v1 + N0·N1·N2·N4·N5 착지, 각각 독립 커밋. **N3(Flip 재평가)만 계획대로 육안 확인 후 판단 대기.**
+
+| 단계 | 커밋 | 비고 |
+|---|---|---|
+| v1 전체 | `9bbb7aa` | 19파일 |
+| N0 마감 | `8e73af5` | GitHub CTA 폴백 · ko/ja `navigator.language` 감지+지속(실측: ko 브라우저 첫 방문 한국어 확인) · explode → `--axgap` 단일 변수(setProperty 1회에 층·루프·pline·ArchFeatures 전부 갱신 실측, ArchFeatures는 prop 제거) |
+| N1 크로스헤어 | `7792b09` | `DrawingCursor.tsx` — 밴드 히트테스트(투영 rect, 겹침 시 상부층=페인트 순서), 히어로+상세 배선, fine-pointer 게이트 실측. 라인 이동은 rAF라 육안 대상 |
+| N2 단면도 노트 | `7d028e8` | `sectionNotes.ts` 문자 그대로 언급 매칭 — 5개 프로젝트 전부 1~4층 인터랙티브(KO 로케일에서 실측: JSP Views → DECISION+REJECTED 취소선 콜아웃 동작). focus() 미발화는 hidden 탭의 focus 이벤트 생략 — focusin 수동 발화로 React 경로 검증 |
+| N4 패럴랙스 | `f7fbc31` | 그리드 0.12x drift, imperative(Hero memo 보존), 160px 블리드. 육안 대상 |
+| N5 절반 | `f1177e9` | 시트 인덱스 순차 점등(CSS-only — 파싱 실패 시 그냥 보이는 안전한 실패 모드). 그리드 draw-in은 육안 없이 리스크라 보류 |
+
+**육안 확인 필요(모션 전부):** v1 목록 + N1 크로스헤어 추적/리드아웃, N2 hover 감각, N4 drift 강도(0.12 조정 여지), N5 스태거 타이밍.
+
 ---
 
 ## 0. 레퍼런스 링크 검증 결과
