@@ -48,13 +48,14 @@ export function CourseLine({ t, scrollP, activeSection, reducedMotion }: CourseL
           ▽
         </div>
         <div className="sal-course-dots">
-          {SHEETS.map((s) => (
+          {SHEETS.map((s, i) => (
             <a
               key={s.id}
               href={`#${s.id}`}
               /* The dot carries no text, so without this the link has no
                  accessible name at all — it announced as "link" before. */
               aria-label={`${s.no} — ${titles[s.id]}`}
+              style={{ '--sheet-i': i } as React.CSSProperties}
               className={`sal-course-dot sal-focus${activeSection === s.id ? ' is-active' : ''}`}
             >
               <span className="sal-course-tick" aria-hidden="true" />
