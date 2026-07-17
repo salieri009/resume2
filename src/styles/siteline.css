@@ -304,13 +304,8 @@ html[data-experience='siteline'] #root {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  /* Stronger left wash so floor labels don't dissolve into the massing */
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--paper) 96%, transparent) 0%,
-    color-mix(in srgb, var(--paper) 78%, transparent) 55%,
-    transparent 100%
-  );
+  /* No rail wash — floor/brand plates carry their own paper fills */
+  background: none;
   pointer-events: none;
 }
 .site-rail > * {
