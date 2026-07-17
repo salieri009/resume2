@@ -109,12 +109,12 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
       issuer: 'UTS × Microsoft Sydney',
       title: 'Certificate of Achievement — “Shaping Technologies that Shape Us”',
       detail:
-        '620名のコホートから選抜され、Microsoft SydneyでAIの社会的影響に関する学際プロジェクトを発表しました。Microsoftと業界の専門家とともに登壇しています。',
+        '620名の中から選ばれ、Microsoft SydneyでAIの社会的影響に関する学際プロジェクトを発表しました。Microsoftと業界の専門家が集まるショーケースでした。',
     },
     build: {
       issuer: 'UTS BUILDプログラム',
       title: 'グローバルリーダーシップ・プログラム',
-      detail: '学位外の課外リーダーシップ・プログラム — グローバル市民意識、異文化理解、リーダーシップ研修。',
+      detail: '学位外の課外プログラムです。グローバル市民意識、異文化理解、リーダーシップ研修を扱います。',
     },
     bit: {
       issuer: 'シドニー工科大学（UTS）',
