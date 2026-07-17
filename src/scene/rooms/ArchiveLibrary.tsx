@@ -7,7 +7,7 @@ import { LINKS } from '../../data/profile';
 import { EASE_SITE } from '../motion';
 import { usePalette } from '../palette';
 import { CaptionPlate, InkEdges, SoftPatch } from '../primitives';
-import { labelTexture, sealTexture } from '../textures';
+import { labelTexture, sealTexture, writingPatchTexture } from '../textures';
 
 /**
  * L4 · The Archive & The Library (bible 04/L4-ARCHIVE-LIBRARY, concept dims).
@@ -63,12 +63,15 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pal.resin, pal.graphite],
   );
+  // Desk writing-patch — faint ruled lines under the light (bible 10 · L4)
+  const writingPatch = useMemo(() => writingPatchTexture(pal.graphite), [pal.graphite]);
   useEffect(
     () => () => {
       sealMaps.forEach((t) => t.dispose());
       docMaps.forEach((t) => t.dispose());
+      writingPatch.dispose();
     },
-    [sealMaps, docMaps],
+    [sealMaps, docMaps, writingPatch],
   );
   /* Spread sealed drawers across the chest; blanks fill the lower row. */
   const halfSpan = 1.05;
@@ -172,6 +175,11 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
           <boxGeometry args={[0.9, 0.5, 0.55]} />
           <meshStandardMaterial color={deskHover ? pal.signal : pal.resin} roughness={0.72} />
           <InkEdges />
+        </mesh>
+        {/* Writing-patch engraving — habit under the light, not floating copy */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.552, 0.02]}>
+          <planeGeometry args={[0.62, 0.36]} />
+          <meshBasicMaterial map={writingPatch} transparent depthWrite={false} />
         </mesh>
         <SoftPatch position={[0, 0.56, 0]} width={1.1} depth={0.8} opacity={0.35} />
         <CaptionPlate position={[-0.3, 0.75, 0.35]} lines={['350+ ESSAYS · KO · EN · JA']} note={deskHover} />

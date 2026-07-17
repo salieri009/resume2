@@ -10,7 +10,7 @@ export function FloorRail() {
     <nav className="site-rail" aria-label="Building floors">
       <button type="button" className="site-rail-brand" onClick={returnLobby}>
         <span className="site-rail-title">The Architecture of Software</span>
-        <span className="site-rail-code">009 · REV A</span>
+        <span className="site-rail-code">SITE 009 · REV A · ORTHO</span>
       </button>
       <ul className="site-rail-floors">
         {FLOORS.map((f) => {

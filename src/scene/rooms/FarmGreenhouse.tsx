@@ -57,6 +57,7 @@ export function FarmGreenhouse({ hover, entered, reducedMotion, onClick, onHover
           <mesh key={`${x}${z}`} position={[x, 0.49, z]}>
             <boxGeometry args={[0.05, 0.9, 0.05]} />
             <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+            <InkEdges />
           </mesh>
         ))}
 

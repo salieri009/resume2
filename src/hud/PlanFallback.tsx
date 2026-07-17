@@ -23,10 +23,12 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
     <div className="site-plan">
       {showCover && (
         <header className="site-plan-head">
-          <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · PLAN VIEW</p>
+          <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · REVISION A · PLAN VIEW</p>
           <h1>The Architecture of Software</h1>
           <p className="site-plan-sub">Software is not written. It is constructed.</p>
-          <p className="site-lobby-role">{t.roleLine}</p>
+          <p className="site-lobby-role">
+            {PROFILE.name} · {t.roleLine}
+          </p>
           <p className="site-plan-reason">
             {reason === 'webgl'
               ? 'WebGL unavailable — orthographic plan mode.'
@@ -34,28 +36,20 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
                 ? 'Reduced motion — final poses only.'
                 : 'Compact viewport — plan index.'}
           </p>
-          <p className="site-plan-tag">{t.tagline}</p>
-          <details className="site-plan-more">
-            <summary>{moreLabel}</summary>
-            <p className="site-plan-about">{t.aboutStory}</p>
-          </details>
-          <p className="site-plan-name">
-            {PROFILE.name} · {t.majorLine}
-          </p>
           <div className="site-plan-actions">
-            <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
+            <button type="button" className="site-btn" onClick={() => goTo('L2', 'crowd')}>
+              {t.enterLabs}
+            </button>
+            <button type="button" className="site-btn site-btn-ghost" onClick={() => setPrintOpen(true)}>
               {t.navDownload}
             </button>
-            <a className="site-btn site-btn-ghost" href={LINKS.github} target="_blank" rel="noreferrer">
-              GITHUB
-            </a>
-            <a className="site-btn site-btn-ghost" href={LINKS.linkedin} target="_blank" rel="noreferrer">
-              LINKEDIN
-            </a>
-            <a className="site-btn site-btn-ghost" href={`mailto:${LINKS.email}`}>
-              {t.navContact.toUpperCase()}
-            </a>
           </div>
+          <details className="site-plan-more">
+            <summary>{moreLabel}</summary>
+            <p className="site-plan-about">{t.tagline}</p>
+            <p className="site-plan-about">{t.aboutStory}</p>
+            <p className="site-plan-name">{t.majorLine}</p>
+          </details>
         </header>
       )}
 

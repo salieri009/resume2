@@ -37,9 +37,16 @@ export function partialPolyline(points: THREE.Vector3[], t: number): THREE.Vecto
  * isolate the mass fades but its edges hold: line surviving mass. Place as
  * a child of the mesh it inks.
  */
-export function InkEdges({ threshold = 15 }: { threshold?: number }) {
+export function InkEdges({
+  threshold = 15,
+  lineWidth = 1,
+}: {
+  threshold?: number;
+  /** Medium resting weight — signal hover stays on Plinth boundary alone. */
+  lineWidth?: number;
+}) {
   const pal = usePalette();
-  return <Edges threshold={threshold} color={pal.graphite} />;
+  return <Edges threshold={threshold} color={pal.graphite} linewidth={lineWidth} />;
 }
 
 interface PlinthProps {

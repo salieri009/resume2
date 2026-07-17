@@ -178,6 +178,33 @@ export function gridTexture(cols: number, rows: number, ink: string): THREE.Canv
 }
 
 /**
+ * Library desk writing-patch (bible 10 · L4): faint ruled lines where the light
+ * falls — ink remembered as habit, not as copy.
+ */
+export function writingPatchTexture(ink: string): THREE.CanvasTexture {
+  const W = 256;
+  const H = 192;
+  return makeEngraving(W, H, (ctx) => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.14;
+    for (let y = 28; y < H - 24; y += 16) {
+      ctx.beginPath();
+      ctx.moveTo(28, y);
+      ctx.lineTo(W - 28, y);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 0.22;
+    ctx.beginPath();
+    ctx.moveTo(28, 28);
+    ctx.lineTo(28, H - 24);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+}
+
+/**
  * The archive's circular embossed seal (bible 04/L4): double ring, uppercase
  * mono, English always. Emboss is implied by a lighter inner ground and the
  * ring pair — relief drawn, not modeled.

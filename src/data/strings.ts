@@ -80,6 +80,8 @@ const SHARED = {
     eastArchive: 'East · Archive',
     openShelves: 'Open the shelves',
     languagesLine: 'Korean · Native — English · Fluent — Japanese · Learning — German · Learning',
+    enterLabs: 'Enter laboratories',
+    closeDoc: 'Close',
   },
   ko: {
     navProjects: '프로젝트',
@@ -160,6 +162,8 @@ const SHARED = {
     eastArchive: '동쪽 · 보관소',
     openShelves: '서가 열기',
     languagesLine: '한국어 · 모국어 — English · 유창 — 日本語 · 학습 중 — Deutsch · 학습 중',
+    enterLabs: '실험실 입장',
+    closeDoc: '닫기',
   },
   ja: {
     navProjects: 'プロジェクト',
@@ -240,6 +244,8 @@ const SHARED = {
     eastArchive: '東 · 保管庫',
     openShelves: '書架を開く',
     languagesLine: '韓国語 · 母語 — English · 流暢 — 日本語 · 学習中 — Deutsch · 学習中',
+    enterLabs: '実験室へ入る',
+    closeDoc: '閉じる',
   },
 } as const;
 

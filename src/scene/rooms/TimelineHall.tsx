@@ -47,6 +47,7 @@ interface AssemblyStageProps {
   onSelect: () => void;
   pal: Palette;
   labelMaps: LabelMaps;
+  markMap: THREE.CanvasTexture;
   exemptColor: string;
 }
 
@@ -71,6 +72,7 @@ function AssemblyStage({
   onSelect,
   pal,
   labelMaps,
+  markMap,
   exemptColor,
 }: AssemblyStageProps) {
   const invalidate = useThree((s) => s.invalidate);
@@ -175,6 +177,14 @@ function AssemblyStage({
           <mesh position={[0.63, 0.3 + 0.18 * index, 0.2]}>
             <boxGeometry args={[0.03, 0.07, 0.24]} />
             <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
+            <InkEdges />
+          </mesh>
+        )}
+        {/* Mark stamps on the front face under attention (bible 10 · L1) */}
+        {(hover || active) && (
+          <mesh position={[0, 0.55 + 0.12 * lifts, 0.62]}>
+            <planeGeometry args={[0.85, 0.22]} />
+            <meshStandardMaterial map={markMap} roughness={0.75} toneMapped={false} />
           </mesh>
         )}
       </Plinth>
@@ -182,14 +192,6 @@ function AssemblyStage({
       {/* Session datum, ruled above the stage */}
       <CaptionPlate position={[-0.3, 1.62, 0]} lines={[wp.session]} />
 
-      {/* Test-result stamps surface under attention */}
-      {(hover || active) && (
-        <CaptionPlate
-          position={[0.7, 1.1, 0.4]}
-          lines={wp.highlights.slice(0, 2).map((h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`.toUpperCase())}
-          note={hover}
-        />
-      )}
       {artifact && (hover || active) && (
         <CaptionPlate position={[0.7, 0.35 + 0.18 * index, 0.2]} lines={[artifact]} />
       )}
@@ -233,12 +235,25 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
       ),
     [pal.resin, pal.graphite],
   );
+  // Face mark stamps under attention — replace floating caption load (bible 10)
+  const markMaps = useMemo(
+    () =>
+      SEMESTER_WAYPOINTS.map((wp) =>
+        labelTexture(
+          wp.highlights.slice(0, 2).map((h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`),
+          { paper: pal.resin, ink: pal.graphite },
+          { w: 512, h: 128, size: 28 },
+        ),
+      ),
+    [pal.resin, pal.graphite],
+  );
   useEffect(
     () => () => {
       labelMaps.forEach((t) => t.dispose());
       completionMap.dispose();
+      markMaps.forEach((t) => t.dispose());
     },
-    [labelMaps, completionMap],
+    [labelMaps, completionMap, markMaps],
   );
 
   return (
@@ -265,6 +280,7 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
           onSelect={() => onSelectStage(i)}
           pal={pal}
           labelMaps={labelMaps}
+          markMap={markMaps[i]!}
           exemptColor={exemptColor}
         />
       ))}

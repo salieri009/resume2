@@ -199,4 +199,8 @@ export interface Strings {
   eastArchive: string;
   openShelves: string;
   languagesLine: string;
+  /** Lobby primary CTA — enters L2 laboratories (Norman: label = action). */
+  enterLabs: string;
+  /** DOC drawer dismiss control. */
+  closeDoc: string;
 }

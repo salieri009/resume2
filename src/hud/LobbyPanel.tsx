@@ -1,9 +1,13 @@
 import { STRINGS } from '../data/strings';
-import { LINKS, PROFILE } from '../data/profile';
+import { PROFILE } from '../data/profile';
 import { useSite } from '../building/SiteContext';
 import { parseHash } from '../building/program';
 
-/** Lobby thesis wall — cover-sheet hierarchy: kicker → title → one line → CTA. */
+/**
+ * Lobby thesis wall — cover-sheet hierarchy only:
+ * kicker → title → one thesis line → role stamp → CTA pair.
+ * Long copy lives in details; outbound links live on the roof / rail.
+ */
 export function LobbyPanel() {
   const { phase, room, floor, lang, prefer2d, setPrintOpen, goTo } = useSite();
   const t = STRINGS[lang];
@@ -16,36 +20,28 @@ export function LobbyPanel() {
   const hashRoom = parseHash(typeof window !== 'undefined' ? window.location.hash : '#/L0').room;
   if (hashRoom !== 'lobby') return null;
 
-  const moreLabel = t.readMore;
-
   return (
     <div className="site-lobby" data-plate="lobby-thesis">
-      <p className="site-lobby-kicker">SITE 009 · {PROFILE.alias}</p>
+      <p className="site-lobby-kicker">SITE 009 · {PROFILE.alias} · REVISION A</p>
       <h1 className="site-lobby-title">The Architecture of Software</h1>
       <p className="site-lobby-sub">Software is not written. It is constructed.</p>
-      <p className="site-lobby-role">{t.roleLine}</p>
-      <p className="site-lobby-tag">{t.tagline}</p>
-      <details className="site-lobby-more">
-        <summary>{moreLabel}</summary>
-        <p className="site-lobby-about">{t.aboutStory}</p>
-      </details>
-      <p className="site-lobby-name">
-        {PROFILE.name} · {t.majorLine}
+      <p className="site-lobby-role">
+        {PROFILE.name} · {t.roleLine}
       </p>
       <div className="site-lobby-actions">
-        <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
+        <button type="button" className="site-btn" onClick={() => goTo('L2', 'crowd')}>
+          {t.enterLabs}
+        </button>
+        <button type="button" className="site-btn site-btn-ghost" onClick={() => setPrintOpen(true)}>
           {t.navDownload}
         </button>
-        <a className="site-btn site-btn-ghost" href={LINKS.github} target="_blank" rel="noreferrer">
-          GITHUB
-        </a>
-        <a className="site-btn site-btn-ghost" href={LINKS.linkedin} target="_blank" rel="noreferrer">
-          LINKEDIN
-        </a>
-        <button type="button" className="site-btn site-btn-ghost" onClick={() => goTo('R', 'roof')}>
-          {t.navContact.toUpperCase()}
-        </button>
       </div>
+      <details className="site-lobby-more">
+        <summary>{t.readMore}</summary>
+        <p className="site-lobby-about">{t.tagline}</p>
+        <p className="site-lobby-about">{t.aboutStory}</p>
+        <p className="site-lobby-name">{t.majorLine}</p>
+      </details>
     </div>
   );
 }

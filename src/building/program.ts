@@ -14,7 +14,7 @@ export interface FloorDef {
 
 /**
  * Building program — maps spatial zones to resume2 content keys.
- * First ship only activates L0 lobby + L2/crowd; other floors are stubs in the rail.
+ * All rooms in SHIPPED_ROOMS are built; the rail exposes the full set.
  */
 export const FLOORS: FloorDef[] = [
   {

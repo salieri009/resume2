@@ -14,10 +14,12 @@ import { ArchivePanel } from '../hud/panels/ArchivePanel';
 import { RoofPanel } from '../hud/panels/RoofPanel';
 import { PlanFallback } from '../hud/PlanFallback';
 import { SiteChrome } from '../hud/SiteChrome';
+import { STRINGS } from '../data/strings';
 import '../styles/siteline.css';
 
 function PrintDrawer() {
   const { printOpen, setPrintOpen, lang } = useSite();
+  const t = STRINGS[lang];
 
   useEffect(() => {
     if (!printOpen) return;
@@ -37,15 +39,18 @@ function PrintDrawer() {
   if (!printOpen) return null;
 
   return (
-    <div className="site-print-drawer" role="dialog" aria-label="Title block · Print set">
+    <div className="site-print-drawer" role="dialog" aria-label="SITE 009 · DOC · R-series">
       <div className="site-print-drawer-bar">
-        <span>DOC · TITLE BLOCK · R-SERIES</span>
+        <div className="site-print-drawer-stamp">
+          <span className="site-print-drawer-site">SITE 009 · SALIERI · REVISION A</span>
+          <span className="site-print-drawer-doc">DOC · R-001 / R-002 · TITLE BLOCK</span>
+        </div>
         <div className="site-print-drawer-actions">
           <button type="button" className="site-btn" onClick={() => window.print()}>
-            Print
+            {t.navDownload}
           </button>
           <button type="button" className="site-btn site-btn-ghost" onClick={() => setPrintOpen(false)}>
-            Close
+            {t.closeDoc}
           </button>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { usePalette } from '../palette';
 import { BlobShadow, CaptionPlate, FlowTrace, InkEdges, Plinth } from '../primitives';
-import { labelTexture } from '../textures';
+import { gridTexture, labelTexture } from '../textures';
 import type { RoomBlockProps } from './types';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -50,7 +50,15 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
     () => labelTexture(['118 E2E · 14 SEC'], { paper: pal.alum, ink: pal.graphite }, { size: 30, w: 512, h: 96 }),
     [pal.alum, pal.graphite],
   );
-  useEffect(() => () => tallyMap.dispose(), [tallyMap]);
+  // One engraving across the DAO rack face — eight ruled cells (bible 10).
+  const bayGrid = useMemo(() => gridTexture(8, 1, pal.graphite), [pal.graphite]);
+  useEffect(
+    () => () => {
+      tallyMap.dispose();
+      bayGrid.dispose();
+    },
+    [tallyMap, bayGrid],
+  );
 
   return (
     <group>
@@ -86,6 +94,11 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
             <InkEdges />
           </mesh>
         ))}
+        {/* Hairline dividers — one engraving, eight ruled cells across the bay face */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-0.17, 0.445, -0.35]}>
+          <planeGeometry args={[2.52, 0.26]} />
+          <meshBasicMaterial map={bayGrid} transparent depthWrite={false} />
+        </mesh>
         {/* — and the SQLite store everything finally rests on */}
         <mesh position={[-0.1, 0.19, -0.7]}>
           <boxGeometry args={[2.4, 0.3, 0.4]} />
@@ -115,6 +128,7 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
               roughness={0.45}
               metalness={0.1}
             />
+            <InkEdges />
           </mesh>
           <mesh position={[1.5, 0.59, 0.55]}>
             <boxGeometry args={[0.15, 1.1, 0.15]} />
@@ -123,6 +137,7 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
               roughness={0.45}
               metalness={0.1}
             />
+            <InkEdges />
           </mesh>
           <mesh position={[1.5, 1.16, 0]}>
             <boxGeometry args={[0.18, 0.12, 1.25]} />
