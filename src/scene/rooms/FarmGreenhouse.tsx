@@ -1,8 +1,9 @@
 import { Line } from '@react-three/drei';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { usePalette } from '../palette';
-import { BlobShadow, CaptionPlate, FlowTrace, InstancedBlanks, Plinth } from '../primitives';
+import { BlobShadow, CaptionPlate, FlowTrace, InkEdges, InstancedBlanks, Plinth } from '../primitives';
+import { gridTexture, waveformTexture } from '../textures';
 import type { RoomBlockProps } from './types';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -25,6 +26,21 @@ export function FarmGreenhouse({ hover, entered, reducedMotion, onClick, onHover
   const restRuns = useMemo(() => [sceneBed, weatherBed], [sceneBed, weatherBed]);
 
   const bars = useMemo(() => [-0.675, -0.225, 0.225, 0.675], []);
+
+  // Etched engravings (bible 10): the aurora waveform on the specimen plate,
+  // the seed tray's scribed 6×4 grid. Regenerated per print, disposed after.
+  const auroraMap = useMemo(
+    () => waveformTexture({ paper: pal.resin, ink: pal.graphite }),
+    [pal.resin, pal.graphite],
+  );
+  const trayGrid = useMemo(() => gridTexture(6, 4, pal.graphite), [pal.graphite]);
+  useEffect(
+    () => () => {
+      auroraMap.dispose();
+      trayGrid.dispose();
+    },
+    [auroraMap, trayGrid],
+  );
 
   return (
     <group>
@@ -67,28 +83,46 @@ export function FarmGreenhouse({ hover, entered, reducedMotion, onClick, onHover
           </group>
         ))}
 
+        {/* Ruled glazing-bar shadows — the greenhouse's daily geometry */}
+        {bars.map((x) => (
+          <mesh key={`rule${x}`} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0.048, 0]}>
+            <planeGeometry args={[0.028, 1.7]} />
+            <meshBasicMaterial color={pal.graphite} transparent opacity={0.1} depthWrite={false} />
+          </mesh>
+        ))}
+
         {/* Scene bed — React plate / Three.js mass / WebGL slab */}
         <mesh position={[-0.45, 0.73, 0.3]}>
           <boxGeometry args={[0.5, 0.1, 0.3]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         <mesh position={[-0.45, 0.4, 0.15]}>
           <boxGeometry args={[0.45, 0.45, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         <mesh position={[-0.45, 0.12, 0]}>
           <boxGeometry args={[0.7, 0.15, 0.5]} />
           <meshStandardMaterial color={pal.alum} roughness={0.55} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* Weather bed — controls / the instanced seedling tray / GLSL ground */}
         <mesh position={[0.45, 0.68, 0.3]}>
           <boxGeometry args={[0.3, 0.08, 0.2]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         <mesh position={[0.45, 0.24, 0.15]}>
           <boxGeometry args={[0.7, 0.04, 0.5]} />
           <meshStandardMaterial color={pal.resin} roughness={0.7} />
+          <InkEdges />
+        </mesh>
+        {/* The tray's scribed cells — instancing shown twice over */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.45, 0.262, 0.15]}>
+          <planeGeometry args={[0.62, 0.42]} />
+          <meshBasicMaterial map={trayGrid} transparent depthWrite={false} />
         </mesh>
         <InstancedBlanks
           count={24}
@@ -101,13 +135,22 @@ export function FarmGreenhouse({ hover, entered, reducedMotion, onClick, onHover
         <mesh position={[0.45, 0.12, -0.2]}>
           <boxGeometry args={[0.5, 0.15, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.55} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
-        {/* The aurora, archived: an etched specimen plate, its light declined */}
-        <mesh position={[-0.95, 0.42, -0.75]} rotation={[0, Math.PI / 5, 0]}>
-          <boxGeometry args={[0.5, 0.7, 0.03]} />
-          <meshStandardMaterial color={pal.resin} roughness={0.75} />
-        </mesh>
+        {/* The aurora, archived: an etched specimen plate, its light declined —
+            now carrying its waveform engraving (bible 10 punch list) */}
+        <group position={[-0.95, 0.42, -0.75]} rotation={[0, Math.PI / 5, 0]}>
+          <mesh>
+            <boxGeometry args={[0.5, 0.7, 0.03]} />
+            <meshStandardMaterial color={pal.resin} roughness={0.75} />
+            <InkEdges />
+          </mesh>
+          <mesh position={[0, 0, 0.017]}>
+            <planeGeometry args={[0.44, 0.62]} />
+            <meshStandardMaterial map={auroraMap} roughness={0.78} toneMapped={false} />
+          </mesh>
+        </group>
 
         {/* The weather vane — outside the sealed climate, optionally connected */}
         <group

@@ -1,9 +1,10 @@
 import { Line } from '@react-three/drei';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { LINKS } from '../../data/profile';
 import { usePalette } from '../palette';
-import { CaptionPlate, SoftPatch } from '../primitives';
+import { CaptionPlate, InkEdges, SoftPatch } from '../primitives';
+import { labelTexture } from '../textures';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
@@ -28,6 +29,18 @@ export function ServerRoom() {
     () => '#' + new THREE.Color(pal.concrete).multiplyScalar(0.55).getHexString(),
     [pal.concrete],
   );
+  // The stencil belongs on the door (bible 10); the floating chip now only
+  // answers attention as the leader note.
+  const stencilMap = useMemo(
+    () =>
+      labelTexture(
+        ['SYS · SALIERI009', 'GITHUB.COM/SALIERI009'],
+        { paper: pal.alum, ink: pal.graphite },
+        { w: 512, h: 128, size: 30 },
+      ),
+    [pal.alum, pal.graphite],
+  );
+  useEffect(() => () => stencilMap.dispose(), [stencilMap]);
 
   return (
     <group>
@@ -81,6 +94,7 @@ export function ServerRoom() {
             >
               <boxGeometry args={[0.5, 1.1, 0.35]} />
               <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+              <InkEdges />
             </mesh>
             {named && (
               <>
@@ -96,11 +110,18 @@ export function ServerRoom() {
                   color={doorHover ? pal.signal : pal.graphite}
                   lineWidth={doorHover ? 2 : 1}
                 />
-                <CaptionPlate
-                  position={[x - 0.25, -1.0, -1.7]}
-                  lines={['SYS · SALIERI009', 'GITHUB.COM/SALIERI009']}
-                  note={doorHover}
-                />
+                {/* The stencil, engraved on the metal at reading height */}
+                <mesh position={[x, -1.35, -1.719]}>
+                  <planeGeometry args={[0.44, 0.11]} />
+                  <meshStandardMaterial map={stencilMap} roughness={0.55} toneMapped={false} />
+                </mesh>
+                {doorHover && (
+                  <CaptionPlate
+                    position={[x - 0.25, -1.0, -1.7]}
+                    lines={['SYS · SALIERI009', 'GITHUB.COM/SALIERI009']}
+                    note
+                  />
+                )}
               </>
             )}
           </group>

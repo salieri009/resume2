@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { SKILL_PROOFS, formatProof } from '../../data/academic';
 import { usePalette } from '../palette';
-import { CaptionPlate, FlowTrace, SoftPatch } from '../primitives';
+import { CaptionPlate, FlowTrace, InkEdges, SoftPatch } from '../primitives';
+import { labelTexture } from '../textures';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
@@ -61,6 +62,22 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
 
   const active = hovered !== null ? RISERS[hovered] : null;
 
+  // Trade letters engraved onto the pipe faces at reading height (bible 10):
+  // the stencil voice belongs ON the metal.
+  const letterMaps = useMemo(
+    () =>
+      RISERS.map((r) =>
+        labelTexture([r.letter[0]], { paper: pal.alum, ink: pal.graphite }, { w: 128, h: 128, size: 72 }),
+      ),
+    [pal.alum, pal.graphite],
+  );
+  useEffect(
+    () => () => {
+      letterMaps.forEach((t) => t.dispose());
+    },
+    [letterMaps],
+  );
+
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.2, -0.5]}>
@@ -92,18 +109,27 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
             <mesh position={[r.x, -2.12, -0.5]}>
               <boxGeometry args={[0.25, 0.15, 0.25]} />
               <meshStandardMaterial color={dim} roughness={0.9} />
+              <InkEdges />
             </mesh>
             <mesh position={[r.x, -1.0, -0.5]}>
               <boxGeometry args={[0.12, 2.1, 0.12]} />
               <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+              <InkEdges />
+            </mesh>
+            {/* The stencil, on the metal itself */}
+            <mesh position={[r.x, -1.42, -0.4395]}>
+              <planeGeometry args={[0.1, 0.1]} />
+              <meshStandardMaterial map={letterMaps[i] ?? null} roughness={0.55} toneMapped={false} />
             </mesh>
             <mesh position={[r.x, -0.02, -0.5]}>
               <boxGeometry args={[0.2, 0.08, 0.2]} />
               <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
+              <InkEdges />
             </mesh>
             <mesh position={[r.x, -1.1, -0.34]}>
               <boxGeometry args={[0.3, 0.18, 0.02]} />
               <meshStandardMaterial color={pal.resin} roughness={0.75} />
+              <InkEdges />
             </mesh>
 
             <FlowTrace

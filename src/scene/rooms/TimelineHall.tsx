@@ -47,11 +47,21 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
     }
     return m;
   }, [pal.resin, pal.graphite]);
+  const completionMap = useMemo(
+    () =>
+      labelTexture(
+        ['UTS BIT · COMPLETE', 'GPA 6.00/7.0 · WAM 80.31 · 144 CP'],
+        { paper: pal.resin, ink: pal.graphite },
+        { w: 512, h: 140, size: 30 },
+      ),
+    [pal.resin, pal.graphite],
+  );
   useEffect(
     () => () => {
       labelMaps.forEach((t) => t.dispose());
+      completionMap.dispose();
     },
-    [labelMaps],
+    [labelMaps, completionMap],
   );
 
   return (
@@ -151,16 +161,17 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
       {/* Stage zero's confession, written once at the row's head */}
       <CaptionPlate position={[-3.5, 0.12, 0.7]} lines={['EXEMPT · EXISTING STRUCTURE, RETAINED']} />
 
-      {/* The completion plate — the building signed off */}
+      {/* The completion plate — the building signed off, properly engraved */}
       <group position={[2.7, 0, 0]}>
         <mesh position={[0, 1.9, 0]}>
           <boxGeometry args={[0.95, 0.3, 0.04]} />
           <meshStandardMaterial color={pal.resin} roughness={0.7} />
+          <InkEdges />
         </mesh>
-        <CaptionPlate
-          position={[-0.42, 1.9, 0.1]}
-          lines={['UTS BIT · COMPLETE · GPA 6.00/7.0 · WAM 80.31 · 144 CP']}
-        />
+        <mesh position={[0, 1.9, 0.021]}>
+          <planeGeometry args={[0.88, 0.24]} />
+          <meshStandardMaterial map={completionMap} roughness={0.75} toneMapped={false} />
+        </mesh>
       </group>
     </group>
   );

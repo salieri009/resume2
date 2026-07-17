@@ -55,6 +55,129 @@ export function labelTexture(
 }
 
 /**
+ * The aurora, archived (bible 04/L3-FARM · 10 punch list): layered hairline
+ * sine bands etched on the specimen plate — the spectacle's engineering
+ * stated, its light declined.
+ */
+export function waveformTexture({ paper, ink }: EngravingInk): THREE.CanvasTexture {
+  const W = 256;
+  const H = 384;
+  return makeEngraving(W, H, (ctx) => {
+    ctx.fillStyle = paper;
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = ink;
+    for (let band = 0; band < 5; band++) {
+      ctx.lineWidth = band === 2 ? 1.6 : 0.9;
+      ctx.globalAlpha = 0.35 + band * 0.12;
+      ctx.beginPath();
+      const mid = 70 + band * 55;
+      for (let x = 0; x <= W; x += 3) {
+        const t = x / W;
+        const y =
+          mid +
+          Math.sin(t * Math.PI * 3 + band * 1.3) * 22 +
+          Math.sin(t * Math.PI * 7.3 + band * 2.1) * 9;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = ink;
+    ctx.font = '600 15px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillText('AURORA', 20, H - 40);
+    ctx.font = '11px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillText('CUSTOM GLSL · ONE DRAW CALL', 20, H - 20);
+  });
+}
+
+/**
+ * The Perlin field's combed grain (bible 04/L3-EPHEMERAL · 10 punch list):
+ * short curved strokes bending across the face — a frozen chart of the noise
+ * that moves the ink. Transparent ground; lay over the mass's own material.
+ */
+export function flowFieldTexture(ink: string): THREE.CanvasTexture {
+  const W = 256;
+  const H = 192;
+  return makeEngraving(W, H, (ctx) => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 1;
+    ctx.globalAlpha = 0.55;
+    const field = (x: number, y: number) =>
+      Math.sin(x * 0.028 + Math.sin(y * 0.021) * 2.2) + Math.cos(y * 0.024 + x * 0.008);
+    for (let gy = 12; gy < H; gy += 16) {
+      for (let gx = 10; gx < W; gx += 18) {
+        let x = gx;
+        let y = gy;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        for (let s = 0; s < 5; s++) {
+          const a = field(x, y);
+          x += Math.cos(a) * 3.2;
+          y += Math.sin(a) * 3.2;
+          ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  });
+}
+
+/**
+ * The history layer's sediment (bible 04/L3-EPHEMERAL): a faint speckle
+ * mottle for the middle roof — ink remembered, at whisper opacity.
+ */
+export function speckleTexture(ink: string): THREE.CanvasTexture {
+  const S = 128;
+  return makeEngraving(S, S, (ctx) => {
+    ctx.clearRect(0, 0, S, S);
+    ctx.fillStyle = ink;
+    let seed = 42;
+    const rand = () => {
+      seed = (seed * 16807) % 2147483647;
+      return seed / 2147483647;
+    };
+    for (let i = 0; i < 140; i++) {
+      const r = 0.5 + rand() * 1.3;
+      ctx.globalAlpha = 0.08 + rand() * 0.12;
+      ctx.beginPath();
+      ctx.arc(rand() * S, rand() * S, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  });
+}
+
+/** A scribed cell grid (farm seed tray) — hairlines on a transparent ground. */
+export function gridTexture(cols: number, rows: number, ink: string): THREE.CanvasTexture {
+  const W = 256;
+  const H = Math.round((256 * rows) / cols);
+  return makeEngraving(W, H, (ctx) => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = ink;
+    ctx.lineWidth = 1.2;
+    ctx.globalAlpha = 0.5;
+    for (let c = 0; c <= cols; c++) {
+      const x = (W / cols) * c;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, H);
+      ctx.stroke();
+    }
+    for (let r = 0; r <= rows; r++) {
+      const y = (H / rows) * r;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(W, y);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  });
+}
+
+/**
  * The archive's circular embossed seal (bible 04/L4): double ring, uppercase
  * mono, English always. Emboss is implied by a lighter inner ground and the
  * ring pair — relief drawn, not modeled.

@@ -7,7 +7,7 @@ import { LINKS } from '../../data/profile';
 import { EASE_SITE } from '../motion';
 import { usePalette } from '../palette';
 import { CaptionPlate, InkEdges, SoftPatch } from '../primitives';
-import { sealTexture } from '../textures';
+import { labelTexture, sealTexture } from '../textures';
 
 /**
  * L4 · The Archive & The Library (bible 04/L4-ARCHIVE-LIBRARY, concept dims).
@@ -53,11 +53,22 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pal.resin, pal.graphite],
   );
+  // The document, flat in its tray (bible 10): issuer and title engraved —
+  // the full letter is read in the panel, as archives are read at the desk.
+  const docMaps = useMemo(
+    () =>
+      CREDENTIALS.map((c) =>
+        labelTexture([c.issuer, c.title], { paper: pal.resin, ink: pal.graphite }, { w: 512, h: 128, size: 20 }),
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pal.resin, pal.graphite],
+  );
   useEffect(
     () => () => {
       sealMaps.forEach((t) => t.dispose());
+      docMaps.forEach((t) => t.dispose());
     },
-    [sealMaps],
+    [sealMaps, docMaps],
   );
   /* Spread sealed drawers across the chest; blanks fill the lower row. */
   const halfSpan = 1.05;
@@ -118,6 +129,16 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
             <mesh position={[0, 0.03, 0.027]}>
               <circleGeometry args={[0.085, 40]} />
               <meshStandardMaterial map={sealMaps[i] ?? null} roughness={0.75} toneMapped={false} />
+            </mesh>
+            {/* The tray and its document — flat, sliding out with the front */}
+            <mesh position={[0, -0.1, -0.12]}>
+              <boxGeometry args={[0.48, 0.015, 0.22]} />
+              <meshStandardMaterial color={pal.resin} roughness={0.72} />
+              <InkEdges />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.091, -0.12]}>
+              <planeGeometry args={[0.44, 0.11]} />
+              <meshStandardMaterial map={docMaps[i] ?? null} roughness={0.78} toneMapped={false} />
             </mesh>
           </group>
         );

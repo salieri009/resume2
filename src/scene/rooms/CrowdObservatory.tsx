@@ -2,7 +2,7 @@ import { Line } from '@react-three/drei';
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import { usePalette } from '../palette';
-import { BlobShadow, CaptionPlate, FlowTrace, Plinth } from '../primitives';
+import { BlobShadow, CaptionPlate, FlowTrace, InkEdges, Plinth } from '../primitives';
 import type { RoomBlockProps } from './types';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -58,32 +58,49 @@ export function CrowdObservatory({ hover, entered, reducedMotion, onClick, onHov
         <mesh position={[0, 0.1, 0.05]}>
           <boxGeometry args={[1.9, 0.12, 1.2]} />
           <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* Services register — the gateway, square-shouldered and foremost */}
         <mesh position={[0.35, 0.61, 0.4]}>
           <boxGeometry args={[0.45, 0.9, 0.45]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         {/* — and the inference eye, aimed along the plinth's long axis */}
         <mesh position={[-0.4, 0.51, -0.2]}>
           <boxGeometry args={[0.6, 0.7, 0.5]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
-        {/* The slit aperture — a rectangle of held shade, not a glow */}
+        {/* The slit aperture — a rectangle of held shade, not a glow —
+            with its engraved reveal: the eye's frame (bible 10 punch list) */}
         <mesh position={[-0.09, 0.61, -0.2]}>
           <boxGeometry args={[0.02, 0.04, 0.5]} />
           <meshStandardMaterial color={pal.shade} roughness={1} metalness={0} />
         </mesh>
+        <Line
+          points={[
+            v(-0.098, 0.57, -0.47),
+            v(-0.098, 0.65, -0.47),
+            v(-0.098, 0.65, 0.07),
+            v(-0.098, 0.57, 0.07),
+            v(-0.098, 0.57, -0.47),
+          ]}
+          color={pal.graphite}
+          lineWidth={0.7}
+        />
 
         {/* Interface register — slender, lifted where a face would meet it */}
         <mesh position={[0.3, 1.24, 0.3]}>
           <boxGeometry args={[0.7, 0.2, 0.15]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         <mesh position={[-0.55, 1.23, 0.05]}>
           <boxGeometry args={[0.3, 0.18, 0.15]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* The flows — graphite at rest; the blue current under attention */}
@@ -102,6 +119,7 @@ export function CrowdObservatory({ hover, entered, reducedMotion, onClick, onHov
         <mesh position={[-2.05, 0.085, -1.5]}>
           <boxGeometry args={[0.4, 0.25, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+          <InkEdges />
         </mesh>
         {entered && (
           <>

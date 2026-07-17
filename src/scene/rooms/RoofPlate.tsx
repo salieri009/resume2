@@ -5,7 +5,7 @@ import { useSite } from '../../building/SiteContext';
 import { LINKS, PROFILE } from '../../data/profile';
 import { STRINGS } from '../../data/strings';
 import { usePalette } from '../palette';
-import { BlobShadow } from '../primitives';
+import { BlobShadow, InkEdges } from '../primitives';
 
 function wrapPlateText(
   ctx: CanvasRenderingContext2D,
@@ -162,14 +162,17 @@ export function RoofPlate() {
       <mesh position={[-0.4, 0.15, 0]}>
         <boxGeometry args={[0.04, 0.3, 0.04]} />
         <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+        <InkEdges />
       </mesh>
       <mesh position={[0.4, 0.15, 0]}>
         <boxGeometry args={[0.04, 0.3, 0.04]} />
         <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+        <InkEdges />
       </mesh>
       <mesh position={[0, 1.0, 0]}>
         <boxGeometry args={[1.05, 1.45, 0.06]} />
         <meshStandardMaterial color={pal.resin} roughness={0.72} />
+        <InkEdges />
       </mesh>
       <mesh position={[0, 1.0, 0.032]}>
         <planeGeometry args={[0.98, 1.36]} />

@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { usePalette } from '../palette';
-import { BlobShadow, CaptionPlate, FlowTrace, Plinth } from '../primitives';
+import { BlobShadow, CaptionPlate, FlowTrace, InkEdges, Plinth } from '../primitives';
+import { labelTexture } from '../textures';
 import type { RoomBlockProps } from './types';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -44,6 +45,13 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
     [],
   );
 
+  // The gantry's engraved tally — inspection counted on the beam (bible 10).
+  const tallyMap = useMemo(
+    () => labelTexture(['118 E2E · 14 SEC'], { paper: pal.alum, ink: pal.graphite }, { size: 30, w: 512, h: 96 }),
+    [pal.alum, pal.graphite],
+  );
+  useEffect(() => () => tallyMap.dispose(), [tallyMap]);
+
   return (
     <group>
       <Plinth width={3.6} depth={1.9} hover={hover} onHover={onHover} onClick={onClick}>
@@ -54,35 +62,42 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
         <mesh position={[-0.3, 0.16, 0.6]}>
           <boxGeometry args={[2.6, 0.12, 0.35]} />
           <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* Logic rack — Servlets shoulder to shoulder with Services, tallest row */}
         <mesh position={[-0.7, 0.34, 0.05]}>
           <boxGeometry args={[0.5, 0.6, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
         <mesh position={[0.3, 0.29, 0.05]}>
           <boxGeometry args={[0.4, 0.5, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
-        {/* Data rack — eight identical DAO bays on strict centers */}
+        {/* Data rack — eight identical DAO bays on strict centers; every bay
+            carries its edge, so sameness reads as ruled dividers */}
         {bays.map((x) => (
           <mesh key={x} position={[x, 0.24, -0.35]}>
             <boxGeometry args={[0.28, 0.4, 0.3]} />
             <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+            <InkEdges />
           </mesh>
         ))}
         {/* — and the SQLite store everything finally rests on */}
         <mesh position={[-0.1, 0.19, -0.7]}>
           <boxGeometry args={[2.4, 0.3, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.55} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* Tailwind plate — styling only, no riser, off the picking route */}
         <mesh position={[-1.5, 0.07, 0.72]}>
           <boxGeometry args={[0.35, 0.06, 0.35]} />
           <meshStandardMaterial color={pal.resin} roughness={0.7} />
+          <InkEdges />
         </mesh>
 
         {/* The CI gantry — nothing leaves this building unexamined */}
@@ -116,13 +131,21 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
               roughness={0.45}
               metalness={0.1}
             />
+            <InkEdges />
+          </mesh>
+          {/* The inspection tally, engraved on the beam's inner face */}
+          <mesh position={[1.408, 1.16, 0]} rotation={[0, -Math.PI / 2, 0]}>
+            <planeGeometry args={[0.9, 0.1]} />
+            <meshStandardMaterial map={tallyMap} roughness={0.6} toneMapped={false} />
           </mesh>
         </group>
 
-        {/* The shipped artifact — one container that cleared inspection */}
+        {/* The shipped artifact — one container that cleared inspection;
+            its edge may be firm (bible 10: medium weight) */}
         <mesh position={[1.72, 0.165, 0.55]}>
           <boxGeometry args={[0.3, 0.25, 0.25]} />
           <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
+          <InkEdges />
         </mesh>
 
         {/* Two flows, never both at once: the route, or the release */}
