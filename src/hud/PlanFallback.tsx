@@ -8,28 +8,31 @@ import { PROFILE } from '../data/profile';
  * Same SpecPanel / navigation contract — no empty canvas.
  */
 export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced' }) {
-  const { goTo, returnLobby, floor, room, lang, setPrintOpen } = useSite();
+  const { goTo, returnLobby, floor, room, phase, lang, setPrintOpen } = useSite();
   const t = STRINGS[lang];
+  const showCover = phase === 'lobby' || phase === 'boot' || room === 'lobby';
 
   return (
     <div className="site-plan">
-      <header className="site-plan-head">
-        <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · PLAN VIEW</p>
-        <h1>The Architecture of Software</h1>
-        <p className="site-plan-sub">Software is not written. It is constructed.</p>
-        <p className="site-plan-reason">
-          {reason === 'webgl'
-            ? 'WebGL unavailable — orthographic plan mode.'
-            : reason === 'reduced'
-              ? 'Reduced motion — final poses only.'
-              : 'Compact viewport — plan index.'}
-        </p>
-        <p className="site-plan-tag">{t.tagline}</p>
-        <p className="site-plan-about">{t.aboutStory}</p>
-        <p className="site-plan-name">
-          {PROFILE.name} · {t.majorLine}
-        </p>
-      </header>
+      {showCover && (
+        <header className="site-plan-head">
+          <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · PLAN VIEW</p>
+          <h1>The Architecture of Software</h1>
+          <p className="site-plan-sub">Software is not written. It is constructed.</p>
+          <p className="site-plan-reason">
+            {reason === 'webgl'
+              ? 'WebGL unavailable — orthographic plan mode.'
+              : reason === 'reduced'
+                ? 'Reduced motion — final poses only.'
+                : 'Compact viewport — plan index.'}
+          </p>
+          <p className="site-plan-tag">{t.tagline}</p>
+          <p className="site-plan-about">{t.aboutStory}</p>
+          <p className="site-plan-name">
+            {PROFILE.name} · {t.majorLine}
+          </p>
+        </header>
+      )}
 
       <ul className="site-plan-floors">
         {FLOORS.map((f) => (
@@ -68,9 +71,11 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
         ))}
       </ul>
 
-      <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
-        {t.navDownload}
-      </button>
+      {showCover && (
+        <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
+          {t.navDownload}
+        </button>
+      )}
     </div>
   );
 }
