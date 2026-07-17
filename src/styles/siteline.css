@@ -111,9 +111,11 @@ html[data-experience='siteline'] #root {
 }
 .site-caption--wrap {
   white-space: normal;
-  max-width: min(9rem, 42vw);
-  max-height: min(28vh, 11rem);
-  overflow: auto;
+  max-width: min(14rem, 52vw);
+  /* Tall enough for a 3-line B1 note as a real card; scroll only if content overflows */
+  max-height: min(48vh, 18rem);
+  overflow-x: hidden;
+  overflow-y: auto;
   word-break: break-word;
 }
 /* Anchor at bottom of plate; grow upward so basement hover cards stay in viewport */
