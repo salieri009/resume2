@@ -3,6 +3,12 @@ import { CustomEase } from 'gsap/CustomEase';
 
 gsap.registerPlugin(CustomEase);
 
+// Timelines run on the wall clock, not the frame clock. With lag smoothing,
+// a throttled tab (backgrounded mid-boot, embedded pane) advances ~33 ms per
+// rare tick and the boot crawls in slow motion; with it off, returning to the
+// tab jumps to the true elapsed pose — the 08 doctrine's cut, not a replay.
+gsap.ticker.lagSmoothing(0);
+
 /**
  * Motion law (bible Chapter 05): one ease for camera and masses —
  * the constitution's cubic-bezier(0.22, 1, 0.36, 1) — plus the single
