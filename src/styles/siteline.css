@@ -304,13 +304,8 @@ html[data-experience='siteline'] #root {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  /* Stronger left wash so floor labels don't dissolve into the massing */
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--paper) 96%, transparent) 0%,
-    color-mix(in srgb, var(--paper) 78%, transparent) 55%,
-    transparent 100%
-  );
+  /* No rail wash — floor/brand plates carry their own paper fills */
+  background: none;
   pointer-events: none;
 }
 .site-rail > * {
@@ -457,9 +452,9 @@ html[data-experience='siteline'] #root {
   max-height: min(70vh, 36rem);
   overflow: auto;
   padding: 1.15rem 1.2rem 1.25rem;
-  /* Paper plate — thesis text must never fight the glass / massing behind it */
+  /* Opaque paper plate — no see-through wash over room internals */
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  background: var(--paper);
   box-shadow: none;
 }
 .site-lobby-kicker {
@@ -525,7 +520,8 @@ html[data-experience='siteline'] #root {
   overflow: auto;
   padding: 1.1rem 1.15rem 1.35rem;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 97%, transparent);
+  /* Opaque paper — room internals stay readable under the plate */
+  background: var(--paper);
   backdrop-filter: none;
   display: flex;
   flex-direction: column;
