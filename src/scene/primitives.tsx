@@ -1,4 +1,4 @@
-import { Html, Line } from '@react-three/drei';
+import { Edges, Html, Line } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -29,6 +29,17 @@ export function partialPolyline(points: THREE.Vector3[], t: number): THREE.Vecto
     }
   }
   return out.length >= 2 ? out : [points[0], points[0].clone()];
+}
+
+/**
+ * Edge ink (bible 10 · ① Edge ink): a mass's resting edge as a drawn line —
+ * the 07 line-weight hierarchy extended into the third dimension. Under
+ * isolate the mass fades but its edges hold: line surviving mass. Place as
+ * a child of the mesh it inks.
+ */
+export function InkEdges({ threshold = 15 }: { threshold?: number }) {
+  const pal = usePalette();
+  return <Edges threshold={threshold} color={pal.graphite} />;
 }
 
 interface PlinthProps {
@@ -90,6 +101,7 @@ export function Plinth({
       <mesh>
         <boxGeometry args={[width, thickness, depth]} />
         <meshStandardMaterial color={pal.resin} roughness={0.75} />
+        <InkEdges />
       </mesh>
       <Line points={boundary} color={hover ? pal.signal : pal.graphite} lineWidth={hover ? 2 : 1.5} />
       {children}

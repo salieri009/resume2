@@ -1,9 +1,10 @@
 import { Line } from '@react-three/drei';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { AXONO_LAYERS, SEMESTER_WAYPOINTS, formatMark } from '../../data/academic';
 import { usePalette } from '../palette';
-import { BlobShadow, CaptionPlate, Plinth } from '../primitives';
+import { BlobShadow, CaptionPlate, InkEdges, Plinth } from '../primitives';
+import { labelTexture } from '../textures';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
@@ -33,6 +34,25 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
     () => '#' + new THREE.Color(pal.concrete).multiplyScalar(0.82).getHexString(),
     [pal.concrete],
   );
+  // Block top-face stamps (bible 10 · first engravings): one texture per
+  // unique label, shared across all four stages; regenerated per print.
+  const labelMaps = useMemo(() => {
+    const m = new Map<string, THREE.CanvasTexture>();
+    for (const layer of AXONO_LAYERS.slice(1)) {
+      for (const b of layer.blocks) {
+        if (!m.has(b.label)) {
+          m.set(b.label, labelTexture([b.label], { paper: pal.resin, ink: pal.graphite }, { size: 44, h: 128, w: 256 }));
+        }
+      }
+    }
+    return m;
+  }, [pal.resin, pal.graphite]);
+  useEffect(
+    () => () => {
+      labelMaps.forEach((t) => t.dispose());
+    },
+    [labelMaps],
+  );
 
   return (
     <group position={[0, 0.15, 0]}>
@@ -54,7 +74,7 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
             <Plinth
               width={1.2}
               depth={1.2}
-              hover={hover || active}
+              hover={hover}
               onHover={(h) => setHovered(h ? i : null)}
               onClick={() => onSelectStage(i)}
             >
@@ -68,20 +88,35 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
                 >
                   <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
                   <meshStandardMaterial color={exemptColor} roughness={0.9} />
+                  <InkEdges />
                 </mesh>
               ))}
 
-              {/* The lifts, poured stage by stage */}
+              {/* The lifts, poured stage by stage — top faces stamped */}
               {AXONO_LAYERS.slice(1, 1 + lifts).map((layer, k) => (
                 <group key={layer.id} position={[0, 0.16 + k * 0.34, 0]}>
                   {layer.blocks.map((b) => (
-                    <mesh
+                    <group
                       key={b.label}
-                      position={[(b.left + b.size / 2) * S - 0.55, (b.height * S) / 2, (b.top + b.size / 2) * S - 0.55]}
+                      position={[(b.left + b.size / 2) * S - 0.55, 0, (b.top + b.size / 2) * S - 0.55]}
                     >
-                      <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
-                      <meshStandardMaterial color={pal.resin} roughness={0.72} />
-                    </mesh>
+                      <mesh position={[0, (b.height * S) / 2, 0]}>
+                        <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
+                        <meshStandardMaterial color={pal.resin} roughness={0.72} />
+                        <InkEdges />
+                      </mesh>
+                      <mesh
+                        rotation={[-Math.PI / 2, 0, 0]}
+                        position={[0, b.height * S + 0.002, 0]}
+                      >
+                        <planeGeometry args={[b.size * S * 0.92, (b.size * S * 0.92) / 2]} />
+                        <meshStandardMaterial
+                          map={labelMaps.get(b.label) ?? null}
+                          roughness={0.75}
+                          toneMapped={false}
+                        />
+                      </mesh>
+                    </group>
                   ))}
                 </group>
               ))}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -6,7 +6,8 @@ import { CREDENTIALS } from '../../data/credentials';
 import { LINKS } from '../../data/profile';
 import { EASE_SITE } from '../motion';
 import { usePalette } from '../palette';
-import { CaptionPlate, SoftPatch } from '../primitives';
+import { CaptionPlate, InkEdges, SoftPatch } from '../primitives';
+import { sealTexture } from '../textures';
 
 /**
  * L4 · The Archive & The Library (bible 04/L4-ARCHIVE-LIBRARY, concept dims).
@@ -45,6 +46,19 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
   }, [openIdx, reducedMotion, invalidate]);
 
   const seals = CREDENTIALS.map((c) => c.seal.replace('\n', ' '));
+  // Circular embossed seals (bible 10 · first engravings) — English always,
+  // regenerated per print, disposed on unmount.
+  const sealMaps = useMemo(
+    () => seals.map((s) => sealTexture(s, { paper: pal.resin, ink: pal.graphite })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pal.resin, pal.graphite],
+  );
+  useEffect(
+    () => () => {
+      sealMaps.forEach((t) => t.dispose());
+    },
+    [sealMaps],
+  );
   /* Spread sealed drawers across the chest; blanks fill the lower row. */
   const halfSpan = 1.05;
   const cols =
@@ -59,6 +73,7 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
       <mesh position={[0.4, 0.64, -0.6]}>
         <boxGeometry args={[2.6, 1.2, 0.5]} />
         <meshStandardMaterial color={pal.resin} roughness={0.72} />
+        <InkEdges />
       </mesh>
 
       {/* Sealed drawers — service order, left to right */}
@@ -92,14 +107,18 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
                 color={hover || openIdx === i ? pal.signal : pal.resin}
                 roughness={0.7}
               />
+              <InkEdges />
             </mesh>
             {/* Pull */}
             <mesh position={[0, -0.06, 0.035]}>
               <boxGeometry args={[0.14, 0.02, 0.02]} />
               <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
             </mesh>
-            {/* The embossed seal — English, always */}
-            <CaptionPlate position={[-0.18, 0.06, 0.06]} lines={[seal]} />
+            {/* The embossed seal — engraved, English, always (bible 10) */}
+            <mesh position={[0, 0.03, 0.027]}>
+              <circleGeometry args={[0.085, 40]} />
+              <meshStandardMaterial map={sealMaps[i] ?? null} roughness={0.75} toneMapped={false} />
+            </mesh>
           </group>
         );
       })}
@@ -131,6 +150,7 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
         >
           <boxGeometry args={[0.9, 0.5, 0.55]} />
           <meshStandardMaterial color={deskHover ? pal.signal : pal.resin} roughness={0.72} />
+          <InkEdges />
         </mesh>
         <SoftPatch position={[0, 0.56, 0]} width={1.1} depth={0.8} opacity={0.35} />
         <CaptionPlate position={[-0.3, 0.75, 0.35]} lines={['350+ ESSAYS · KO · EN · JA']} note={deskHover} />

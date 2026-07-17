@@ -7,7 +7,7 @@ import { SHIPPED_ROOMS, type RoomId } from '../building/program';
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
-import { partialPolyline, SoftPatch } from './primitives';
+import { InkEdges, partialPolyline, SoftPatch } from './primitives';
 import { ArchiveLibrary } from './rooms/ArchiveLibrary';
 import { CoreRisers } from './rooms/CoreRisers';
 import { CrowdObservatory } from './rooms/CrowdObservatory';
@@ -130,6 +130,7 @@ export function BuildingMass({
                 opacity={shellOpacity}
                 depthWrite={!shellFade}
               />
+              <InkEdges />
             </mesh>
           )}
           {basementOpen && <SlabCutRim fade={shellFade} opacity={shellOpacity} />}
@@ -142,6 +143,7 @@ export function BuildingMass({
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
+            <InkEdges />
           </mesh>
           <mesh position={[0, wallH, 0]}>
             <boxGeometry args={[FW, 0.12, FD]} />
@@ -152,6 +154,7 @@ export function BuildingMass({
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
+            <InkEdges />
           </mesh>
 
           {/* Walls */}
@@ -177,6 +180,7 @@ export function BuildingMass({
                 opacity={shellOpacity}
                 depthWrite={!shellFade}
               />
+              <InkEdges />
             </mesh>
           ))}
 
@@ -203,6 +207,7 @@ export function BuildingMass({
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
+            <InkEdges />
           </mesh>
 
           {/* Light patch — the curtain's admitted sun on the lobby slab (bible L0).
@@ -281,6 +286,7 @@ function Wall({
         opacity={opacity}
         depthWrite={!fade}
       />
+      <InkEdges />
     </mesh>
   );
 }
