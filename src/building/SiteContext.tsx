@@ -153,8 +153,13 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     // Late GSAP / StrictMode / plan-fallback completions must not yank the
     // visitor back to the lobby thesis after they already left via goTo
     // (repro: hard refresh on #/L0 then navigate to #/L1/timeline).
+    // Bail only when the visitor has actually advanced past boot — a deep
+    // load (#/L2/crowd) legitimately starts with room ≠ lobby while phase
+    // is still 'boot', and finishBoot must carry them into that room
+    // (repro: hard refresh on #/L1/timeline stayed stuck at the boot
+    // station with no rail and an opaque shell).
     if (bootSettledRef.current) return;
-    if (phaseRef.current === 'room' || phaseRef.current === 'end' || roomRef.current !== 'lobby') {
+    if (phaseRef.current === 'room' || phaseRef.current === 'end') {
       bootSettledRef.current = true;
       return;
     }

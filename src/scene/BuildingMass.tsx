@@ -126,7 +126,7 @@ export function BuildingMass({
               <meshStandardMaterial
                 color={pal.concrete}
                 roughness={0.85}
-                transparent={shellFade}
+                transparent
                 opacity={shellOpacity}
                 depthWrite={!shellFade}
               />
@@ -138,7 +138,7 @@ export function BuildingMass({
             <meshStandardMaterial
               color={pal.resin}
               roughness={0.7}
-              transparent={shellFade}
+              transparent
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
@@ -148,7 +148,7 @@ export function BuildingMass({
             <meshStandardMaterial
               color={pal.concrete}
               roughness={0.8}
-              transparent={shellFade}
+              transparent
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
@@ -173,7 +173,7 @@ export function BuildingMass({
                 color={pal.alum}
                 roughness={0.45}
                 metalness={0.1}
-                transparent={shellFade}
+                transparent
                 opacity={shellOpacity}
                 depthWrite={!shellFade}
               />
@@ -199,7 +199,7 @@ export function BuildingMass({
             <meshStandardMaterial
               color={pal.resin}
               roughness={0.75}
-              transparent={shellFade}
+              transparent
               opacity={shellOpacity}
               depthWrite={!shellFade}
             />
@@ -277,7 +277,7 @@ function Wall({
       <meshStandardMaterial
         color={pal.concrete}
         roughness={0.88}
-        transparent={fade}
+        transparent
         opacity={opacity}
         depthWrite={!fade}
       />
@@ -313,7 +313,7 @@ function SlabCutRim({ fade, opacity }: { fade: boolean; opacity: number }) {
       <meshStandardMaterial
         color={pal.concrete}
         roughness={0.85}
-        transparent={fade}
+        transparent
         opacity={opacity}
         depthWrite={!fade}
         side={THREE.DoubleSide}
