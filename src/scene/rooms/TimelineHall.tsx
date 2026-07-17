@@ -1,7 +1,15 @@
 import { Line } from '@react-three/drei';
-import { useEffect, useMemo, useState } from 'react';
+import { useThree } from '@react-three/fiber';
+import gsap from 'gsap';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { AXONO_LAYERS, SEMESTER_WAYPOINTS, formatMark } from '../../data/academic';
+import {
+  AXONO_LAYERS,
+  SEMESTER_WAYPOINTS,
+  formatMark,
+  type SemesterWaypoint,
+} from '../../data/academic';
+import { DUR, EASE_INK } from '../motion';
 import { usePalette } from '../palette';
 import { BlobShadow, CaptionPlate, InkEdges, Plinth } from '../primitives';
 import { labelTexture } from '../textures';
@@ -13,7 +21,12 @@ const S = 1 / 160;
 const STAGE_X = [-2.7, -0.9, 0.9, 2.7];
 /** How many lifts stand at each stop (exempt base always present). */
 const LIFTS_AT = [1, 2, 2, 3];
+/** Vertical throw per lift when a stage is exploded apart into an assembly drawing. */
+const EXPLODE_GAP = 0.28;
 const ARTIFACT_AT: Record<number, string> = { 1: 'THE FIVE FLOORS', 2: 'LE-RESTAURANT', 3: 'STEVTECH' };
+
+type LabelMaps = Map<string, THREE.CanvasTexture>;
+type Palette = ReturnType<typeof usePalette>;
 
 interface TimelineHallProps {
   reducedMotion: boolean;
@@ -21,13 +34,177 @@ interface TimelineHallProps {
   onSelectStage: (i: number) => void;
 }
 
+interface AssemblyStageProps {
+  index: number;
+  x: number;
+  wp: SemesterWaypoint;
+  lifts: number;
+  artifact?: string;
+  active: boolean;
+  hover: boolean;
+  reducedMotion: boolean;
+  onHover: (h: boolean) => void;
+  onSelect: () => void;
+  pal: Palette;
+  labelMaps: LabelMaps;
+  exemptColor: string;
+}
+
+/**
+ * One stage of the degree-building, read as an exploded axonometric assembly
+ * (bible 04/L1-TIMELINE, Direction B). At rest the semester floor-plates stand
+ * pulled apart up the assembly axis, joined to their seated slots by dashed
+ * graphite leaders; when the stage is focused (active) or hovered they slide
+ * home on the ink ease and the leaders retract. The exempt base is found
+ * structure — it never assembles.
+ */
+function AssemblyStage({
+  index,
+  x,
+  wp,
+  lifts,
+  artifact,
+  active,
+  hover,
+  reducedMotion,
+  onHover,
+  onSelect,
+  pal,
+  labelMaps,
+  exemptColor,
+}: AssemblyStageProps) {
+  const invalidate = useThree((s) => s.invalidate);
+  // Assemble progress: 0 = exploded (parts apart), 1 = seated (built).
+  const [p, setP] = useState(active ? 1 : 0);
+  const pRef = useRef(active ? 1 : 0);
+
+  useEffect(() => {
+    const target = active || hover ? 1 : 0;
+    if (reducedMotion) {
+      pRef.current = target;
+      setP(target);
+      invalidate();
+      return;
+    }
+    const o = { v: pRef.current };
+    const tw = gsap.to(o, {
+      v: target,
+      duration: DUR.assemble,
+      ease: EASE_INK,
+      onUpdate: () => {
+        pRef.current = o.v;
+        setP(o.v);
+        invalidate();
+      },
+    });
+    return () => {
+      tw.kill();
+    };
+  }, [active, hover, reducedMotion, invalidate]);
+
+  const seated = p > 0.98;
+
+  return (
+    <group position={[x, 0, 0]}>
+      <Plinth
+        width={1.2}
+        depth={1.2}
+        hover={hover}
+        onHover={onHover}
+        onClick={onSelect}
+      >
+        <BlobShadow position={[0.12 * (index + 1), 0.045, 0.1]} width={0.8 + 0.14 * index} depth={0.7} opacity={0.14} />
+
+        {/* Exempt base — existing structure, retained; half-sunk, unstamped, never assembled */}
+        {AXONO_LAYERS[0].blocks.map((b) => (
+          <mesh
+            key={b.label}
+            position={[(b.left + b.size / 2) * S - 0.55, -0.02 + (b.height * S) / 2, (b.top + b.size / 2) * S - 0.55]}
+          >
+            <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
+            <meshStandardMaterial color={exemptColor} roughness={0.9} />
+            <InkEdges />
+          </mesh>
+        ))}
+
+        {/* The lifts — exploded apart at rest, sliding home as p → 1; top faces stamped */}
+        {AXONO_LAYERS.slice(1, 1 + lifts).map((layer, k) => {
+          const dy = (1 - p) * EXPLODE_GAP * (k + 1);
+          return (
+            <group key={layer.id} position={[0, 0.16 + k * 0.34 + dy, 0]}>
+              {/* Assembly leader — the dashed centre-line back to the seated slot */}
+              {!seated && (
+                <Line
+                  points={[v(0, 0, 0), v(0, -dy, 0)]}
+                  color={pal.graphite}
+                  lineWidth={0.6}
+                  dashed
+                  dashSize={0.05}
+                  gapSize={0.03}
+                />
+              )}
+              {layer.blocks.map((b) => (
+                <group
+                  key={b.label}
+                  position={[(b.left + b.size / 2) * S - 0.55, 0, (b.top + b.size / 2) * S - 0.55]}
+                >
+                  <mesh position={[0, (b.height * S) / 2, 0]}>
+                    <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
+                    <meshStandardMaterial color={pal.resin} roughness={0.72} />
+                    <InkEdges />
+                  </mesh>
+                  <mesh
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    position={[0, b.height * S + 0.002, 0]}
+                  >
+                    <planeGeometry args={[b.size * S * 0.92, (b.size * S * 0.92) / 2]} />
+                    <meshStandardMaterial
+                      map={labelMaps.get(b.label) ?? null}
+                      roughness={0.75}
+                      toneMapped={false}
+                    />
+                  </mesh>
+                </group>
+              ))}
+            </group>
+          );
+        })}
+
+        {/* Delivered fixture — nameplate reads once the stage is assembled */}
+        {artifact && p > 0.6 && (
+          <mesh position={[0.63, 0.3 + 0.18 * index, 0.2]}>
+            <boxGeometry args={[0.03, 0.07, 0.24]} />
+            <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
+          </mesh>
+        )}
+      </Plinth>
+
+      {/* Session datum, ruled above the stage */}
+      <CaptionPlate position={[-0.3, 1.62, 0]} lines={[wp.session]} />
+
+      {/* Test-result stamps surface under attention */}
+      {(hover || active) && (
+        <CaptionPlate
+          position={[0.7, 1.1, 0.4]}
+          lines={wp.highlights.slice(0, 2).map((h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`.toUpperCase())}
+          note={hover}
+        />
+      )}
+      {artifact && (hover || active) && (
+        <CaptionPlate position={[0.7, 0.35 + 0.18 * index, 0.2]} lines={[artifact]} />
+      )}
+    </group>
+  );
+}
+
 /**
  * L1 · The Construction Hall (bible 04/L1-TIMELINE, concept sheet dims).
- * One degree-building aging across four plinths: the exempt base half-sunk
- * and unstamped, lifts added stage by stage, artifact nameplates on the
+ * One degree-building aging across four plinths: the exempt base half-sunk and
+ * unstamped, and — Direction B — each stage's lifts standing as an exploded
+ * axonometric that assembles home under attention, artifact nameplates on the
  * flanks, and the completion plate hung over the topped-out stage.
  */
-export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
+export function TimelineHall({ subStop, onSelectStage, reducedMotion }: TimelineHallProps) {
   const pal = usePalette();
   const [hovered, setHovered] = useState<number | null>(null);
   const exemptColor = useMemo(
@@ -37,7 +214,7 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
   // Block top-face stamps (bible 10 · first engravings): one texture per
   // unique label, shared across all four stages; regenerated per print.
   const labelMaps = useMemo(() => {
-    const m = new Map<string, THREE.CanvasTexture>();
+    const m: LabelMaps = new Map();
     for (const layer of AXONO_LAYERS.slice(1)) {
       for (const b of layer.blocks) {
         if (!m.has(b.label)) {
@@ -73,90 +250,24 @@ export function TimelineHall({ subStop, onSelectStage }: TimelineHallProps) {
         lineWidth={0.6}
       />
 
-      {STAGE_X.map((x, i) => {
-        const lifts = LIFTS_AT[i];
-        const wp = SEMESTER_WAYPOINTS[i];
-        const artifact = ARTIFACT_AT[i];
-        const active = subStop === i;
-        const hover = hovered === i;
-        return (
-          <group key={wp.id} position={[x, 0, 0]}>
-            <Plinth
-              width={1.2}
-              depth={1.2}
-              hover={hover}
-              onHover={(h) => setHovered(h ? i : null)}
-              onClick={() => onSelectStage(i)}
-            >
-              <BlobShadow position={[0.12 * (i + 1), 0.045, 0.1]} width={0.8 + 0.14 * i} depth={0.7} opacity={0.14} />
-
-              {/* Exempt base — existing structure, retained; half-sunk, unstamped */}
-              {AXONO_LAYERS[0].blocks.map((b) => (
-                <mesh
-                  key={b.label}
-                  position={[(b.left + b.size / 2) * S - 0.55, -0.02 + (b.height * S) / 2, (b.top + b.size / 2) * S - 0.55]}
-                >
-                  <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
-                  <meshStandardMaterial color={exemptColor} roughness={0.9} />
-                  <InkEdges />
-                </mesh>
-              ))}
-
-              {/* The lifts, poured stage by stage — top faces stamped */}
-              {AXONO_LAYERS.slice(1, 1 + lifts).map((layer, k) => (
-                <group key={layer.id} position={[0, 0.16 + k * 0.34, 0]}>
-                  {layer.blocks.map((b) => (
-                    <group
-                      key={b.label}
-                      position={[(b.left + b.size / 2) * S - 0.55, 0, (b.top + b.size / 2) * S - 0.55]}
-                    >
-                      <mesh position={[0, (b.height * S) / 2, 0]}>
-                        <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
-                        <meshStandardMaterial color={pal.resin} roughness={0.72} />
-                        <InkEdges />
-                      </mesh>
-                      <mesh
-                        rotation={[-Math.PI / 2, 0, 0]}
-                        position={[0, b.height * S + 0.002, 0]}
-                      >
-                        <planeGeometry args={[b.size * S * 0.92, (b.size * S * 0.92) / 2]} />
-                        <meshStandardMaterial
-                          map={labelMaps.get(b.label) ?? null}
-                          roughness={0.75}
-                          toneMapped={false}
-                        />
-                      </mesh>
-                    </group>
-                  ))}
-                </group>
-              ))}
-
-              {/* Delivered fixtures — nameplates standing proud of the flank */}
-              {artifact && (
-                <mesh position={[0.63, 0.3 + 0.18 * i, 0.2]}>
-                  <boxGeometry args={[0.03, 0.07, 0.24]} />
-                  <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
-                </mesh>
-              )}
-            </Plinth>
-
-            {/* Session datum, ruled above the stage */}
-            <CaptionPlate position={[-0.3, 1.62, 0]} lines={[wp.session]} />
-
-            {/* Test-result stamps surface under attention */}
-            {(hover || active) && (
-              <CaptionPlate
-                position={[0.7, 1.1, 0.4]}
-                lines={wp.highlights.slice(0, 2).map((h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`.toUpperCase())}
-                note={hover}
-              />
-            )}
-            {artifact && (hover || active) && (
-              <CaptionPlate position={[0.7, 0.35 + 0.18 * i, 0.2]} lines={[artifact]} />
-            )}
-          </group>
-        );
-      })}
+      {STAGE_X.map((x, i) => (
+        <AssemblyStage
+          key={SEMESTER_WAYPOINTS[i].id}
+          index={i}
+          x={x}
+          wp={SEMESTER_WAYPOINTS[i]}
+          lifts={LIFTS_AT[i]}
+          artifact={ARTIFACT_AT[i]}
+          active={subStop === i}
+          hover={hovered === i}
+          reducedMotion={reducedMotion}
+          onHover={(h) => setHovered(h ? i : null)}
+          onSelect={() => onSelectStage(i)}
+          pal={pal}
+          labelMaps={labelMaps}
+          exemptColor={exemptColor}
+        />
+      ))}
 
       {/* Stage zero's confession, written once at the row's head */}
       <CaptionPlate position={[-3.5, 0.12, 0.7]} lines={['EXEMPT · EXISTING STRUCTURE, RETAINED']} />

@@ -26,6 +26,8 @@ export const DUR = {
   civic: 1.1,
   /** Entering a room: the extra quarter-second is the doorway. */
   threshold: 1.35,
+  /** A within-room build move — the timeline stage assembling home (ink ease). */
+  assemble: 1.2,
   /** The journey's longest single move. */
   roofAscent: 1.6,
   /** Boot ink stroke. */

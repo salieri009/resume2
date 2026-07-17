@@ -37,7 +37,12 @@ scroll.
 The degree-building is a small axonometric massing — three block-stacks to
 a floor, floors added as the semesters pass — and its stages are cast in
 the palette's materials with a builder's honesty about what each moment
-knew.
+knew. Each stage is drawn the way a shop drawing draws a thing to be built:
+**exploded**. At rest its floor-plates stand pulled apart up the assembly
+axis, each joined to its seated slot by a dashed graphite leader — the
+centre-line convention of an assembly sheet — so a resting stage reads as
+parts waiting, not a finished pile. Only the exempt base holds its place;
+found structure does not assemble.
 
 **Stage zero stands under the first stage, not beside it.** Before the
 first session plinth, half-sunk into the gallery floor, lies the exempt
@@ -93,18 +98,25 @@ localized equivalence for Korean and Japanese readers), a dimension string
 of learning. The artifact plates answer as doors: signal underline, then
 out — to the game, to the repository, to the partner. Hovering the exempt
 layer yields its one caption and no marks; found structure has no test
-certificates, and the hall does not invent them. The pan between stages
-runs on the single ease, 1.1 seconds plinth to plinth; reduced motion cuts
-between stops.
+certificates, and the hall does not invent them. Focusing a stage — by pan
+or by hover — is the hall's build command: its exploded plates slide home
+on the ink ease, the leaders retracting to nothing, the mark stamps landing
+on their faces and the artifact plate reading only once the stage stands
+assembled. Leaving it lets the plates lift apart again. The pan between
+stages runs on the single ease, 1.1 seconds plinth to plinth; the assembly
+moves on the ink ease, the one sanctioned drawing-hand exception; reduced
+motion cuts between poses — the focused stage seated, the rest exploded.
 
 ## The Flat Projection
 
 In the 2D plan journey, the hall becomes what it always secretly was: a
-phasing sheet. Four small axonometrics in a row, drawn at equal scale with
-the exempt base hatched dark beneath all four, marks stamped on block
-faces, artifact plates as leader-noted tags, and the completion plate as
-the sheet's title block. The lateral pan becomes the reading order of the
-sheet, left to right.
+phasing sheet — read top to bottom, the reading order the lateral pan drew
+in space. The completion plate is the sheet's title block; the exempt base
+is named once at its head, retained beneath all that follows; and each stage
+is a stamped row carrying its top mark as a material test result and its
+delivered artifact as a leader-noted tag (`▸`). The exploded assembly needs
+no motion to survive the flattening: a phasing sheet is already parts laid
+out apart, which is the same honesty by another projection.
 
 ## Content Binding
 
@@ -140,7 +152,10 @@ end, unrepeated.
 **The director** gave the hall its lateral pan with hard stops at plinth
 centers — the one room whose camera reads like a rostrum shot across
 drawings — and set the leader note to carry the hovered session so the
-visitor always knows which year they are standing in.
+visitor always knows which year they are standing in. Granted the stages
+their second motion word: at rest they stand exploded, and focus assembles
+them home on the ink ease — the camera never moves for it, so the build
+reads as the drawing's, not the lens's.
 
 **The curator** verified every stamp against the record: stage massings
 from `AXONO_LAYERS`, marks from `SEMESTER_WAYPOINTS`, the three artifact

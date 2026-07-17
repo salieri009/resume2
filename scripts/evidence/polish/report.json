@@ -1,0 +1,18 @@
+[
+  "L0: {\"hash\":\"#/L0\",\"lobby\":true,\"lobbyTitle\":\"The Architecture of Software\",\"lobbyMore\":true,\"lobbyBg\":\"rgb(242, 241, 237)\",\"lobbyKickerColor\":\"rgb(107, 110, 114)\",\"spec\":false,\"specSheet\":null,\"specTitle\":null,\"specBg\":null,\"rail\":true,\"railGradient\":false,\"plan\":false,\"planSheet\":false}",
+  "shot:01-l0-lobby",
+  "clicked:lobby-read-more",
+  "shot:01b-l0-read-more",
+  "goto:hash:L1",
+  "L1: {\"hash\":\"#/L1/timeline\",\"lobby\":false,\"lobbyTitle\":null,\"lobbyMore\":false,\"lobbyBg\":null,\"lobbyKickerColor\":null,\"spec\":true,\"specSheet\":\"CUT · HALL · L1\",\"specTitle\":\"University of Technology Sydney · Bachelor of Information Technology\",\"specBg\":\"rgb(242, 241, 237)\",\"rail\":true,\"railGradient\":false,\"plan\":false,\"planSheet\":false}",
+  "shot:02-l1-timeline",
+  "B1: {\"hash\":\"#/B1/core\",\"lobby\":false,\"lobbyTitle\":null,\"lobbyMore\":false,\"lobbyBg\":null,\"lobbyKickerColor\":null,\"spec\":true,\"specSheet\":\"MECH · CORE · B1\",\"specTitle\":\"무기고\",\"specBg\":\"rgb(242, 241, 237)\",\"rail\":true,\"railGradient\":false,\"plan\":false,\"planSheet\":false}",
+  "shot:03-b1-core",
+  "shot:03b-b1-hover",
+  "R: {\"hash\":\"#/R/roof\",\"lobby\":false,\"lobbyTitle\":null,\"lobbyMore\":false,\"lobbyBg\":null,\"lobbyKickerColor\":null,\"spec\":true,\"specSheet\":\"OBS · R · SALIERI · SITE 009\",\"specTitle\":\"Jungwook Van\",\"specBg\":\"rgb(242, 241, 237)\",\"rail\":true,\"railGradient\":false,\"plan\":false,\"planSheet\":false}",
+  "shot:04-roof",
+  "mobile-L0: {\"hash\":\"#/L0\",\"lobby\":false,\"lobbyTitle\":null,\"lobbyMore\":true,\"lobbyBg\":null,\"lobbyKickerColor\":null,\"spec\":false,\"specSheet\":null,\"specTitle\":null,\"specBg\":null,\"rail\":false,\"railGradient\":null,\"plan\":true,\"planSheet\":false}",
+  "shot:05-mobile-l0",
+  "mobile-L1: {\"hash\":\"#/L1/timeline\",\"lobby\":false,\"lobbyTitle\":null,\"lobbyMore\":false,\"lobbyBg\":null,\"lobbyKickerColor\":null,\"spec\":true,\"specSheet\":\"CUT · HALL · L1\",\"specTitle\":\"University of Technology Sydney · Bachelor of Information Technology\",\"specBg\":\"rgb(242, 241, 237)\",\"rail\":false,\"railGradient\":null,\"plan\":true,\"planSheet\":true}",
+  "shot:06-mobile-l1"
+]

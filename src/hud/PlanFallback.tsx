@@ -3,7 +3,7 @@ import { useSite } from '../building/SiteContext';
 import { STRINGS } from '../data/strings';
 import { PROFILE, LINKS } from '../data/profile';
 import { getLocalizedProject, getReceipts } from '../data/projects';
-import { DEGREE, SEMESTER_WAYPOINTS, formatDegreePlate } from '../data/academic';
+import { AXONO_LAYERS, DEGREE, SEMESTER_WAYPOINTS, formatDegreePlate, formatMark } from '../data/academic';
 import { getLocalizedCredentials } from '../data/credentials';
 import type { Lang } from '../data/types';
 
@@ -141,9 +141,21 @@ function PlanRoomSheet({
     links = getReceipts(p).map((r) => ({ label: r.label, href: r.url }));
     links.push({ label: 'GitHub', href: p.github });
   } else if (room === 'timeline') {
+    /* The flat projection is the hall's phasing sheet (bible 04/L1): the
+       completion plate as title block, the exempt base named once beneath all,
+       then one stage per row with its top mark stamp and leader-noted artifact. */
     title = `${DEGREE.institution} · ${DEGREE.award}`;
     lead = formatDegreePlate(lang);
-    bullets = SEMESTER_WAYPOINTS.map((wp) => `${wp.session} · ${wp.highlights[0]?.short ?? ''}`);
+    const exempt = `EXEMPT · ${AXONO_LAYERS[0].blocks.map((b) => b.label).join(' · ').toUpperCase()} · RETAINED`;
+    bullets = [
+      exempt,
+      ...SEMESTER_WAYPOINTS.map((wp) => {
+        const top = wp.highlights[0];
+        const artifact = wp.artifacts?.[0]?.label;
+        const stamp = top ? ` · ${top.short} ${formatMark(top.mark, top.grade, lang)}` : '';
+        return `${wp.session}${stamp}${artifact ? ` · ▸ ${artifact}` : ''}`;
+      }),
+    ];
   } else if (room === 'core') {
     title = t.sectionSkills;
     lead = t.skillsIntro;
