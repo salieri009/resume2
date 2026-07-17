@@ -111,8 +111,18 @@ html[data-experience='siteline'] #root {
 }
 .site-caption--wrap {
   white-space: normal;
-  max-width: 7.5rem;
+  max-width: min(9rem, 42vw);
+  max-height: min(28vh, 11rem);
+  overflow: auto;
   word-break: break-word;
+}
+/* Anchor at bottom of plate; grow upward so basement hover cards stay in viewport */
+.site-caption--above {
+  transform: translate(var(--cap-dx, 0px), calc(-100% - 8px + var(--cap-dy, 0px)));
+  transform-origin: bottom left;
+}
+.site-caption:not(.site-caption--above) {
+  transform: translate(var(--cap-dx, 0px), var(--cap-dy, 0px));
 }
 [data-theme='dark'] .site-caption,
 [data-theme='dark'] .site-caption--note {

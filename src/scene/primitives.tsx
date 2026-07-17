@@ -1,5 +1,5 @@
 import { Html, Line } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
@@ -181,17 +181,59 @@ interface CaptionPlateProps {
   note?: boolean;
   /** Allow wrapping for dense stations (B1 risers) instead of nowrap bleed. */
   wrap?: boolean;
+  /**
+   * Anchor the plate above the 3D point (opens upward). Defaults on for notes
+   * so basement hover cards do not fall off the bottom of the viewport.
+   */
+  above?: boolean;
 }
 
+const VIEW_PAD = 10;
+
 /** Micro caption in space (bible 07): drafting mono, graphite, screen-crisp. */
-export function CaptionPlate({ position, lines, note = false, wrap = false }: CaptionPlateProps) {
+export function CaptionPlate({
+  position,
+  lines,
+  note = false,
+  wrap = false,
+  above,
+}: CaptionPlateProps) {
+  const lift = above ?? (note || wrap);
+  const plateRef = useRef<HTMLDivElement>(null);
   const cls = [
     'site-caption',
     note ? 'site-caption--note' : '',
     wrap ? 'site-caption--wrap' : '',
+    lift ? 'site-caption--above' : '',
   ]
     .filter(Boolean)
     .join(' ');
+
+  /* Keep the DOM plate inside the viewport after drei projects its anchor. */
+  useFrame(() => {
+    const el = plateRef.current;
+    if (!el) return;
+    el.style.setProperty('--cap-dx', '0px');
+    el.style.setProperty('--cap-dy', '0px');
+    const r = el.getBoundingClientRect();
+    let dx = 0;
+    let dy = 0;
+    if (r.bottom > window.innerHeight - VIEW_PAD) {
+      dy -= r.bottom - (window.innerHeight - VIEW_PAD);
+    }
+    if (r.top + dy < VIEW_PAD) {
+      dy += VIEW_PAD - (r.top + dy);
+    }
+    if (r.right > window.innerWidth - VIEW_PAD) {
+      dx -= r.right - (window.innerWidth - VIEW_PAD);
+    }
+    if (r.left + dx < VIEW_PAD) {
+      dx += VIEW_PAD - (r.left + dx);
+    }
+    el.style.setProperty('--cap-dx', `${dx}px`);
+    el.style.setProperty('--cap-dy', `${dy}px`);
+  });
+
   return (
     <Html
       position={position}
@@ -199,9 +241,8 @@ export function CaptionPlate({ position, lines, note = false, wrap = false }: Ca
       className="site-caption-wrap"
       wrapperClass="site-caption-html"
       style={{ pointerEvents: 'none' }}
-      sprite
     >
-      <div className={cls}>
+      <div ref={plateRef} className={cls}>
         {lines.map((l) => (
           <span key={l}>{l}</span>
         ))}
