@@ -44,9 +44,12 @@ dimension figures, captions, gauges, seals, the `A-101 · CROWD` register.
 It is always set small, always uppercase for stamps and tags, tracked
 wide (+8–12%) so it reads as lettering rather than words, and always in
 graphite (or paper-white in the INK theme). The **reading voice** — a
-quiet grotesque — carries what a visitor actually reads: the thesis
-wall's tagline and story, specification-plate paragraphs, decisions and
-trade-offs. It is set at generous line-height, never justified, never
+quiet humanist serif (Iowan Old Style for titles, Source Serif 4 for
+running text) — carries what a visitor actually reads: the thesis wall's
+tagline and story, specification-plate paragraphs, decisions and
+trade-offs. The serif is deliberate: the drafting hand is the sheet's
+lettering, so the reading hand is a book's — the two never mistaken for
+each other. It is set at generous line-height, never justified, never
 tracked, in graphite with `--ink` reserved for titles.
 
 The scale is short and absolute: **stamp** (the smallest legible — corner

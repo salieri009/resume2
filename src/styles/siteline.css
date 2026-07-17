@@ -34,6 +34,9 @@ html[data-experience='siteline'] body {
   background: var(--paper);
   color: var(--graphite);
   font-family: var(--font-body);
+  /* Numbers deserve columns (bible 07): marks, gauges, coordinates, and dates
+     align like a schedule — a law, not a preference. Inherited HUD-wide. */
+  font-variant-numeric: tabular-nums;
   overflow: hidden;
 }
 
