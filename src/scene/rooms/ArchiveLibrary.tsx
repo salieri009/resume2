@@ -45,13 +45,19 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
   }, [openIdx, reducedMotion, invalidate]);
 
   const seals = CREDENTIALS.map((c) => c.seal.replace('\n', ' '));
-  const cols = [-0.87, -0.29, 0.29, 0.87];
+  /* Spread sealed drawers across the chest; blanks fill the lower row. */
+  const halfSpan = 1.05;
+  const cols =
+    seals.length <= 1
+      ? [0]
+      : seals.map((_, i) => -halfSpan + (2 * halfSpan * i) / (seals.length - 1));
+  const blankCols = [-0.87, -0.29, 0.29, 0.87];
 
   return (
     <group position={[0, 2.1, 0]}>
       {/* The plan chest */}
       <mesh position={[0.4, 0.64, -0.6]}>
-        <boxGeometry args={[2.4, 1.2, 0.5]} />
+        <boxGeometry args={[2.6, 1.2, 0.5]} />
         <meshStandardMaterial color={pal.resin} roughness={0.72} />
       </mesh>
 
@@ -60,7 +66,7 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
         const hover = hoverIdx === i;
         return (
           <group
-            key={seal}
+            key={`${seal}-${i}`}
             ref={(el) => {
               drawerRefs.current[i] = el;
             }}
@@ -98,7 +104,7 @@ export function ArchiveLibrary({ reducedMotion }: { focus: 'archive' | 'library'
         );
       })}
       {/* Blank fronts — the registry's future tense */}
-      {cols.map((x) => (
+      {blankCols.map((x) => (
         <mesh key={`blank${x}`} position={[0.4 + x, 0.36, -0.32]}>
           <boxGeometry args={[0.52, 0.24, 0.05]} />
           <meshStandardMaterial color={pal.resin} roughness={0.72} />

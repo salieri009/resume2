@@ -4,7 +4,7 @@ import { STRINGS } from '../../data/strings';
 import { useSite } from '../../building/SiteContext';
 
 /**
- * L4 · the records label — the archive's four letters read one at a time,
+ * L4 · the records label — the archive's letters read one at a time,
  * and the library's single catalogued entry (bible 04/L4-ARCHIVE-LIBRARY).
  */
 export function ArchivePanel() {
@@ -18,7 +18,7 @@ export function ArchivePanel() {
   const credentials = getLocalizedCredentials(lang);
 
   return (
-    <aside className="site-spec" aria-label="Archive and library">
+    <aside className="site-spec site-spec--archive" aria-label="Archive and library">
       <header className="site-spec-head">
         <div>
           <p className="site-spec-sheet">{isArchive ? 'ARC · L4' : 'LIB · L4'}</p>
@@ -42,18 +42,17 @@ export function ArchivePanel() {
       </header>
 
       {isArchive && (
-        <dl className="site-spec-meta">
+        <div className="site-spec-cards" role="list">
           {credentials.map((c) => (
-            <div key={c.id}>
-              <dt>{c.seal.replace('\n', ' ')}</dt>
-              <dd>
+            <article key={c.id} className="site-spec-card" role="listitem">
+              <p className="site-spec-card-trade">{c.seal.replace('\n', ' ')}</p>
+              <p className="site-spec-card-body">
                 {c.issuer} — {c.title}
-                <br />
-                {c.detail}
-              </dd>
-            </div>
+              </p>
+              <p className="site-spec-card-meta">{c.detail}</p>
+            </article>
           ))}
-        </dl>
+        </div>
       )}
 
       {isLibrary && (

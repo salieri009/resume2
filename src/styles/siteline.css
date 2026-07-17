@@ -637,7 +637,8 @@ html[data-experience='siteline'] #root {
   outline-offset: 2px;
 }
 .site-spec--core .site-spec-cards,
-.site-spec--roof .site-spec-cards {
+.site-spec--roof .site-spec-cards,
+.site-spec--archive .site-spec-cards {
   /* Keep each plate in normal flow so siblings cannot pile */
   overflow: visible;
 }

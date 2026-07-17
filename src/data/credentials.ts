@@ -6,7 +6,7 @@ import type { Lang } from './types';
  * L10N pattern as projects.ts (EN base + ko/ja overrides).
  */
 
-export type CredentialId = 'eusa' | 'rokbg' | 'msshowcase' | 'build';
+export type CredentialId = 'eusa' | 'rokbg' | 'msshowcase' | 'build' | 'bit';
 
 export interface Credential {
   id: CredentialId;
@@ -50,6 +50,14 @@ export const CREDENTIALS: Credential[] = [
     detail:
       'Extra-curricular leadership program beyond the degree — global citizenship, intercultural understanding, leadership workshops.',
   },
+  {
+    id: 'bit',
+    seal: 'UTS\nBIT',
+    issuer: 'University of Technology Sydney',
+    title: 'UTS Bachelor of IT — Graduation Diploma',
+    detail:
+      'Bachelor of Information Technology (C10148), complete 2026. Major: Enterprise Software Development · Sub-major: Computer Graphics and Animation. GPA 6.00/7.0 · WAM 80.31 · 144 credit points.',
+  },
 ];
 
 type CredentialL10N = Partial<Pick<Credential, 'issuer' | 'title' | 'detail'>>;
@@ -78,6 +86,12 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
       title: '글로벌 리더십 프로그램',
       detail: '학위 밖 비교과 리더십 프로그램 — 글로벌 시민의식, 문화 간 이해, 리더십 워크숍.',
     },
+    bit: {
+      issuer: '시드니공과대학교 (UTS)',
+      title: 'UTS Bachelor of IT — 졸업 증서',
+      detail:
+        '정보기술학사 (C10148), 2026 이수 완료. 전공: Enterprise Software Development · 부전공: Computer Graphics and Animation. GPA 6.00/7.0 · WAM 80.31 · 144학점.',
+    },
   },
   ja: {
     eusa: {
@@ -101,6 +115,12 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
       issuer: 'UTS BUILDプログラム',
       title: 'グローバルリーダーシップ・プログラム',
       detail: '学位外の課外リーダーシップ・プログラム — グローバル市民意識、異文化理解、リーダーシップ研修。',
+    },
+    bit: {
+      issuer: 'シドニー工科大学（UTS）',
+      title: 'UTS Bachelor of IT — 卒業証書',
+      detail:
+        '情報技術学士（C10148）、2026年修了。専攻: Enterprise Software Development · 副専攻: Computer Graphics and Animation。GPA 6.00/7.0 · WAM 80.31 · 144単位。',
     },
   },
 };
