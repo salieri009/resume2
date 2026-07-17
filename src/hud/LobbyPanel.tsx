@@ -1,8 +1,9 @@
 import { STRINGS } from '../data/strings';
 import { PROFILE } from '../data/profile';
 import { useSite } from '../building/SiteContext';
+import { parseHash } from '../building/program';
 
-/** Lobby thesis wall — tagline + identity from existing data. */
+/** Lobby thesis wall — cover-sheet hierarchy: kicker → title → one line → CTA. */
 export function LobbyPanel() {
   const { phase, room, floor, lang, prefer2d, setPrintOpen } = useSite();
   const t = STRINGS[lang];
@@ -11,6 +12,11 @@ export function LobbyPanel() {
   if (prefer2d) return null;
   /* Hard refresh / late boot callbacks must not leave this plate up in a room. */
   if (phase !== 'lobby' || room !== 'lobby' || floor !== 'L0') return null;
+  /* Hash is authoritative during goTo races — never show thesis over #/L1/…. */
+  const hashRoom = parseHash(typeof window !== 'undefined' ? window.location.hash : '#/L0').room;
+  if (hashRoom !== 'lobby') return null;
+
+  const moreLabel = lang === 'ko' ? '더 읽기' : lang === 'ja' ? '続き' : 'Read more';
 
   return (
     <div className="site-lobby" data-plate="lobby-thesis">
@@ -18,7 +24,10 @@ export function LobbyPanel() {
       <h1 className="site-lobby-title">The Architecture of Software</h1>
       <p className="site-lobby-sub">Software is not written. It is constructed.</p>
       <p className="site-lobby-tag">{t.tagline}</p>
-      <p className="site-lobby-about">{t.aboutStory}</p>
+      <details className="site-lobby-more">
+        <summary>{moreLabel}</summary>
+        <p className="site-lobby-about">{t.aboutStory}</p>
+      </details>
       <p className="site-lobby-name">
         {PROFILE.name} · {t.majorLine}
       </p>

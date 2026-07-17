@@ -8,9 +8,8 @@ gsap.registerPlugin(CustomEase);
  * the constitution's cubic-bezier(0.22, 1, 0.36, 1) — plus the single
  * sanctioned exception, ink-on, which moves like a drawing hand.
  */
-export const EASE_SITE: string = CustomEase.create('site', '0.22, 1, 0.36, 1')
-  ? 'site'
-  : 'power3.out';
+CustomEase.create('site', '0.22, 1, 0.36, 1');
+export const EASE_SITE = 'site';
 
 /** Ink-on draws like a hand: symmetric, slowing into corners (05's sole exception). */
 export const EASE_INK = 'power2.inOut';

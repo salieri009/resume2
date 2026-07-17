@@ -10,7 +10,7 @@ function stripUrl(url: string) {
   return url.replace(/^https?:\/\//, '');
 }
 
-/** Engraved identity plaque texture — bible 04/R-ROOF reading order. */
+/** Engraved identity plaque — readable at ortho roof distance (bible 04/R-ROOF). */
 function useIdentityPlateMap() {
   const { lang, theme } = useSite();
   const t = STRINGS[lang];
@@ -27,36 +27,40 @@ function useIdentityPlateMap() {
     ctx.fillStyle = pal.resin;
     ctx.fillRect(0, 0, w, h);
 
-    const ink = theme === 'dark' ? '#e6e4df' : '#2a2c2e';
-    const mute = theme === 'dark' ? '#9a9ca0' : '#6b6e72';
-    const padX = 36;
-    let y = 48;
-
-    ctx.fillStyle = ink;
-    ctx.font = '600 18px "IBM Plex Mono", ui-monospace, monospace';
-    ctx.fillText(`${PROFILE.alias} · SITE 009`, padX, y);
-    y += 52;
-
-    ctx.font = '600 36px "Iowan Old Style", Palatino, Georgia, serif';
-    ctx.fillText(PROFILE.name, padX, y);
-    y += 40;
+    /* Higher contrast ink for camera distance — still graphite family, not neon */
+    const ink = theme === 'dark' ? '#f0eee8' : '#1e2022';
+    const mute = theme === 'dark' ? '#a8aaae' : '#5a5d61';
+    const rule = theme === 'dark' ? '#3a3c40' : '#c4c2bc';
+    const padX = 40;
+    let y = 52;
 
     ctx.fillStyle = mute;
-    ctx.font = 'italic 20px "Source Serif 4", Georgia, serif';
-    ctx.fillText(t.contactTitle, padX, y);
-    y += 36;
+    ctx.font = '600 17px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillText(`${PROFILE.alias} · SITE 009`, padX, y);
+    y += 56;
 
     ctx.fillStyle = ink;
-    ctx.font = '18px "Source Serif 4", Georgia, serif';
+    ctx.font = '600 38px "Iowan Old Style", Palatino, Georgia, serif';
+    ctx.fillText(PROFILE.name, padX, y);
+    y += 44;
+
+    ctx.fillStyle = mute;
+    ctx.font = 'italic 19px "Source Serif 4", Georgia, serif';
+    ctx.fillText(t.contactTitle, padX, y);
+    y += 34;
+
+    ctx.fillStyle = ink;
+    ctx.font = '17px "Source Serif 4", Georgia, serif';
     const intent = t.contactSub;
     const words = intent.split(' ');
     let line = '';
     const maxW = w - padX * 2;
+    const lineH = 24;
     for (const word of words) {
       const next = line ? `${line} ${word}` : word;
       if (ctx.measureText(next).width > maxW && line) {
         ctx.fillText(line, padX, y);
-        y += 26;
+        y += lineH;
         line = word;
       } else {
         line = next;
@@ -64,33 +68,38 @@ function useIdentityPlateMap() {
     }
     if (line) {
       ctx.fillText(line, padX, y);
-      y += 36;
+      y += 40;
     }
 
-    y += 8;
-    ctx.strokeStyle = theme === 'dark' ? '#2a2c2e' : '#d0cec8';
+    ctx.strokeStyle = rule;
+    ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(padX, y);
     ctx.lineTo(w - padX, y);
     ctx.stroke();
-    y += 36;
+    y += 40;
 
-    ctx.font = '16px "IBM Plex Mono", ui-monospace, monospace';
-    ctx.fillStyle = ink;
-    const doors = [
-      LINKS.email,
-      stripUrl(LINKS.github),
-      stripUrl(LINKS.linkedin),
-      stripUrl(LINKS.blog),
+    /* Door schedule — label column + address aligned */
+    const doors: [string, string][] = [
+      ['MAIL', LINKS.email],
+      ['GITHUB', stripUrl(LINKS.github)],
+      ['LINKEDIN', stripUrl(LINKS.linkedin)],
+      ['LIBRARY', stripUrl(LINKS.blog)],
     ];
-    for (const door of doors) {
-      ctx.fillText(door, padX, y);
-      y += 32;
+    ctx.font = '600 14px "IBM Plex Mono", ui-monospace, monospace';
+    for (const [label, addr] of doors) {
+      ctx.fillStyle = mute;
+      ctx.fillText(label, padX, y);
+      ctx.fillStyle = ink;
+      ctx.font = '15px "IBM Plex Mono", ui-monospace, monospace';
+      ctx.fillText(addr, padX + 108, y);
+      ctx.font = '600 14px "IBM Plex Mono", ui-monospace, monospace';
+      y += 34;
     }
 
-    y = h - 48;
+    y = h - 52;
     ctx.fillStyle = mute;
-    ctx.font = '600 14px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.font = '600 13px "IBM Plex Mono", ui-monospace, monospace';
     ctx.fillText('REVISION A · END OF SET', padX, y);
 
     const map = new THREE.CanvasTexture(canvas);
@@ -125,7 +134,6 @@ export function RoofPlate() {
         <boxGeometry args={[0.04, 0.3, 0.04]} />
         <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
       </mesh>
-      {/* Front face carries the engraved schedule; edges stay resin */}
       <mesh position={[0, 1.0, 0]}>
         <boxGeometry args={[1.05, 1.45, 0.06]} />
         <meshStandardMaterial color={pal.resin} roughness={0.72} />

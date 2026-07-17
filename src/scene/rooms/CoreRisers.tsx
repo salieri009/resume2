@@ -71,7 +71,7 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
         <boxGeometry args={[6.5, 2.3, 0.1]} />
         <meshStandardMaterial color={dimmer} roughness={0.95} />
       </mesh>
-      <SoftPatch position={[0.5, -2.19, -0.3]} width={4.5} depth={3.2} opacity={0.22} />
+      <SoftPatch position={[0.5, -2.19, -0.3]} width={4.5} depth={3.2} opacity={0.28} />
 
       {RISERS.map((r, i) => {
         const hover = hovered === i;

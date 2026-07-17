@@ -68,12 +68,14 @@ export function BuildingMass({
   // Isolate (bible 05): at a room's own station the selected exhibit holds
   // full presence while the rest of the building thins toward line. The roof
   // is the exception — its exhibit stands ON the solid building (bible R).
+  // Keep shell thin enough to read timeline / lab interiors (opaque HUD plates
+  // are CSS — do not compensate by keeping the 3D mass near-opaque).
   const shellFade = enteredRoom !== null && enteredRoom !== 'roof';
-  const shellOpacity = shellFade ? 0.12 : 1;
+  const basementCut = enteredRoom === 'core' || enteredRoom === 'server';
+  const shellOpacity = shellFade ? 0.14 : 1;
   // B1/B2: paper hatch alone is not enough — the lobby slab still plugs the
   // opened poché. Cut it away with the sheet (bible 03/04 cut-reveal).
-  const basementOpen = enteredRoom === 'core' || enteredRoom === 'server';
-
+  const basementOpen = basementCut;
   const footprintPts = useMemo(() => {
     const full = [
       new THREE.Vector3(-FW / 2, 0.02, -FD / 2),
@@ -126,6 +128,7 @@ export function BuildingMass({
                 roughness={0.85}
                 transparent={shellFade}
                 opacity={shellOpacity}
+                depthWrite={!shellFade}
               />
             </mesh>
           )}
@@ -137,6 +140,7 @@ export function BuildingMass({
               roughness={0.7}
               transparent={shellFade}
               opacity={shellOpacity}
+              depthWrite={!shellFade}
             />
           </mesh>
           <mesh position={[0, wallH, 0]}>
@@ -146,6 +150,7 @@ export function BuildingMass({
               roughness={0.8}
               transparent={shellFade}
               opacity={shellOpacity}
+              depthWrite={!shellFade}
             />
           </mesh>
 
@@ -170,6 +175,7 @@ export function BuildingMass({
                 metalness={0.1}
                 transparent={shellFade}
                 opacity={shellOpacity}
+                depthWrite={!shellFade}
               />
             </mesh>
           ))}
@@ -183,6 +189,7 @@ export function BuildingMass({
               opacity={shellFade ? 0.08 : 0.35}
               roughness={0.15}
               metalness={0.1}
+              depthWrite={false}
             />
           </mesh>
 
@@ -194,6 +201,7 @@ export function BuildingMass({
               roughness={0.75}
               transparent={shellFade}
               opacity={shellOpacity}
+              depthWrite={!shellFade}
             />
           </mesh>
 
@@ -271,6 +279,7 @@ function Wall({
         roughness={0.88}
         transparent={fade}
         opacity={opacity}
+        depthWrite={!fade}
       />
     </mesh>
   );
@@ -306,6 +315,7 @@ function SlabCutRim({ fade, opacity }: { fade: boolean; opacity: number }) {
         roughness={0.85}
         transparent={fade}
         opacity={opacity}
+        depthWrite={!fade}
         side={THREE.DoubleSide}
       />
     </mesh>

@@ -124,6 +124,26 @@ html[data-experience='siteline'] #root {
   line-height: 1.2;
   letter-spacing: 0.06em;
 }
+/* Trade letter strongest; proof / serves quieter (bible 07 hierarchy) */
+.site-caption--wrap span:first-child {
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border-top: 0;
+}
+.site-caption--wrap span:not(:first-child) {
+  font-weight: 400;
+  font-size: 8px;
+  letter-spacing: 0.05em;
+  opacity: 0.88;
+  border-top: 0;
+  padding-top: 0;
+}
+/* Quiet seal / stamp chips — graphite only, never signal sticky */
+.site-caption:not(.site-caption--note) {
+  color: var(--graphite);
+  border-color: color-mix(in srgb, var(--graphite) 22%, transparent);
+  border-left: 0;
+}
 /* Anchor at bottom of plate; grow upward so basement hover cards stay in viewport */
 .site-caption--above {
   transform: translate(var(--cap-dx, 0px), calc(-100% - 8px + var(--cap-dy, 0px)));
@@ -195,18 +215,19 @@ html[data-experience='siteline'] #root {
   pointer-events: none;
 }
 
-/* Boot micro labels */
+/* Boot micro labels — above floor-rail brand card (same left column) */
 .site-boot-labels {
   position: absolute;
-  top: 1.25rem;
+  top: 1.15rem;
   left: 1.25rem;
-  z-index: 5;
+  z-index: 8;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.15rem;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.14em;
+  line-height: 1.25;
   color: var(--graphite-mute);
   pointer-events: none;
 }
@@ -292,7 +313,7 @@ html[data-experience='siteline'] #root {
   outline-offset: 2px;
 }
 
-/* Floor rail */
+/* Floor rail — pad below title-block stamps so brand card never covers SITE 009 */
 .site-rail {
   position: absolute;
   left: 0;
@@ -300,7 +321,7 @@ html[data-experience='siteline'] #root {
   bottom: 0;
   z-index: 5;
   width: min(15rem, 42vw);
-  padding: 4.5rem 1rem 1.5rem;
+  padding: 6.25rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -442,68 +463,89 @@ html[data-experience='siteline'] #root {
 .site-lobby,
 .site-spec {
   pointer-events: auto;
+  /* Always solid paper — never a see-through wash over the model */
+  opacity: 1;
+  background: var(--paper);
+  background-color: var(--paper);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  isolation: isolate;
 }
 .site-lobby {
   position: absolute;
   right: clamp(1rem, 4vw, 3rem);
   bottom: clamp(1.5rem, 6vh, 4rem);
   z-index: 5;
-  max-width: min(28rem, 92vw);
-  max-height: min(70vh, 36rem);
+  max-width: min(26rem, 92vw);
+  max-height: min(58vh, 28rem);
   overflow: auto;
-  padding: 1.15rem 1.2rem 1.25rem;
-  /* Opaque paper plate — no see-through wash over room internals */
+  padding: 1.1rem 1.15rem 1.2rem;
   border: 1px solid var(--line);
-  background: var(--paper);
   box-shadow: none;
 }
 .site-lobby-kicker {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.45rem;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.14em;
-  color: var(--signal);
+  text-transform: uppercase;
+  color: var(--graphite-mute);
 }
 .site-lobby-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3.2vw, 2.35rem);
+  font-size: clamp(1.55rem, 3vw, 2.2rem);
   line-height: 1.1;
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--graphite);
 }
 .site-lobby-sub {
-  margin: 0.55rem 0 0;
+  margin: 0.5rem 0 0;
   font-style: italic;
   color: var(--graphite-mute);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
 }
 .site-lobby-tag {
-  margin: 1rem 0 0;
-  font-size: 0.95rem;
-  line-height: 1.45;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
   color: var(--graphite);
 }
+.site-lobby-more {
+  margin: 0.55rem 0 0;
+}
+.site-lobby-more > summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite-mute);
+  list-style: none;
+}
+.site-lobby-more > summary::-webkit-details-marker {
+  display: none;
+}
+.site-lobby-more > summary:hover,
+.site-lobby-more > summary:focus-visible {
+  color: var(--signal);
+}
 .site-lobby-about {
-  margin: 0.75rem 0 0;
-  font-size: 0.85rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
   line-height: 1.5;
   color: var(--graphite-mute);
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 .site-lobby-name {
-  margin: 0.85rem 0 0;
+  margin: 0.75rem 0 0;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
   color: var(--graphite-mute);
 }
 .site-lobby-actions {
-  margin-top: 1rem;
+  margin-top: 0.9rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -520,12 +562,8 @@ html[data-experience='siteline'] #root {
   overflow: auto;
   padding: 1.1rem 1.15rem 1.35rem;
   border: 1px solid var(--line);
-  /* Opaque paper — room internals stay readable under the plate */
-  background: var(--paper);
-  backdrop-filter: none;
   display: flex;
   flex-direction: column;
-  isolation: isolate;
 }
 .site-spec-head {
   display: flex;
@@ -538,7 +576,8 @@ html[data-experience='siteline'] #root {
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.1em;
-  color: var(--signal);
+  text-transform: uppercase;
+  color: var(--graphite-mute);
 }
 .site-spec-title {
   margin: 0.35rem 0 0;
@@ -637,7 +676,7 @@ html[data-experience='siteline'] #root {
   display: block;
   padding: 0.7rem 0.75rem;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  background: var(--paper);
   color: inherit;
   text-decoration: none;
 }
@@ -661,7 +700,13 @@ html[data-experience='siteline'] #root {
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.1em;
+  color: var(--graphite);
+}
+.site-spec-card--door .site-spec-card-trade {
   color: var(--signal);
+}
+.site-spec--roof .site-spec-card--door {
+  padding: 0.55rem 0.75rem;
 }
 .site-spec-card-body {
   margin: 0.4rem 0 0;
@@ -747,7 +792,8 @@ html[data-experience='siteline'] #root {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1.15rem;
+  margin-top: auto;
+  padding-top: 1.15rem;
 }
 
 .site-btn {
@@ -810,7 +856,8 @@ html[data-experience='siteline'] #root {
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.14em;
-  color: var(--signal);
+  text-transform: uppercase;
+  color: var(--graphite-mute);
 }
 .site-plan-sub {
   font-style: italic;
@@ -824,8 +871,24 @@ html[data-experience='siteline'] #root {
   line-height: 1.45;
   color: var(--graphite);
 }
+.site-plan-more {
+  margin: 0.55rem 0 0;
+  max-width: 36rem;
+}
+.site-plan-more > summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite-mute);
+  list-style: none;
+}
+.site-plan-more > summary::-webkit-details-marker {
+  display: none;
+}
 .site-plan-about {
-  margin: 0.75rem 0 0;
+  margin: 0.45rem 0 0;
   font-size: 0.85rem;
   color: var(--graphite-mute);
 }
@@ -836,6 +899,56 @@ html[data-experience='siteline'] #root {
   letter-spacing: 0.04em;
   color: var(--graphite-mute);
   max-width: 36rem;
+}
+.site-plan-head .site-btn {
+  margin-top: 1rem;
+}
+.site-plan-index {
+  margin-top: 1.5rem;
+}
+.site-plan-index-label {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: var(--graphite-mute);
+}
+.site-plan-sheet {
+  max-width: 36rem;
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.05rem 1.1rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  background-color: var(--paper);
+  opacity: 1;
+  backdrop-filter: none;
+}
+.site-plan-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.site-plan-sheet-code {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--graphite-mute);
+}
+.site-plan-sheet-title {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--graphite);
+}
+.site-plan-sheet-lead {
+  margin: 0.45rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--graphite-mute);
 }
 .site-plan-floors {
   list-style: none;

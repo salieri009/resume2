@@ -3,7 +3,10 @@ import { STRINGS } from '../data/strings';
 import { projectKeyOf } from '../building/program';
 import { useSite } from '../building/SiteContext';
 
-/** Spec sheet for the active lab — fed by PROJECTS.*, not marketing copy. */
+/**
+ * Spec sheet for the active lab — Ch.07 reading order:
+ * identification → vitals → narrative → results → door.
+ */
 export function SpecPanel() {
   const { room, lang, phase, returnLobby, setPrintOpen } = useSite();
   const t = STRINGS[lang];
@@ -27,9 +30,6 @@ export function SpecPanel() {
         </button>
       </header>
 
-      <p className="site-spec-lead">{p.summary}</p>
-      <p className="site-spec-overview">{p.overview}</p>
-
       <dl className="site-spec-meta">
         <div>
           <dt>Stack</dt>
@@ -50,6 +50,9 @@ export function SpecPanel() {
           <dd>{p.outcome}</dd>
         </div>
       </dl>
+
+      <p className="site-spec-lead">{p.summary}</p>
+      <p className="site-spec-overview">{p.overview}</p>
 
       {p.results.length > 0 && (
         <ul className="site-spec-bullets">

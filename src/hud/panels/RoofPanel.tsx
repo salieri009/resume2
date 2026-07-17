@@ -9,14 +9,9 @@ const DOORS: { label: string; href: string; external?: boolean }[] = [
   { label: 'LIBRARY', href: LINKS.blog, external: true },
 ];
 
-function doorDisplay(href: string) {
-  return href.replace(/^https?:\/\//, '').replace(/^mailto:/, '');
-}
-
 /**
- * R · the identity plate's interactive twin — four doors in full text and
- * the farewell (bible 04/R-ROOF). Doors leave the building standing; the
- * farewell rolls the drawing up.
+ * R · schedule index for the engraved plate — not a second business card
+ * (bible 04/R-ROOF). Full addresses live on the plaque; doors are labels.
  */
 export function RoofPanel() {
   const { room, phase, lang, returnLobby, endSite } = useSite();
@@ -37,7 +32,13 @@ export function RoofPanel() {
         </button>
       </header>
 
-      <p className="site-spec-lead">{t.contactSub}</p>
+      <p className="site-spec-overview">
+        {lang === 'ko'
+          ? '문은 명판에 새겨져 있습니다. 아래에서 엽니다.'
+          : lang === 'ja'
+            ? '扉は銘板に刻まれています。下から開きます。'
+            : 'Doors are engraved on the plate. Open them from the schedule.'}
+      </p>
 
       <div className="site-spec-cards" role="list">
         {DOORS.map((d) => (
@@ -49,7 +50,6 @@ export function RoofPanel() {
             {...(d.external ? { target: '_blank', rel: 'noreferrer' } : {})}
           >
             <p className="site-spec-card-trade">{d.label}</p>
-            <p className="site-spec-card-body">{doorDisplay(d.href)}</p>
           </a>
         ))}
       </div>

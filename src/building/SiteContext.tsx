@@ -85,6 +85,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   /** Latest phase for finishBoot — avoids settling to lobby after L0→room nav. */
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
+  const roomRef = useRef(room);
+  roomRef.current = room;
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -126,12 +128,16 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       const loc = parseHash(window.location.hash);
       setFloor(loc.floor);
       setRoom(loc.room);
+      roomRef.current = loc.room;
       setSubStop(0);
       if (loc.room !== 'lobby' && SHIPPED_ROOMS.includes(loc.room)) {
+        phaseRef.current = 'room';
         setPhase('room');
       } else if (bootDone) {
+        phaseRef.current = 'lobby';
         setPhase('lobby');
         setRoom('lobby');
+        roomRef.current = 'lobby';
         setFloor('L0');
       }
     };
@@ -148,7 +154,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     // visitor back to the lobby thesis after they already left via goTo
     // (repro: hard refresh on #/L0 then navigate to #/L1/timeline).
     if (bootSettledRef.current) return;
-    if (phaseRef.current === 'room' || phaseRef.current === 'end') {
+    if (phaseRef.current === 'room' || phaseRef.current === 'end' || roomRef.current !== 'lobby') {
       bootSettledRef.current = true;
       return;
     }
@@ -158,13 +164,17 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     if (loc.room !== 'lobby' && SHIPPED_ROOMS.includes(loc.room)) {
       setFloor(loc.floor);
       setRoom(loc.room);
+      roomRef.current = loc.room;
+      phaseRef.current = 'room';
       setPhase('room');
       syncHash(loc.floor, loc.room);
       return;
     }
+    phaseRef.current = 'lobby';
     setPhase('lobby');
     setFloor('L0');
     setRoom('lobby');
+    roomRef.current = 'lobby';
     syncHash('L0', 'lobby');
   }, [syncHash]);
 
@@ -177,24 +187,30 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       // Navigation means boot is over — block any pending finishBoot reset.
       // Mark settled + write hash BEFORE React state so a late finishBoot
       // that slipped past the ref still honors #/L1/timeline via parseHash.
+      const nextPhase: Phase = r === 'lobby' ? 'lobby' : 'room';
       bootSettledRef.current = true;
+      phaseRef.current = nextPhase;
+      roomRef.current = r;
       setBootDone(true);
       syncHash(f, r);
       setFloor(f);
       setRoom(r);
       setSubStop(0);
-      setPhase(r === 'lobby' ? 'lobby' : 'room');
+      setPhase(nextPhase);
     },
     [syncHash],
   );
 
   const endSite = useCallback(() => {
+    phaseRef.current = 'end';
     setPhase('end');
     setSubStop(0);
   }, []);
 
   const reopen = useCallback(() => {
     bootSettledRef.current = false;
+    phaseRef.current = 'boot';
+    roomRef.current = 'lobby';
     setBootDone(false);
     setPhase('boot');
     setFloor('L0');
@@ -205,6 +221,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
 
   const returnLobby = useCallback(() => {
     bootSettledRef.current = true;
+    phaseRef.current = 'lobby';
+    roomRef.current = 'lobby';
     setBootDone(true);
     setPhase('lobby');
     setFloor('L0');
