@@ -7,6 +7,8 @@ import { BootLabels } from '../hud/BootLabels';
 import { FloorRail } from '../hud/FloorRail';
 import { SpecPanel } from '../hud/SpecPanel';
 import { LobbyPanel } from '../hud/LobbyPanel';
+import { TimelinePanel } from '../hud/panels/TimelinePanel';
+import { CorePanel } from '../hud/panels/CorePanel';
 import { PlanFallback } from '../hud/PlanFallback';
 import { SiteChrome } from '../hud/SiteChrome';
 import '../styles/siteline.css';
@@ -80,6 +82,8 @@ function SitelineShell() {
       <main id="site-main" className="site-main">
         <LobbyPanel />
         <SpecPanel />
+        <TimelinePanel />
+        <CorePanel />
       </main>
       <PrintDrawer />
     </div>

@@ -7,12 +7,14 @@ import { SHIPPED_ROOMS, tagOf, floorOfRoom, type RoomId } from '../building/prog
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
-import { CaptionPlate, partialPolyline } from './primitives';
+import { CaptionPlate, partialPolyline, SoftPatch } from './primitives';
+import { CoreRisers } from './rooms/CoreRisers';
 import { CrowdObservatory } from './rooms/CrowdObservatory';
 import { EphemeralPavilion } from './rooms/EphemeralPavilion';
 import { FarmGreenhouse } from './rooms/FarmGreenhouse';
 import { GundamHouse } from './rooms/GundamHouse';
 import { IoTBayWarehouse } from './rooms/IoTBayWarehouse';
+import { TimelineHall } from './rooms/TimelineHall';
 import type { RoomBlockProps } from './rooms/types';
 
 const LAB_BLOCKS: Partial<Record<RoomId, ComponentType<RoomBlockProps>>> = {
@@ -36,6 +38,9 @@ interface BuildingMassProps {
   onRoomHover?: (room: RoomId, h: boolean) => void;
   onRoomClick?: (room: RoomId) => void;
   reducedMotion?: boolean;
+  /** Lateral-pan stop for rooms that read in stops (timeline hall). */
+  subStop?: number;
+  onSubStop?: (i: number) => void;
 }
 
 /** Footprint rectangle in XZ (meters — bible 02: 8 × 6). */
@@ -51,6 +56,8 @@ export function BuildingMass({
   onRoomHover,
   onRoomClick,
   reducedMotion = false,
+  subStop = 0,
+  onSubStop,
 }: BuildingMassProps) {
   const pal = usePalette();
   const group = useRef<THREE.Group>(null);
@@ -74,11 +81,18 @@ export function BuildingMass({
   return (
     <group ref={group}>
       {/* Ground plane — the sheet survives any window (bible 02: infinite paper).
-          Unlit: paper is the drawing's ground truth, identical to the void. */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
-        <planeGeometry args={[400, 400]} />
-        <meshBasicMaterial color={pal.paper} />
-      </mesh>
+          Unlit: paper is the drawing's ground truth, identical to the void.
+          For the basements the paper cuts away — hatched, per convention. */}
+      <CutGround open={enteredRoom === 'core'} />
+
+      {enteredRoom === 'timeline' && (
+        <TimelineHall
+          reducedMotion={reducedMotion}
+          subStop={subStop}
+          onSelectStage={(i) => onSubStop?.(i)}
+        />
+      )}
+      {enteredRoom === 'core' && <CoreRisers reducedMotion={reducedMotion} />}
 
       {/* Survey grid — blueprint discipline, fading by design at ±10 m */}
       <GridLines />
@@ -167,7 +181,9 @@ export function BuildingMass({
 
           {/* Light patch — the curtain's admitted sun on the lobby slab (bible L0).
               A drawn patch of sun belongs to the PAPER print only. */}
-          {extrude > 0.85 && !shellFade && pal.print === 'paper' && <LightPatch />}
+          {extrude > 0.85 && !shellFade && pal.print === 'paper' && (
+            <SoftPatch position={[0, 0.105, 1.6]} width={3.2} depth={2.2} opacity={0.3} />
+          )}
         </>
       )}
 
@@ -247,6 +263,64 @@ function Wall({
   );
 }
 
+/** The sheet, whole — or cut open over the basements with a hatched rim (bible 02/03). */
+function CutGround({ open }: { open: boolean }) {
+  const pal = usePalette();
+  const HOLE_W = 11;
+  const HOLE_D = 9;
+  const cutShape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(-200, -200);
+    s.lineTo(200, -200);
+    s.lineTo(200, 200);
+    s.lineTo(-200, 200);
+    s.closePath();
+    const hole = new THREE.Path();
+    hole.moveTo(-HOLE_W / 2, -HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(-HOLE_W / 2, HOLE_D / 2);
+    hole.closePath();
+    s.holes.push(hole);
+    return s;
+  }, []);
+  const hatch = useMemo(() => {
+    // 45° ticks around the rim — sectioned solid, per convention.
+    const runs: THREE.Vector3[][] = [];
+    const t = 0.28;
+    const step = 0.4;
+    for (let x = -HOLE_W / 2; x <= HOLE_W / 2; x += step) {
+      runs.push([new THREE.Vector3(x, 0.006, -HOLE_D / 2), new THREE.Vector3(x + t, 0.006, -HOLE_D / 2 - t)]);
+      runs.push([new THREE.Vector3(x, 0.006, HOLE_D / 2), new THREE.Vector3(x + t, 0.006, HOLE_D / 2 + t)]);
+    }
+    for (let z = -HOLE_D / 2; z <= HOLE_D / 2; z += step) {
+      runs.push([new THREE.Vector3(-HOLE_W / 2, 0.006, z), new THREE.Vector3(-HOLE_W / 2 - t, 0.006, z + t)]);
+      runs.push([new THREE.Vector3(HOLE_W / 2, 0.006, z), new THREE.Vector3(HOLE_W / 2 + t, 0.006, z + t)]);
+    }
+    return runs;
+  }, []);
+
+  if (!open) {
+    return (
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <planeGeometry args={[400, 400]} />
+        <meshBasicMaterial color={pal.paper} />
+      </mesh>
+    );
+  }
+  return (
+    <group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <shapeGeometry args={[cutShape]} />
+        <meshBasicMaterial color={pal.paper} side={THREE.DoubleSide} />
+      </mesh>
+      {hatch.map((run, i) => (
+        <Line key={i} points={run} color={pal.graphite} lineWidth={0.7} />
+      ))}
+    </group>
+  );
+}
+
 function GridLines() {
   const pal = usePalette();
   const lines = useMemo(() => {
@@ -266,31 +340,6 @@ function GridLines() {
   );
 }
 
-let lightTex: THREE.CanvasTexture | null = null;
-function softLightTexture(): THREE.CanvasTexture {
-  if (lightTex) return lightTex;
-  const c = document.createElement('canvas');
-  c.width = c.height = 128;
-  const ctx = c.getContext('2d')!;
-  const g = ctx.createRadialGradient(64, 64, 12, 64, 64, 64);
-  g.addColorStop(0, 'rgba(255, 255, 252, 0.9)');
-  g.addColorStop(0.65, 'rgba(255, 255, 252, 0.35)');
-  g.addColorStop(1, 'rgba(255, 255, 252, 0)');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 128, 128);
-  lightTex = new THREE.CanvasTexture(c);
-  return lightTex;
-}
-
-function LightPatch() {
-  const tex = useMemo(() => softLightTexture(), []);
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.105, 1.6]}>
-      <planeGeometry args={[3.2, 2.2]} />
-      <meshBasicMaterial map={tex} transparent opacity={0.3} depthWrite={false} />
-    </mesh>
-  );
-}
 
 interface BootControllerProps {
   reducedMotion: boolean;

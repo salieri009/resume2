@@ -22,6 +22,9 @@ interface SiteState {
   prefer2d: boolean;
   printOpen: boolean;
   bootDone: boolean;
+  /** Sub-station stop inside a room with a lateral pan (timeline hall, archive). */
+  subStop: number;
+  setSubStop: (i: number) => void;
   setLang: (lang: Lang) => void;
   setTheme: (theme: Theme) => void;
   setPrintOpen: (open: boolean) => void;
@@ -71,6 +74,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [prefer2d, setPrefer2d] = useState(initialPrefer2d);
   const [printOpen, setPrintOpen] = useState(false);
   const [bootDone, setBootDone] = useState(reducedMotion);
+  const [subStop, setSubStop] = useState(0);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -112,6 +116,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       const loc = parseHash(window.location.hash);
       setFloor(loc.floor);
       setRoom(loc.room);
+      setSubStop(0);
       if (loc.room !== 'lobby' && SHIPPED_ROOMS.includes(loc.room)) {
         setPhase('room');
       } else if (bootDone) {
@@ -151,6 +156,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       if (!SHIPPED_ROOMS.includes(r) && r !== 'lobby') return;
       setFloor(f);
       setRoom(r);
+      setSubStop(0);
       setPhase(r === 'lobby' ? 'lobby' : 'room');
       syncHash(f, r);
     },
@@ -161,6 +167,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     setPhase('lobby');
     setFloor('L0');
     setRoom('lobby');
+    setSubStop(0);
     syncHash('L0', 'lobby');
   }, [syncHash]);
 
@@ -175,6 +182,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       prefer2d,
       printOpen,
       bootDone,
+      subStop,
+      setSubStop,
       setLang,
       setTheme,
       setPrintOpen,
@@ -192,6 +201,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       prefer2d,
       printOpen,
       bootDone,
+      subStop,
       setLang,
       setTheme,
       finishBoot,

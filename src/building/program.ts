@@ -63,8 +63,17 @@ export const FLOORS: FloorDef[] = [
   },
 ];
 
-/** Rooms implemented so far (Wave 2: all five laboratories). */
-export const SHIPPED_ROOMS: RoomId[] = ['lobby', 'crowd', 'iotbay', 'farm', 'gundam', 'ephemeral'];
+/** Rooms implemented so far (Wave 3: + the construction hall and the core). */
+export const SHIPPED_ROOMS: RoomId[] = [
+  'lobby',
+  'crowd',
+  'iotbay',
+  'farm',
+  'gundam',
+  'ephemeral',
+  'timeline',
+  'core',
+];
 
 /** Project bound to a room, if the room exhibits one. */
 export function projectKeyOf(room: RoomId): ProjectKey | undefined {

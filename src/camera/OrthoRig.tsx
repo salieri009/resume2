@@ -13,7 +13,9 @@ export type ViewPreset =
   | 'iotbay'
   | 'farm'
   | 'gundam'
-  | 'ephemeral';
+  | 'ephemeral'
+  | 'timeline'
+  | 'core';
 
 const PRESETS: Record<
   ViewPreset,
@@ -30,26 +32,43 @@ const PRESETS: Record<
   farm: { position: [6.2, 6.0, 6.5], lookAt: [1.7, 2.8, -1.0], zoom: 260 },
   gundam: { position: [-6.2, 6.0, 6.5], lookAt: [-1.9, 2.75, -0.9], zoom: 300 },
   ephemeral: { position: [-0.1, 4.8, 9.5], lookAt: [-0.1, 2.8, 1.3], zoom: 270 },
+  // The one frontal hall — subStop pans it in hard stops (bible 05).
+  timeline: { position: [0, 3.2, 14], lookAt: [0, 0.95, 0], zoom: 240 },
+  // Below grade, into the opened poché.
+  core: { position: [6, -0.2, 6], lookAt: [0, -1.2, -0.5], zoom: 150 },
 };
+
+/** Timeline hall stop centers (matches STAGE_X in the hall block). */
+const TIMELINE_STOPS = [-2.7, -0.9, 0.9, 2.7];
 
 
 interface OrthoRigProps {
   preset: ViewPreset;
   reducedMotion: boolean;
+  /** Lateral-pan stop index for stop-reading rooms. */
+  subStop?: number;
 }
 
 /**
  * Orthographic-only camera travel. Parallel dolly / zoom — never perspective.
  */
-export function OrthoRig({ preset, reducedMotion }: OrthoRigProps) {
+export function OrthoRig({ preset, reducedMotion, subStop = 0 }: OrthoRigProps) {
   const camRef = useRef<THREE.OrthographicCamera>(null);
   const look = useRef(new THREE.Vector3(...PRESETS.boot.lookAt));
+  const prevPreset = useRef<ViewPreset>('boot');
   const { size, invalidate } = useThree();
 
   useEffect(() => {
     const cam = camRef.current;
     if (!cam) return;
-    const target = PRESETS[preset];
+    const base = PRESETS[preset];
+    // Stop-reading rooms slide the whole station laterally, hard stops only.
+    const stopX = preset === 'timeline' ? TIMELINE_STOPS[Math.min(subStop, TIMELINE_STOPS.length - 1)] : 0;
+    const target = {
+      position: [base.position[0] + stopX, base.position[1], base.position[2]] as const,
+      lookAt: [base.lookAt[0] + stopX, base.lookAt[1], base.lookAt[2]] as const,
+      zoom: base.zoom,
+    };
     // Frustum stays drei's pixel-based default (left/right/top/bottom from
     // viewport size); station zooms are calibrated in px-per-meter against it.
 
@@ -80,7 +99,12 @@ export function OrthoRig({ preset, reducedMotion }: OrthoRigProps) {
       lx: target.lookAt[0],
       ly: target.lookAt[1],
       lz: target.lookAt[2],
-      duration: preset === 'boot' || preset === 'lobby' ? DUR.civic : DUR.threshold,
+      // A stop hop inside the same room reads sideways (civic); entering a
+      // room crosses a threshold (bible 05's duration menu).
+      duration:
+        preset === prevPreset.current || preset === 'boot' || preset === 'lobby'
+          ? DUR.civic
+          : DUR.threshold,
       ease: EASE_SITE,
       onUpdate: () => {
         cam.position.set(from.x, from.y, from.z);
@@ -91,10 +115,11 @@ export function OrthoRig({ preset, reducedMotion }: OrthoRigProps) {
         invalidate();
       },
     });
+    prevPreset.current = preset;
     return () => {
       tween.kill();
     };
-  }, [preset, reducedMotion, size.width, size.height, invalidate]);
+  }, [preset, reducedMotion, size.width, size.height, invalidate, subStop]);
 
   useFrame(() => {
     const cam = camRef.current;

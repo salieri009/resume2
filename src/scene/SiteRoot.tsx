@@ -38,7 +38,8 @@ function BootScene({
 }
 
 export function SiteRoot({ webgl }: SiteRootProps) {
-  const { phase, room, reducedMotion, finishBoot, goTo, bootDone, theme } = useSite();
+  const { phase, room, reducedMotion, finishBoot, goTo, bootDone, theme, subStop, setSubStop } =
+    useSite();
   const [hoveredRoom, setHoveredRoom] = useState<RoomId | null>(null);
 
   const onBootComplete = useCallback(() => {
@@ -81,7 +82,7 @@ export function SiteRoot({ webgl }: SiteRootProps) {
         <color attach="background" args={[clear]} />
         <Suspense fallback={null}>
           <PaletteProvider value={pal}>
-            <OrthoRig preset={preset} reducedMotion={reducedMotion} />
+            <OrthoRig preset={preset} reducedMotion={reducedMotion} subStop={subStop} />
             <SiteLights />
             {phase === 'boot' && !bootDone ? (
               <BootScene reducedMotion={reducedMotion} onComplete={onBootComplete} />
@@ -95,6 +96,8 @@ export function SiteRoot({ webgl }: SiteRootProps) {
                 reducedMotion={reducedMotion}
                 onRoomHover={onRoomHover}
                 onRoomClick={onRoomClick}
+                subStop={subStop}
+                onSubStop={setSubStop}
               />
             )}
           </PaletteProvider>
