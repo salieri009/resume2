@@ -9,6 +9,9 @@ import { SpecPanel } from '../hud/SpecPanel';
 import { LobbyPanel } from '../hud/LobbyPanel';
 import { TimelinePanel } from '../hud/panels/TimelinePanel';
 import { CorePanel } from '../hud/panels/CorePanel';
+import { ServerPanel } from '../hud/panels/ServerPanel';
+import { ArchivePanel } from '../hud/panels/ArchivePanel';
+import { RoofPanel } from '../hud/panels/RoofPanel';
 import { PlanFallback } from '../hud/PlanFallback';
 import { SiteChrome } from '../hud/SiteChrome';
 import '../styles/siteline.css';
@@ -84,6 +87,9 @@ function SitelineShell() {
         <SpecPanel />
         <TimelinePanel />
         <CorePanel />
+        <ServerPanel />
+        <ArchivePanel />
+        <RoofPanel />
       </main>
       <PrintDrawer />
     </div>

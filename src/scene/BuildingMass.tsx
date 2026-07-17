@@ -8,8 +8,11 @@ import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
 import { CaptionPlate, partialPolyline, SoftPatch } from './primitives';
+import { ArchiveLibrary } from './rooms/ArchiveLibrary';
 import { CoreRisers } from './rooms/CoreRisers';
 import { CrowdObservatory } from './rooms/CrowdObservatory';
+import { RoofPlate } from './rooms/RoofPlate';
+import { ServerRoom } from './rooms/ServerRoom';
 import { EphemeralPavilion } from './rooms/EphemeralPavilion';
 import { FarmGreenhouse } from './rooms/FarmGreenhouse';
 import { GundamHouse } from './rooms/GundamHouse';
@@ -63,8 +66,9 @@ export function BuildingMass({
   const group = useRef<THREE.Group>(null);
   const wallH = 0.15 + extrude * 3.4;
   // Isolate (bible 05): at a room's own station the selected exhibit holds
-  // full presence while the rest of the building thins toward line.
-  const shellFade = enteredRoom !== null;
+  // full presence while the rest of the building thins toward line. The roof
+  // is the exception — its exhibit stands ON the solid building (bible R).
+  const shellFade = enteredRoom !== null && enteredRoom !== 'roof';
   const shellOpacity = shellFade ? 0.12 : 1;
 
   const footprintPts = useMemo(() => {
@@ -83,7 +87,7 @@ export function BuildingMass({
       {/* Ground plane — the sheet survives any window (bible 02: infinite paper).
           Unlit: paper is the drawing's ground truth, identical to the void.
           For the basements the paper cuts away — hatched, per convention. */}
-      <CutGround open={enteredRoom === 'core'} />
+      <CutGround open={enteredRoom === 'core' || enteredRoom === 'server'} />
 
       {enteredRoom === 'timeline' && (
         <TimelineHall
@@ -93,9 +97,15 @@ export function BuildingMass({
         />
       )}
       {enteredRoom === 'core' && <CoreRisers reducedMotion={reducedMotion} />}
+      {enteredRoom === 'server' && <ServerRoom />}
+      {(enteredRoom === 'archive' || enteredRoom === 'library') && (
+        <ArchiveLibrary focus={enteredRoom} reducedMotion={reducedMotion} />
+      )}
+      {enteredRoom === 'roof' && <RoofPlate />}
 
-      {/* Survey grid — blueprint discipline, fading by design at ±10 m */}
-      <GridLines />
+      {/* Survey grid — blueprint discipline, fading by design at ±10 m.
+          At the roof the fog owns the field: no grid at that height (bible R). */}
+      {enteredRoom !== 'roof' && <GridLines />}
 
       {/* Footprint ink */}
       <Line points={footprintPts} color={pal.graphite} lineWidth={1.5} />
@@ -396,6 +406,63 @@ export function BootController({
         },
       })
       .to({}, { duration: DUR.bootHold });
+    return () => {
+      tl.kill();
+    };
+  }, [reducedMotion, onComplete, onExtrude, onInk, invalidate]);
+
+  return <>{children}</>;
+}
+
+/** The exit (bible 03): construction reversed — mass sinks to the footprint,
+    the line un-draws, the sheet is empty. The stamps go last (handled above
+    the canvas). Registers beyond solid→line→void are a fidelity backlog note. */
+export function TeardownController({
+  reducedMotion,
+  onComplete,
+  onExtrude,
+  onInk,
+  children,
+}: BootControllerProps) {
+  const done = useRef(false);
+  const invalidate = useThree((s) => s.invalidate);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      onInk(0);
+      onExtrude(0);
+      onComplete();
+      invalidate();
+      return;
+    }
+    const state = { ink: 1, extrude: 1 };
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (!done.current) {
+          done.current = true;
+          onComplete();
+        }
+      },
+    });
+    tl.to(state, {
+      extrude: 0,
+      duration: 2.2,
+      ease: EASE_SITE,
+      onUpdate: () => {
+        onExtrude(state.extrude);
+        invalidate();
+      },
+    })
+      .to(state, {
+        ink: 0,
+        duration: 1.4,
+        ease: EASE_INK,
+        onUpdate: () => {
+          onInk(state.ink);
+          invalidate();
+        },
+      })
+      .to({}, { duration: 0.4 });
     return () => {
       tl.kill();
     };

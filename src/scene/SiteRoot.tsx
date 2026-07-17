@@ -3,7 +3,7 @@ import { Suspense, useCallback, useMemo, useState } from 'react';
 import { floorOfRoom, tagOf, type RoomId } from '../building/program';
 import { useSite } from '../building/SiteContext';
 import { OrthoRig, presetForRoom } from '../camera/OrthoRig';
-import { BootController, BuildingMass, SiteLights } from './BuildingMass';
+import { BootController, BuildingMass, SiteLights, TeardownController } from './BuildingMass';
 import { getScenePalette, PaletteProvider } from './palette';
 
 interface SiteRootProps {
@@ -37,17 +37,60 @@ function BootScene({
   );
 }
 
+/** The building is undrawn — construction reversed (bible 03). */
+function TeardownScene({
+  reducedMotion,
+  onComplete,
+}: {
+  reducedMotion: boolean;
+  onComplete: () => void;
+}) {
+  const [extrude, setExtrude] = useState(reducedMotion ? 0 : 1);
+  const [ink, setInk] = useState(reducedMotion ? 0 : 1);
+  return (
+    <TeardownController
+      reducedMotion={reducedMotion}
+      onComplete={onComplete}
+      onExtrude={setExtrude}
+      onInk={setInk}
+    >
+      <BuildingMass
+        extrude={extrude}
+        ink={ink}
+        showLabs={false}
+        enteredRoom={null}
+        hoveredRoom={null}
+      />
+    </TeardownController>
+  );
+}
+
 export function SiteRoot({ webgl }: SiteRootProps) {
-  const { phase, room, reducedMotion, finishBoot, goTo, bootDone, theme, subStop, setSubStop } =
-    useSite();
+  const {
+    phase,
+    room,
+    reducedMotion,
+    finishBoot,
+    goTo,
+    bootDone,
+    theme,
+    subStop,
+    setSubStop,
+    reopen,
+  } = useSite();
   const [hoveredRoom, setHoveredRoom] = useState<RoomId | null>(null);
+  const [ended, setEnded] = useState(false);
 
   const onBootComplete = useCallback(() => {
     finishBoot();
   }, [finishBoot]);
+  const onTeardownComplete = useCallback(() => setEnded(true), []);
 
   const preset = useMemo(
-    () => presetForRoom(room, phase === 'boot' && !bootDone ? 'boot' : phase),
+    () =>
+      phase === 'end'
+        ? ('boot' as const)
+        : presetForRoom(room, phase === 'boot' && !bootDone ? 'boot' : phase),
     [room, phase, bootDone],
   );
 
@@ -84,7 +127,9 @@ export function SiteRoot({ webgl }: SiteRootProps) {
           <PaletteProvider value={pal}>
             <OrthoRig preset={preset} reducedMotion={reducedMotion} subStop={subStop} />
             <SiteLights />
-            {phase === 'boot' && !bootDone ? (
+            {phase === 'end' ? (
+              <TeardownScene reducedMotion={reducedMotion} onComplete={onTeardownComplete} />
+            ) : phase === 'boot' && !bootDone ? (
               <BootScene reducedMotion={reducedMotion} onComplete={onBootComplete} />
             ) : (
               <BuildingMass
@@ -105,9 +150,25 @@ export function SiteRoot({ webgl }: SiteRootProps) {
       </Canvas>
       {/* The visual leader note lives in-scene (anchored to the exhibit);
           this offscreen twin keeps the announcement for screen readers. */}
-      {hoveredRoom && phase !== 'boot' && room !== hoveredRoom && (
+      {hoveredRoom && phase !== 'boot' && phase !== 'end' && room !== hoveredRoom && (
         <div className="site-anno site-anno--sr" role="status">
           ROOM · {floorOfRoom(hoveredRoom)} · {tagOf(hoveredRoom)}
+        </div>
+      )}
+      {/* The rolled-up drawing — the last sheet of the set */}
+      {phase === 'end' && ended && (
+        <div className="site-end" role="dialog" aria-label="End of set">
+          <p className="site-end-stamp">REVISION A · END OF SET</p>
+          <button
+            type="button"
+            className="site-btn"
+            onClick={() => {
+              setEnded(false);
+              reopen();
+            }}
+          >
+            REOPEN THE SET
+          </button>
         </div>
       )}
     </div>

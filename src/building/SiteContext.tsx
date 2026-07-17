@@ -10,7 +10,7 @@ import {
 import type { Lang, Theme } from '../data/types';
 import { FLOORS, parseHash, toHash, type FloorId, type RoomId, SHIPPED_ROOMS } from './program';
 
-export type Phase = 'boot' | 'lobby' | 'room';
+export type Phase = 'boot' | 'lobby' | 'room' | 'end';
 
 interface SiteState {
   phase: Phase;
@@ -31,6 +31,10 @@ interface SiteState {
   finishBoot: () => void;
   goTo: (floor: FloorId, room: RoomId) => void;
   returnLobby: () => void;
+  /** The roof's farewell — the building is undrawn (bible 03). */
+  endSite: () => void;
+  /** Reopen the set: run the boot again from the empty sheet. */
+  reopen: () => void;
 }
 
 const SiteCtx = createContext<SiteState | null>(null);
@@ -163,6 +167,20 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     [syncHash],
   );
 
+  const endSite = useCallback(() => {
+    setPhase('end');
+    setSubStop(0);
+  }, []);
+
+  const reopen = useCallback(() => {
+    setBootDone(false);
+    setPhase('boot');
+    setFloor('L0');
+    setRoom('lobby');
+    setSubStop(0);
+    syncHash('L0', 'lobby');
+  }, [syncHash]);
+
   const returnLobby = useCallback(() => {
     setPhase('lobby');
     setFloor('L0');
@@ -190,6 +208,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       finishBoot,
       goTo,
       returnLobby,
+      endSite,
+      reopen,
     }),
     [
       phase,
@@ -207,6 +227,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       finishBoot,
       goTo,
       returnLobby,
+      endSite,
+      reopen,
     ],
   );
 

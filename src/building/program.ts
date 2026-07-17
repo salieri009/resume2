@@ -63,7 +63,7 @@ export const FLOORS: FloorDef[] = [
   },
 ];
 
-/** Rooms implemented so far (Wave 3: + the construction hall and the core). */
+/** Every room in the program is built (Wave 4 closes the set). */
 export const SHIPPED_ROOMS: RoomId[] = [
   'lobby',
   'crowd',
@@ -73,6 +73,10 @@ export const SHIPPED_ROOMS: RoomId[] = [
   'ephemeral',
   'timeline',
   'core',
+  'server',
+  'archive',
+  'library',
+  'roof',
 ];
 
 /** Project bound to a room, if the room exhibits one. */

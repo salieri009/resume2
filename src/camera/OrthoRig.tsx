@@ -15,7 +15,11 @@ export type ViewPreset =
   | 'gundam'
   | 'ephemeral'
   | 'timeline'
-  | 'core';
+  | 'core'
+  | 'server'
+  | 'archive'
+  | 'library'
+  | 'roof';
 
 const PRESETS: Record<
   ViewPreset,
@@ -36,6 +40,13 @@ const PRESETS: Record<
   timeline: { position: [0, 3.2, 14], lookAt: [0, 0.95, 0], zoom: 240 },
   // Below grade, into the opened poché.
   core: { position: [6, -0.2, 6], lookAt: [0, -1.2, -0.5], zoom: 150 },
+  // Deeper still — twice-diminished light, one aisle.
+  server: { position: [6, -1.6, 6], lookAt: [-0.2, -1.5, -1.2], zoom: 165 },
+  // The records floor, and its one pan west to the reading desk.
+  archive: { position: [4.5, 4.9, 7], lookAt: [0.4, 2.75, -0.5], zoom: 240 },
+  library: { position: [2.5, 4.6, 7], lookAt: [-1.7, 2.5, 0.7], zoom: 290 },
+  // High frontal: the building below the frame's waist, fog above.
+  roof: { position: [0, 7.5, 11], lookAt: [0, 4.1, 0], zoom: 190 },
 };
 
 /** Timeline hall stop centers (matches STAGE_X in the hall block). */
@@ -100,11 +111,14 @@ export function OrthoRig({ preset, reducedMotion, subStop = 0 }: OrthoRigProps) 
       ly: target.lookAt[1],
       lz: target.lookAt[2],
       // A stop hop inside the same room reads sideways (civic); entering a
-      // room crosses a threshold (bible 05's duration menu).
+      // room crosses a threshold; the roof ascent is the journey's longest
+      // single move (bible 05's duration menu).
       duration:
-        preset === prevPreset.current || preset === 'boot' || preset === 'lobby'
-          ? DUR.civic
-          : DUR.threshold,
+        preset === 'roof'
+          ? DUR.roofAscent
+          : preset === prevPreset.current || preset === 'boot' || preset === 'lobby'
+            ? DUR.civic
+            : DUR.threshold,
       ease: EASE_SITE,
       onUpdate: () => {
         cam.position.set(from.x, from.y, from.z);

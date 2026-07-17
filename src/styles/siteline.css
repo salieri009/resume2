@@ -106,6 +106,25 @@ html[data-experience='siteline'] #root {
   top: 0;
 }
 
+/* The rolled-up drawing — end of set */
+.site-end {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  pointer-events: auto;
+}
+.site-end-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--graphite-mute);
+}
+
 .site-canvas {
   position: absolute;
   inset: 0;

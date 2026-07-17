@@ -4,7 +4,7 @@ import { useSite } from '../building/SiteContext';
 export function FloorRail() {
   const { floor, room, phase, goTo, returnLobby } = useSite();
 
-  if (phase === 'boot') return null;
+  if (phase === 'boot' || phase === 'end') return null;
 
   return (
     <nav className="site-rail" aria-label="Building floors">
