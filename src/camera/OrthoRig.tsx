@@ -15,8 +15,8 @@ const PRESETS: Record<
   // Zooms are px-per-meter against drei's pixel frustum; values are tuned to
   // the concept-sheet compositions (composition wins over coordinates).
   boot: { position: [18, 22, 18], lookAt: [0, 1, 0], zoom: 28 },
-  lobby: { position: [14, 16, 14], lookAt: [0, 1.2, 0], zoom: 55 },
-  labCrowd: { position: [4.5, 5.5, 6.5], lookAt: [0, 1.7, -1.2], zoom: 190 },
+  lobby: { position: [14, 10, 14], lookAt: [0, 1.4, 0], zoom: 55 },
+  labCrowd: { position: [4.5, 5.5, 6.5], lookAt: [0, 1.7, -1.2], zoom: 280 },
 };
 
 

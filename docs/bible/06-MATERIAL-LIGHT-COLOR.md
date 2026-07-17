@@ -49,7 +49,13 @@ paper made solid, and engraving on it reads graphite-dark, as ink on
 paper does.
 
 **Brushed aluminum** — `#A8ADB4`, roughness 0.45–0.50, metalness
-0.30–0.35, brushing always along the member's long axis. The voice of the
+0.30–0.35, brushing always along the member's long axis. *(Revision
+note, Wave 1: the metalness band assumed environment light; the site's
+pipeline bans environment maps (Chapter 09 §4), and metalness without an
+environment renders as soot, not steel. In this pipeline the drawn tone
+is achieved at metalness ≈ 0.10 with the albedo lifted a half-step
+(`#B6BBC2`); the band above remains the *intent*, this note the
+*means*.)* The voice of the
 machine: columns, instruments, racks, risers, pulls, posts. Its sheen is
 a soft lengthwise gradient under the key — never a hotspot, never a
 mirror; environment reflection is capped low enough that the metal reads

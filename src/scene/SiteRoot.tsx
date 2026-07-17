@@ -3,6 +3,7 @@ import { Suspense, useCallback, useMemo, useState } from 'react';
 import { useSite } from '../building/SiteContext';
 import { OrthoRig, presetForRoom } from '../camera/OrthoRig';
 import { BootController, BuildingMass, SiteLights } from './BuildingMass';
+import { getScenePalette, PaletteProvider } from './palette';
 
 interface SiteRootProps {
   webgl: boolean;
@@ -42,7 +43,8 @@ export function SiteRoot({ webgl }: SiteRootProps) {
     [room, phase, bootDone],
   );
 
-  const clear = theme === 'dark' ? '#0E0F10' : '#F2F1ED';
+  const pal = getScenePalette(theme === 'dark' ? 'dark' : 'light');
+  const clear = pal.paper;
 
   if (!webgl) return null;
 
@@ -51,6 +53,7 @@ export function SiteRoot({ webgl }: SiteRootProps) {
       <Canvas
         orthographic
         frameloop="demand"
+        flat
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         onCreated={({ gl }) => {
@@ -59,6 +62,7 @@ export function SiteRoot({ webgl }: SiteRootProps) {
       >
         <color attach="background" args={[clear]} />
         <Suspense fallback={null}>
+          <PaletteProvider value={pal}>
           <OrthoRig preset={preset} reducedMotion={reducedMotion} />
           <SiteLights />
           {phase === 'boot' && !bootDone ? (
@@ -75,10 +79,13 @@ export function SiteRoot({ webgl }: SiteRootProps) {
               onLabClick={() => goTo('L2', 'crowd')}
             />
           )}
+          </PaletteProvider>
         </Suspense>
       </Canvas>
+      {/* The visual leader note lives in-scene (anchored to the exhibit);
+          this offscreen twin keeps the announcement for screen readers. */}
       {labHover && phase !== 'boot' && room !== 'crowd' && (
-        <div className="site-anno" role="status">
+        <div className="site-anno site-anno--sr" role="status">
           ROOM · L2 · PROJECT 01 · CROWD
         </div>
       )}

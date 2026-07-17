@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { useEffect, useMemo, useRef, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
-import { ALUM, CONCRETE, GLASS, GRAPHITE, GRID, PAPER, RESIN, SHADE } from './palette';
+import { usePalette } from './palette';
 import { BlobShadow, CaptionPlate, FlowTrace, partialPolyline, Plinth } from './primitives';
 
 interface BuildingMassProps {
@@ -35,6 +35,7 @@ export function BuildingMass({
   onLabHover,
   reducedMotion = false,
 }: BuildingMassProps) {
+  const pal = usePalette();
   const group = useRef<THREE.Group>(null);
   const wallH = 0.15 + extrude * 3.4;
   // Isolate (bible 05): at a room's own station the selected exhibit holds
@@ -55,29 +56,35 @@ export function BuildingMass({
 
   return (
     <group ref={group}>
-      {/* Ground plane — paper sheet */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-        <planeGeometry args={[40, 40]} />
-        <meshStandardMaterial color={PAPER} roughness={0.92} metalness={0} />
+      {/* Ground plane — the sheet survives any window (bible 02: infinite paper).
+          Unlit: paper is the drawing's ground truth, identical to the void. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <planeGeometry args={[400, 400]} />
+        <meshBasicMaterial color={pal.paper} />
       </mesh>
 
-      {/* Graphite grid — blueprint discipline, not neon */}
+      {/* Survey grid — blueprint discipline, fading by design at ±10 m */}
       <GridLines />
 
       {/* Footprint ink */}
-      <Line points={footprintPts} color={GRAPHITE} lineWidth={1.5} />
+      <Line points={footprintPts} color={pal.graphite} lineWidth={1.5} />
 
       {extrude > 0.02 && (
         <>
           {/* Slabs */}
           <mesh position={[0, 0.05, 0]}>
             <boxGeometry args={[FW, 0.1, FD]} />
-            <meshStandardMaterial color={CONCRETE} roughness={0.85} />
+            <meshStandardMaterial
+              color={pal.concrete}
+              roughness={0.85}
+              transparent={shellFade}
+              opacity={shellOpacity}
+            />
           </mesh>
           <mesh position={[0, wallH * 0.55, 0]}>
             <boxGeometry args={[FW * 0.98, 0.08, FD * 0.98]} />
             <meshStandardMaterial
-              color={RESIN}
+              color={pal.resin}
               roughness={0.7}
               transparent={shellFade}
               opacity={shellOpacity}
@@ -86,7 +93,7 @@ export function BuildingMass({
           <mesh position={[0, wallH, 0]}>
             <boxGeometry args={[FW, 0.12, FD]} />
             <meshStandardMaterial
-              color={CONCRETE}
+              color={pal.concrete}
               roughness={0.8}
               transparent={shellFade}
               opacity={shellOpacity}
@@ -109,9 +116,9 @@ export function BuildingMass({
             <mesh key={i} position={[cx, wallH / 2, cz]}>
               <boxGeometry args={[0.22, wallH, 0.22]} />
               <meshStandardMaterial
-                color={ALUM}
+                color={pal.alum}
                 roughness={0.45}
-                metalness={0.35}
+                metalness={0.1}
                 transparent={shellFade}
                 opacity={shellOpacity}
               />
@@ -122,7 +129,7 @@ export function BuildingMass({
           <mesh position={[0, wallH * 0.45, FD / 2 - 0.02]}>
             <boxGeometry args={[FW * 0.55, wallH * 0.7, 0.04]} />
             <meshStandardMaterial
-              color={GLASS}
+              color={pal.glass}
               transparent
               opacity={shellFade ? 0.08 : 0.35}
               roughness={0.15}
@@ -134,16 +141,16 @@ export function BuildingMass({
           <mesh position={[0, wallH * 0.5, -FD / 2 + 0.08]}>
             <boxGeometry args={[FW * 0.7, wallH * 0.55, 0.06]} />
             <meshStandardMaterial
-              color={RESIN}
+              color={pal.resin}
               roughness={0.75}
               transparent={shellFade}
               opacity={shellOpacity}
             />
           </mesh>
 
-          {/* Light patch — the curtain's admitted sun on the lobby slab (bible L0):
-              the floor's only event, and it never moves. */}
-          {extrude > 0.85 && !shellFade && <LightPatch />}
+          {/* Light patch — the curtain's admitted sun on the lobby slab (bible L0).
+              A drawn patch of sun belongs to the PAPER print only. */}
+          {extrude > 0.85 && !shellFade && pal.print === 'paper' && <LightPatch />}
         </>
       )}
 
@@ -177,15 +184,22 @@ function Wall({
   opacity?: number;
   fade?: boolean;
 }) {
+  const pal = usePalette();
   return (
     <mesh position={[x, h / 2, z]}>
       <boxGeometry args={[w, h, d]} />
-      <meshStandardMaterial color={CONCRETE} roughness={0.88} transparent={fade} opacity={opacity} />
+      <meshStandardMaterial
+        color={pal.concrete}
+        roughness={0.88}
+        transparent={fade}
+        opacity={opacity}
+      />
     </mesh>
   );
 }
 
 function GridLines() {
+  const pal = usePalette();
   const lines = useMemo(() => {
     const pts: THREE.Vector3[][] = [];
     for (let i = -10; i <= 10; i++) {
@@ -197,7 +211,7 @@ function GridLines() {
   return (
     <group>
       {lines.map((p, i) => (
-        <Line key={i} points={p} color={GRID} lineWidth={0.5} transparent opacity={0.55} />
+        <Line key={i} points={p} color={pal.grid} lineWidth={0.5} transparent opacity={0.55} />
       ))}
     </group>
   );
@@ -248,6 +262,7 @@ function CrowdObservatory({
   onClick?: () => void;
   onHover?: (h: boolean) => void;
 }) {
+  const pal = usePalette();
   // Conduits — drafting elbows, no curves. Rest runs include the two
   // containment risers (off-path); the signal path runs in diagram order:
   // React UI → Spring Boot gateway → FastAPI·YOLO eye → Proximity Alerts.
@@ -267,7 +282,7 @@ function CrowdObservatory({
   );
   const signalPath = useMemo(
     () => [
-      v(0.3, 1.31, 0.3),
+      v(0.3, 1.24, 0.3),
       v(0.3, 1.06, 0.3),
       v(0.35, 1.06, 0.4),
       v(0.35, 0.45, 0.4),
@@ -277,7 +292,7 @@ function CrowdObservatory({
       v(-0.4, 0.86, -0.2),
       v(-0.4, 1.14, -0.2),
       v(-0.55, 1.14, 0.05),
-      v(-0.55, 1.265, 0.05),
+      v(-0.55, 1.23, 0.05),
     ],
     [],
   );
@@ -286,42 +301,42 @@ function CrowdObservatory({
     <group position={[0, 1.6, -1.2]}>
       <Plinth width={3.2} depth={2.4} hover={hover} onHover={onHover} onClick={onClick}>
         {/* Authored model-shadows — reading order in shadow: tallest palest */}
-        <BlobShadow position={[0, 0.045, 0.05]} width={2.2} depth={1.5} opacity={0.16} />
-        <BlobShadow position={[0.35, 0.046, 0.4]} width={0.75} depth={0.7} opacity={0.26} />
-        <BlobShadow position={[-0.4, 0.046, -0.2]} width={0.95} depth={0.8} opacity={0.24} />
-        <BlobShadow position={[0.3, 0.047, 0.3]} width={1.05} depth={0.55} opacity={0.13} />
-        <BlobShadow position={[-0.55, 0.047, 0.05]} width={0.55} depth={0.4} opacity={0.12} />
+        <BlobShadow position={[0, 0.045, 0.05]} width={2.2} depth={1.5} opacity={0.12} />
+        <BlobShadow position={[0.35, 0.046, 0.4]} width={0.75} depth={0.7} opacity={0.2} />
+        <BlobShadow position={[-0.4, 0.046, -0.2]} width={0.95} depth={0.8} opacity={0.18} />
+        <BlobShadow position={[0.3, 0.047, 0.3]} width={1.05} depth={0.55} opacity={0.1} />
+        <BlobShadow position={[-0.55, 0.047, 0.05]} width={0.55} depth={0.4} opacity={0.09} />
 
         {/* Infrastructure register — the Docker containment plate */}
         <mesh position={[0, 0.1, 0.05]}>
           <boxGeometry args={[1.9, 0.12, 1.2]} />
-          <meshStandardMaterial color={ALUM} roughness={0.5} metalness={0.3} />
+          <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
         </mesh>
 
         {/* Services register — the gateway, square-shouldered and foremost */}
         <mesh position={[0.35, 0.61, 0.4]}>
           <boxGeometry args={[0.45, 0.9, 0.45]} />
-          <meshStandardMaterial color={ALUM} roughness={0.45} metalness={0.35} />
+          <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
         </mesh>
         {/* — and the inference eye, aimed along the plinth's long axis */}
         <mesh position={[-0.4, 0.51, -0.2]}>
           <boxGeometry args={[0.6, 0.7, 0.5]} />
-          <meshStandardMaterial color={ALUM} roughness={0.45} metalness={0.35} />
+          <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
         </mesh>
         {/* The slit aperture — a rectangle of held shade, not a glow */}
         <mesh position={[-0.09, 0.61, -0.2]}>
           <boxGeometry args={[0.02, 0.04, 0.5]} />
-          <meshStandardMaterial color={SHADE} roughness={1} metalness={0} />
+          <meshStandardMaterial color={pal.shade} roughness={1} metalness={0} />
         </mesh>
 
-        {/* Interface register — lifted where a face would meet it */}
-        <mesh position={[0.3, 1.31, 0.3]}>
-          <boxGeometry args={[0.7, 0.35, 0.15]} />
-          <meshStandardMaterial color={ALUM} roughness={0.45} metalness={0.3} />
+        {/* Interface register — slender, lifted where a face would meet it */}
+        <mesh position={[0.3, 1.24, 0.3]}>
+          <boxGeometry args={[0.7, 0.2, 0.15]} />
+          <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
         </mesh>
-        <mesh position={[-0.55, 1.265, 0.05]}>
-          <boxGeometry args={[0.3, 0.25, 0.15]} />
-          <meshStandardMaterial color={ALUM} roughness={0.45} metalness={0.3} />
+        <mesh position={[-0.55, 1.23, 0.05]}>
+          <boxGeometry args={[0.3, 0.18, 0.15]} />
+          <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
         </mesh>
 
         {/* The flows — graphite at rest; the blue current under attention */}
@@ -333,19 +348,32 @@ function CrowdObservatory({
         />
       </Plinth>
 
+      {/* Leader note — anchored to the exhibit it names (bible 07), shown when
+          the visitor's attention reaches the room from another station. */}
+      {hover && !entered && (
+        <>
+          <Line
+            points={[v(1.6, 0.05, 1.2), v(1.6, 0.9, 1.2), v(1.9, 0.9, 1.2)]}
+            color={pal.graphite}
+            lineWidth={0.75}
+          />
+          <CaptionPlate position={[1.95, 0.9, 1.2]} lines={['ROOM · L2 · PROJECT 01 · CROWD']} note />
+        </>
+      )}
+
       {/* The training annex — deliberately, measurably off the plinth.
           No riser, no conduit: training happens elsewhere, on rented ground. */}
       <group>
-        <BlobShadow position={[-2.05, -0.038, -1.5]} width={0.6} depth={0.6} opacity={0.2} />
+        <BlobShadow position={[-2.05, -0.038, -1.5]} width={0.6} depth={0.6} opacity={0.15} />
         <mesh position={[-2.05, 0.085, -1.5]}>
           <boxGeometry args={[0.4, 0.25, 0.4]} />
-          <meshStandardMaterial color={ALUM} roughness={0.5} metalness={0.3} />
+          <meshStandardMaterial color={pal.alum} roughness={0.5} metalness={0.1} />
         </mesh>
         {entered && (
           <>
             <Line
               points={[v(-2.05, 0.215, -1.5), v(-2.05, 0.42, -1.5), v(-1.75, 0.42, -1.5)]}
-              color={GRAPHITE}
+              color={pal.graphite}
               lineWidth={0.75}
             />
             <CaptionPlate
@@ -422,13 +450,15 @@ export function BootController({
   return <>{children}</>;
 }
 
-/** Soft ortho lighting — the one sky (bible 06): key SE, fill NW, high ambient. */
+/** Soft ortho lighting — the one sky (bible 06): key SE, fill NW, high ambient.
+    Intensities are balanced for the flat (untone-mapped) pipeline so that
+    upward faces sit just under clip and authored values survive to screen. */
 export function SiteLights() {
   return (
     <>
-      <ambientLight intensity={0.72} />
-      <directionalLight position={[8, 14, 6]} intensity={0.85} castShadow={false} />
-      <directionalLight position={[-6, 8, -4]} intensity={0.25} />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[8, 14, 6]} intensity={0.55} castShadow={false} />
+      <directionalLight position={[-6, 8, -4]} intensity={0.22} />
     </>
   );
 }

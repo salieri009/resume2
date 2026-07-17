@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { EASE_INK } from './motion';
-import { GRAPHITE, RESIN, SIGNAL } from './palette';
+import { usePalette } from './palette';
 
 /** Partial polyline along a path — the ink-on technique (boot footprint, flow traces). */
 export function partialPolyline(points: THREE.Vector3[], t: number): THREE.Vector3[] {
@@ -57,6 +57,7 @@ export function Plinth({
   onClick,
   children,
 }: PlinthProps) {
+  const pal = usePalette();
   const y = thickness / 2 + 0.001;
   const boundary = useMemo(() => {
     const hw = width / 2;
@@ -88,9 +89,9 @@ export function Plinth({
     >
       <mesh>
         <boxGeometry args={[width, thickness, depth]} />
-        <meshStandardMaterial color={RESIN} roughness={0.75} />
+        <meshStandardMaterial color={pal.resin} roughness={0.75} />
       </mesh>
-      <Line points={boundary} color={hover ? SIGNAL : GRAPHITE} lineWidth={hover ? 2 : 1.5} />
+      <Line points={boundary} color={hover ? pal.signal : pal.graphite} lineWidth={hover ? 2 : 1.5} />
       {children}
     </group>
   );
@@ -122,6 +123,7 @@ export function FlowTrace({
   heldBeatAt,
   duration = 1.0,
 }: FlowTraceProps) {
+  const pal = usePalette();
   const [progress, setProgress] = useState(0);
   const invalidate = useThree((s) => s.invalidate);
 
@@ -164,9 +166,9 @@ export function FlowTrace({
   return (
     <group>
       {restRuns.map((run, i) => (
-        <Line key={i} points={run} color={GRAPHITE} lineWidth={1} />
+        <Line key={i} points={run} color={pal.graphite} lineWidth={1} />
       ))}
-      {active && progress > 0.001 && <Line points={traced} color={SIGNAL} lineWidth={2.5} />}
+      {active && progress > 0.001 && <Line points={traced} color={pal.signal} lineWidth={2.5} />}
     </group>
   );
 }
@@ -175,13 +177,15 @@ interface CaptionPlateProps {
   position: [number, number, number];
   /** Lines of drafting-mono text (interpunct grammar, uppercase). */
   lines: string[];
+  /** Leader-note register: signal-edged annotation naming what the eye is on. */
+  note?: boolean;
 }
 
 /** Micro caption in space (bible 07): drafting mono, graphite, screen-crisp. */
-export function CaptionPlate({ position, lines }: CaptionPlateProps) {
+export function CaptionPlate({ position, lines, note = false }: CaptionPlateProps) {
   return (
     <Html position={position} zIndexRange={[10, 0]} className="site-caption-wrap">
-      <div className="site-caption">
+      <div className={note ? 'site-caption site-caption--note' : 'site-caption'}>
         {lines.map((l) => (
           <span key={l}>{l}</span>
         ))}

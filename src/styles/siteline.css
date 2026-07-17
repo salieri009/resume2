@@ -90,6 +90,21 @@ html[data-experience='siteline'] #root {
 .site-caption span:first-child {
   border-top: 0;
 }
+.site-caption--note {
+  color: var(--signal);
+  border-left: 2px solid var(--signal);
+  padding-left: 6px;
+}
+.site-caption--note span {
+  border-top: 0;
+}
+
+/* Screen-reader twin of the in-scene leader note */
+.site-anno--sr {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
 
 .site-canvas {
   position: absolute;
@@ -101,6 +116,8 @@ html[data-experience='siteline'] #root {
   width: 100% !important;
   height: 100% !important;
   cursor: crosshair;
+  /* Resize repaint gaps show the sheet, never a black buffer */
+  background: var(--paper);
 }
 
 .site-anno {
