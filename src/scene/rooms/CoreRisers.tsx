@@ -119,7 +119,8 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
 
       {active && (
         <CaptionPlate
-          position={[active.x + 0.35, -0.55, -0.15]}
+          /* Near the slab cut so the lifted note stays inside the frame */
+          position={[active.x + 0.35, -0.15, -0.15]}
           lines={[active.letter, active.proof.toUpperCase(), active.serves]}
           note
           wrap
@@ -144,7 +145,7 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
         </mesh>
         {intercomHover && (
           <CaptionPlate
-            position={[0.2, -1.05, -2.4]}
+            position={[0.2, -0.7, -2.4]}
             lines={[
               'F · INTERCOM',
               'KO NATIVE · EN FLUENT · JA / DE LEARNING',
