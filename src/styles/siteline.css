@@ -506,6 +506,53 @@ html[data-experience='siteline'] #root {
   color: var(--graphite-mute);
   font-size: 0.92rem;
 }
+.site-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Engineering narrative — problems/decisions/trade-offs as ruled pairs */
+.site-spec-narrative {
+  margin-top: 1rem;
+}
+.site-spec-pairs {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+}
+.site-spec-pairs li {
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--line);
+}
+.site-spec-pair-p {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--graphite);
+}
+.site-spec-pair-s {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--graphite-mute);
+}
+.site-spec-next {
+  color: var(--graphite-mute);
+}
+
+/* Role headline — the recruiter's three-second read, set as a stamp */
+.site-lobby-role {
+  margin: 0.7rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0.35rem 0;
+}
 .site-lobby-tag {
   margin: 0.75rem 0 0;
   font-size: 0.9rem;

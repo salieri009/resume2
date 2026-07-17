@@ -122,6 +122,8 @@ export interface Strings {
   armyRole: string;
   majorLine: string;
   exemptionsNote: string;
+  /** Role headline on the thesis wall — the recruiter's three-second read. */
+  roleLine: string;
   tagline: string;
   subTagline: string;
   skillsIntro: string;

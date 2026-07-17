@@ -26,6 +26,7 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
           <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · PLAN VIEW</p>
           <h1>The Architecture of Software</h1>
           <p className="site-plan-sub">Software is not written. It is constructed.</p>
+          <p className="site-lobby-role">{t.roleLine}</p>
           <p className="site-plan-reason">
             {reason === 'webgl'
               ? 'WebGL unavailable — orthographic plan mode.'
@@ -41,9 +42,20 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
           <p className="site-plan-name">
             {PROFILE.name} · {t.majorLine}
           </p>
-          <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
-            {t.navDownload}
-          </button>
+          <div className="site-plan-actions">
+            <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
+              {t.navDownload}
+            </button>
+            <a className="site-btn site-btn-ghost" href={LINKS.github} target="_blank" rel="noreferrer">
+              GITHUB
+            </a>
+            <a className="site-btn site-btn-ghost" href={LINKS.linkedin} target="_blank" rel="noreferrer">
+              LINKEDIN
+            </a>
+            <a className="site-btn site-btn-ghost" href={`mailto:${LINKS.email}`}>
+              {t.navContact.toUpperCase()}
+            </a>
+          </div>
         </header>
       )}
 

@@ -209,6 +209,7 @@ const SHARED = {
 
 export const STRINGS: Record<Lang, Strings> = {
   en: {
+    roleLine: 'Software Engineer · Cloud & DevOps',
     tagline: 'Deep learning classwork on one side; production infra on the other.',
     subTagline: 'Cares about correctness. Ships anyway.',
     skillsIntro: 'Each line ties to a project I shipped or a subject on the transcript.',
@@ -240,6 +241,7 @@ export const STRINGS: Record<Lang, Strings> = {
     ...SHARED.en,
   },
   ko: {
+    roleLine: '소프트웨어 엔지니어 · 클라우드 & DevOps',
     tagline: '한쪽은 딥러닝 수업, 다른 쪽은 프로덕션 인프라.',
     subTagline: '정확함을 중요하게 봅니다. 그래도 배포는 합니다.',
     skillsIntro: '아래 항목은 제가 만든 프로젝트나 성적표와 연결돼 있습니다.',
@@ -271,6 +273,7 @@ export const STRINGS: Record<Lang, Strings> = {
     ...SHARED.ko,
   },
   ja: {
+    roleLine: 'ソフトウェアエンジニア · クラウド & DevOps',
     tagline: '片側に深層学習の授業、もう片側にプロダクションインフラ。',
     subTagline: '正確さを気にします。それでも出荷はします。',
     skillsIntro: '下の項目は、自分で作ったプロジェクトか成績表につながっています。',

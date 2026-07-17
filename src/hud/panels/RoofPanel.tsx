@@ -14,7 +14,7 @@ const DOORS: { label: string; href: string; external?: boolean }[] = [
  * (bible 04/R-ROOF). Full addresses live on the plaque; doors are labels.
  */
 export function RoofPanel() {
-  const { room, phase, lang, returnLobby, endSite } = useSite();
+  const { room, phase, lang, returnLobby, endSite, setPrintOpen } = useSite();
   const t = STRINGS[lang];
 
   if (phase !== 'room' || room !== 'roof') return null;
@@ -55,6 +55,9 @@ export function RoofPanel() {
       </div>
 
       <footer className="site-spec-actions">
+        <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
+          {t.navDownload}
+        </button>
         <button type="button" className="site-btn site-btn-ghost" onClick={endSite}>
           REVISION A · END OF SET
         </button>

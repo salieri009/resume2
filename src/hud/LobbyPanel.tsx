@@ -1,11 +1,11 @@
 import { STRINGS } from '../data/strings';
-import { PROFILE } from '../data/profile';
+import { LINKS, PROFILE } from '../data/profile';
 import { useSite } from '../building/SiteContext';
 import { parseHash } from '../building/program';
 
 /** Lobby thesis wall — cover-sheet hierarchy: kicker → title → one line → CTA. */
 export function LobbyPanel() {
-  const { phase, room, floor, lang, prefer2d, setPrintOpen } = useSite();
+  const { phase, room, floor, lang, prefer2d, setPrintOpen, goTo } = useSite();
   const t = STRINGS[lang];
 
   /* PlanFallback is the cover sheet on compact / 2D — avoid stacked duplicate thesis. */
@@ -23,6 +23,7 @@ export function LobbyPanel() {
       <p className="site-lobby-kicker">SITE 009 · {PROFILE.alias}</p>
       <h1 className="site-lobby-title">The Architecture of Software</h1>
       <p className="site-lobby-sub">Software is not written. It is constructed.</p>
+      <p className="site-lobby-role">{t.roleLine}</p>
       <p className="site-lobby-tag">{t.tagline}</p>
       <details className="site-lobby-more">
         <summary>{moreLabel}</summary>
@@ -34,6 +35,15 @@ export function LobbyPanel() {
       <div className="site-lobby-actions">
         <button type="button" className="site-btn" onClick={() => setPrintOpen(true)}>
           {t.navDownload}
+        </button>
+        <a className="site-btn site-btn-ghost" href={LINKS.github} target="_blank" rel="noreferrer">
+          GITHUB
+        </a>
+        <a className="site-btn site-btn-ghost" href={LINKS.linkedin} target="_blank" rel="noreferrer">
+          LINKEDIN
+        </a>
+        <button type="button" className="site-btn site-btn-ghost" onClick={() => goTo('R', 'roof')}>
+          {t.navContact.toUpperCase()}
         </button>
       </div>
     </div>

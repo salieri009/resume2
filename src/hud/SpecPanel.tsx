@@ -54,6 +54,66 @@ export function SpecPanel() {
       <p className="site-spec-lead">{p.summary}</p>
       <p className="site-spec-overview">{p.overview}</p>
 
+      {/* Engineering narrative (bible 04 wall-label order): the sections a
+          technical interviewer actually reads — problems, decisions, refusals. */}
+      {p.problems.length > 0 && (
+        <div className="site-spec-narrative">
+          <p className="site-spec-label">Problems → Answers</p>
+          <ul className="site-spec-pairs">
+            {p.problems.map((pr) => (
+              <li key={pr.p}>
+                <span className="site-spec-pair-p">{pr.p}</span>
+                <span className="site-spec-pair-s">{pr.s}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {p.decisions.length > 0 && (
+        <div className="site-spec-narrative">
+          <p className="site-spec-label">Decisions</p>
+          <ul className="site-spec-pairs">
+            {p.decisions.map((d) => (
+              <li key={d.choice}>
+                <span className="site-spec-pair-p">{d.choice}</span>
+                <span className="site-spec-pair-s">{d.why}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {p.tradeoffs.length > 0 && (
+        <div className="site-spec-narrative">
+          <p className="site-spec-label">Trade-offs</p>
+          <ul className="site-spec-pairs">
+            {p.tradeoffs.map((d) => (
+              <li key={d.rejected}>
+                <span className="site-spec-pair-p">✕ {d.rejected}</span>
+                <span className="site-spec-pair-s">{d.why}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(p.lessons.length > 0 || p.future.length > 0) && (
+        <div className="site-spec-narrative">
+          <p className="site-spec-label">Lessons · Next</p>
+          <ul className="site-spec-bullets">
+            {p.lessons.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+            {p.future.map((f) => (
+              <li key={f} className="site-spec-next">
+                → {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {p.results.length > 0 && (
         <ul className="site-spec-bullets">
           {p.results.map((b) => (
