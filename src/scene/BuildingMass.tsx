@@ -70,6 +70,9 @@ export function BuildingMass({
   // is the exception — its exhibit stands ON the solid building (bible R).
   const shellFade = enteredRoom !== null && enteredRoom !== 'roof';
   const shellOpacity = shellFade ? 0.12 : 1;
+  // B1/B2: paper hatch alone is not enough — the lobby slab still plugs the
+  // opened poché. Cut it away with the sheet (bible 03/04 cut-reveal).
+  const basementOpen = enteredRoom === 'core' || enteredRoom === 'server';
 
   const footprintPts = useMemo(() => {
     const full = [
@@ -87,7 +90,7 @@ export function BuildingMass({
       {/* Ground plane — the sheet survives any window (bible 02: infinite paper).
           Unlit: paper is the drawing's ground truth, identical to the void.
           For the basements the paper cuts away — hatched, per convention. */}
-      <CutGround open={enteredRoom === 'core' || enteredRoom === 'server'} />
+      <CutGround open={basementOpen} />
 
       {enteredRoom === 'timeline' && (
         <TimelineHall
@@ -104,24 +107,29 @@ export function BuildingMass({
       {enteredRoom === 'roof' && <RoofPlate />}
 
       {/* Survey grid — blueprint discipline, fading by design at ±10 m.
-          At the roof the fog owns the field: no grid at that height (bible R). */}
-      {enteredRoom !== 'roof' && <GridLines />}
+          At the roof the fog owns the field: no grid at that height (bible R).
+          Over an opened basement the grid would re-lid the hatch. */}
+      {enteredRoom !== 'roof' && !basementOpen && <GridLines />}
 
       {/* Footprint ink */}
       <Line points={footprintPts} color={pal.graphite} lineWidth={1.5} />
 
       {extrude > 0.02 && (
         <>
-          {/* Slabs */}
-          <mesh position={[0, 0.05, 0]}>
-            <boxGeometry args={[FW, 0.1, FD]} />
-            <meshStandardMaterial
-              color={pal.concrete}
-              roughness={0.85}
-              transparent={shellFade}
-              opacity={shellOpacity}
-            />
-          </mesh>
+          {/* Slabs — ground plate omitted when the basement cut is open so the
+              chamber reads through the hatch; mid + roof stay as thinned shell. */}
+          {!basementOpen && (
+            <mesh position={[0, 0.05, 0]}>
+              <boxGeometry args={[FW, 0.1, FD]} />
+              <meshStandardMaterial
+                color={pal.concrete}
+                roughness={0.85}
+                transparent={shellFade}
+                opacity={shellOpacity}
+              />
+            </mesh>
+          )}
+          {basementOpen && <SlabCutRim fade={shellFade} opacity={shellOpacity} />}
           <mesh position={[0, wallH * 0.55, 0]}>
             <boxGeometry args={[FW * 0.98, 0.08, FD * 0.98]} />
             <meshStandardMaterial
@@ -263,6 +271,42 @@ function Wall({
         roughness={0.88}
         transparent={fade}
         opacity={opacity}
+      />
+    </mesh>
+  );
+}
+
+/** Lobby slab with a rectangular opening — the cut that lets B1/B2 read
+ *  through grade while leaving a sleeved rim (bible 04 · B1 ceiling). */
+function SlabCutRim({ fade, opacity }: { fade: boolean; opacity: number }) {
+  const pal = usePalette();
+  const HOLE_W = 6.6;
+  const HOLE_D = 5.2;
+  const shape = useMemo(() => {
+    const s = new THREE.Shape();
+    s.moveTo(-FW / 2, -FD / 2);
+    s.lineTo(FW / 2, -FD / 2);
+    s.lineTo(FW / 2, FD / 2);
+    s.lineTo(-FW / 2, FD / 2);
+    s.closePath();
+    const hole = new THREE.Path();
+    hole.moveTo(-HOLE_W / 2, -HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(-HOLE_W / 2, HOLE_D / 2);
+    hole.closePath();
+    s.holes.push(hole);
+    return s;
+  }, []);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, 0]}>
+      <shapeGeometry args={[shape]} />
+      <meshStandardMaterial
+        color={pal.concrete}
+        roughness={0.85}
+        transparent={fade}
+        opacity={opacity}
+        side={THREE.DoubleSide}
       />
     </mesh>
   );
