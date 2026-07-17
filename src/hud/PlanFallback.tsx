@@ -10,7 +10,9 @@ import { PROFILE } from '../data/profile';
 export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced' }) {
   const { goTo, returnLobby, floor, room, phase, lang, setPrintOpen } = useSite();
   const t = STRINGS[lang];
-  const showCover = phase === 'lobby' || phase === 'boot' || room === 'lobby';
+  /* Phase is authoritative — do not keep the cover just because room===lobby
+     after a hard-refresh race (L0 → L1/timeline must clear the thesis plate). */
+  const showCover = phase === 'lobby' || phase === 'boot';
 
   return (
     <div className="site-plan">

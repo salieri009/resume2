@@ -82,6 +82,9 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [subStop, setSubStop] = useState(0);
   /** Guards late/duplicate boot completion from resetting lobby after goTo. */
   const bootSettledRef = useRef(false);
+  /** Latest phase for finishBoot — avoids settling to lobby after L0→room nav. */
+  const phaseRef = useRef(phase);
+  phaseRef.current = phase;
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -142,8 +145,13 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const finishBoot = useCallback(() => {
     setBootDone(true);
     // Late GSAP / StrictMode / plan-fallback completions must not yank the
-    // visitor back to the lobby thesis after they already left via goTo.
+    // visitor back to the lobby thesis after they already left via goTo
+    // (repro: hard refresh on #/L0 then navigate to #/L1/timeline).
     if (bootSettledRef.current) return;
+    if (phaseRef.current === 'room' || phaseRef.current === 'end') {
+      bootSettledRef.current = true;
+      return;
+    }
     bootSettledRef.current = true;
 
     const loc = parseHash(window.location.hash);
@@ -167,13 +175,15 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       if (!entry) return;
       if (!SHIPPED_ROOMS.includes(r) && r !== 'lobby') return;
       // Navigation means boot is over — block any pending finishBoot reset.
+      // Mark settled + write hash BEFORE React state so a late finishBoot
+      // that slipped past the ref still honors #/L1/timeline via parseHash.
       bootSettledRef.current = true;
       setBootDone(true);
+      syncHash(f, r);
       setFloor(f);
       setRoom(r);
       setSubStop(0);
       setPhase(r === 'lobby' ? 'lobby' : 'room');
-      syncHash(f, r);
     },
     [syncHash],
   );

@@ -13,7 +13,7 @@ export function LobbyPanel() {
   if (phase !== 'lobby' || room !== 'lobby' || floor !== 'L0') return null;
 
   return (
-    <div className="site-lobby">
+    <div className="site-lobby" data-plate="lobby-thesis">
       <p className="site-lobby-kicker">SITE 009 · {PROFILE.alias}</p>
       <h1 className="site-lobby-title">The Architecture of Software</h1>
       <p className="site-lobby-sub">Software is not written. It is constructed.</p>
