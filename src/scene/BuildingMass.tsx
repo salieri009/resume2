@@ -119,7 +119,8 @@ export function BuildingMass({
       {extrude > 0.02 && (
         <>
           {/* Slabs — ground plate omitted when the basement cut is open so the
-              chamber reads through the hatch; mid + roof stay as thinned shell. */}
+              chamber reads through the hatch; mid plate also opens so it cannot
+              re-lid the poché from above (bible 03/04 cut-reveal). */}
           {!basementOpen && (
             <mesh position={[0, 0.05, 0]}>
               <boxGeometry args={[FW, 0.1, FD]} />
@@ -134,17 +135,19 @@ export function BuildingMass({
             </mesh>
           )}
           {basementOpen && <SlabCutRim fade={shellFade} opacity={shellOpacity} />}
-          <mesh position={[0, wallH * 0.55, 0]}>
-            <boxGeometry args={[FW * 0.98, 0.08, FD * 0.98]} />
-            <meshStandardMaterial
-              color={pal.resin}
-              roughness={0.7}
-              transparent
-              opacity={shellOpacity}
-              depthWrite={!shellFade}
-            />
-            <InkEdges />
-          </mesh>
+          {!basementOpen && (
+            <mesh position={[0, wallH * 0.55, 0]}>
+              <boxGeometry args={[FW * 0.98, 0.08, FD * 0.98]} />
+              <meshStandardMaterial
+                color={pal.resin}
+                roughness={0.7}
+                transparent
+                opacity={shellOpacity}
+                depthWrite={!shellFade}
+              />
+              <InkEdges />
+            </mesh>
+          )}
           <mesh position={[0, wallH, 0]}>
             <boxGeometry args={[FW, 0.12, FD]} />
             <meshStandardMaterial
@@ -295,20 +298,23 @@ function Wall({
  *  through grade while leaving a sleeved rim (bible 04 · B1 ceiling). */
 function SlabCutRim({ fade, opacity }: { fade: boolean; opacity: number }) {
   const pal = usePalette();
-  const HOLE_W = 6.6;
-  const HOLE_D = 5.2;
+  /* Hole spans the full chamber so risers are not clipped by the rim. */
+  const HOLE_W = 7.2;
+  const HOLE_D = 5.6;
   const shape = useMemo(() => {
     const s = new THREE.Shape();
+    /* Outer CCW */
     s.moveTo(-FW / 2, -FD / 2);
     s.lineTo(FW / 2, -FD / 2);
     s.lineTo(FW / 2, FD / 2);
     s.lineTo(-FW / 2, FD / 2);
     s.closePath();
+    /* Hole must be opposite winding (CW) or ShapeGeometry draws a solid lid. */
     const hole = new THREE.Path();
     hole.moveTo(-HOLE_W / 2, -HOLE_D / 2);
-    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
-    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
     hole.lineTo(-HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
     hole.closePath();
     s.holes.push(hole);
     return s;
@@ -335,16 +341,18 @@ function CutGround({ open }: { open: boolean }) {
   const HOLE_D = 9;
   const cutShape = useMemo(() => {
     const s = new THREE.Shape();
+    /* Outer CCW */
     s.moveTo(-200, -200);
     s.lineTo(200, -200);
     s.lineTo(200, 200);
     s.lineTo(-200, 200);
     s.closePath();
+    /* Hole CW — opposite the outer, or the paper never opens. */
     const hole = new THREE.Path();
     hole.moveTo(-HOLE_W / 2, -HOLE_D / 2);
-    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
-    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
     hole.lineTo(-HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, HOLE_D / 2);
+    hole.lineTo(HOLE_W / 2, -HOLE_D / 2);
     hole.closePath();
     s.holes.push(hole);
     return s;
@@ -377,7 +385,7 @@ function CutGround({ open }: { open: boolean }) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
         <shapeGeometry args={[cutShape]} />
-        <meshBasicMaterial color={pal.paper} side={THREE.DoubleSide} />
+        <meshBasicMaterial color={pal.paper} side={THREE.DoubleSide} depthWrite={false} />
       </mesh>
       {hatch.map((run, i) => (
         <Line key={i} points={run} color={pal.graphite} lineWidth={0.7} />

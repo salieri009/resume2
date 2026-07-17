@@ -47,7 +47,8 @@ interface AssemblyStageProps {
   onSelect: () => void;
   pal: Palette;
   labelMaps: LabelMaps;
-  markMap: THREE.CanvasTexture;
+  /** One engraving per highlight — stamped on the top lift's +Z faces. */
+  faceMarks: THREE.CanvasTexture[];
   exemptColor: string;
 }
 
@@ -72,7 +73,7 @@ function AssemblyStage({
   onSelect,
   pal,
   labelMaps,
-  markMap,
+  faceMarks,
   exemptColor,
 }: AssemblyStageProps) {
   const invalidate = useThree((s) => s.invalidate);
@@ -105,6 +106,10 @@ function AssemblyStage({
   }, [active, hover, reducedMotion, invalidate]);
 
   const seated = p > 0.98;
+  const attention = hover || active;
+  const markLines = wp.highlights.map(
+    (h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`.toUpperCase(),
+  );
 
   return (
     <group position={[x, 0, 0]}>
@@ -132,6 +137,7 @@ function AssemblyStage({
         {/* The lifts — exploded apart at rest, sliding home as p → 1; top faces stamped */}
         {AXONO_LAYERS.slice(1, 1 + lifts).map((layer, k) => {
           const dy = (1 - p) * EXPLODE_GAP * (k + 1);
+          const isTopLift = k === lifts - 1;
           return (
             <group key={layer.id} position={[0, 0.16 + k * 0.34 + dy, 0]}>
               {/* Assembly leader — the dashed centre-line back to the seated slot */}
@@ -145,29 +151,47 @@ function AssemblyStage({
                   gapSize={0.03}
                 />
               )}
-              {layer.blocks.map((b) => (
-                <group
-                  key={b.label}
-                  position={[(b.left + b.size / 2) * S - 0.55, 0, (b.top + b.size / 2) * S - 0.55]}
-                >
-                  <mesh position={[0, (b.height * S) / 2, 0]}>
-                    <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
-                    <meshStandardMaterial color={pal.resin} roughness={0.72} />
-                    <InkEdges />
-                  </mesh>
-                  <mesh
-                    rotation={[-Math.PI / 2, 0, 0]}
-                    position={[0, b.height * S + 0.002, 0]}
+              {layer.blocks.map((b, bi) => {
+                const hw = (b.size * S) / 2;
+                const hh = (b.height * S) / 2;
+                /* Mark stamps live on the camera-facing (+Z) face, proud of the
+                   mass — never buried behind sibling boxes (bible 10 · L1). */
+                const showFaceMark = attention && isTopLift && faceMarks[bi];
+                return (
+                  <group
+                    key={b.label}
+                    position={[(b.left + b.size / 2) * S - 0.55, 0, (b.top + b.size / 2) * S - 0.55]}
                   >
-                    <planeGeometry args={[b.size * S * 0.92, (b.size * S * 0.92) / 2]} />
-                    <meshStandardMaterial
-                      map={labelMaps.get(b.label) ?? null}
-                      roughness={0.75}
-                      toneMapped={false}
-                    />
-                  </mesh>
-                </group>
-              ))}
+                    <mesh position={[0, hh, 0]}>
+                      <boxGeometry args={[b.size * S, b.height * S, b.size * S]} />
+                      <meshStandardMaterial color={pal.resin} roughness={0.72} />
+                      <InkEdges />
+                    </mesh>
+                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, b.height * S + 0.002, 0]}>
+                      <planeGeometry args={[b.size * S * 0.92, (b.size * S * 0.92) / 2]} />
+                      <meshStandardMaterial
+                        map={labelMaps.get(b.label) ?? null}
+                        roughness={0.75}
+                        toneMapped={false}
+                      />
+                    </mesh>
+                    {showFaceMark && (
+                      <mesh position={[0, hh, hw + 0.006]}>
+                        <planeGeometry args={[b.size * S * 0.9, Math.min(hh * 1.4, 0.12)]} />
+                        <meshStandardMaterial
+                          map={faceMarks[bi]}
+                          roughness={0.75}
+                          toneMapped={false}
+                          depthTest
+                          polygonOffset
+                          polygonOffsetFactor={-1}
+                          polygonOffsetUnits={-1}
+                        />
+                      </mesh>
+                    )}
+                  </group>
+                );
+              })}
             </group>
           );
         })}
@@ -180,19 +204,17 @@ function AssemblyStage({
             <InkEdges />
           </mesh>
         )}
-        {/* Mark stamps on the front face under attention (bible 10 · L1) */}
-        {(hover || active) && (
-          <mesh position={[0, 0.55 + 0.12 * lifts, 0.62]}>
-            <planeGeometry args={[0.85, 0.22]} />
-            <meshStandardMaterial map={markMap} roughness={0.75} toneMapped={false} />
-          </mesh>
-        )}
       </Plinth>
 
       {/* Session datum, ruled above the stage */}
       <CaptionPlate position={[-0.3, 1.62, 0]} lines={[wp.session]} />
 
-      {artifact && (hover || active) && (
+      {/* Grade schedule — Html plate clear of the mass so boxes cannot occlude it */}
+      {attention && (
+        <CaptionPlate position={[0.95, 1.15, 0.45]} lines={markLines} note={hover} wrap />
+      )}
+
+      {artifact && attention && (
         <CaptionPlate position={[0.7, 0.35 + 0.18 * index, 0.2]} lines={[artifact]} />
       )}
     </group>
@@ -235,14 +257,16 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
       ),
     [pal.resin, pal.graphite],
   );
-  // Face mark stamps under attention — replace floating caption load (bible 10)
-  const markMaps = useMemo(
+  // Per-highlight face stamps for the top lift (bible 10 · L1 mark stamps)
+  const faceMarkSets = useMemo(
     () =>
       SEMESTER_WAYPOINTS.map((wp) =>
-        labelTexture(
-          wp.highlights.slice(0, 2).map((h) => `${h.short} · ${formatMark(h.mark, h.grade, 'en')}`),
-          { paper: pal.resin, ink: pal.graphite },
-          { w: 512, h: 128, size: 28 },
+        wp.highlights.map((h) =>
+          labelTexture(
+            [`${h.short} · ${formatMark(h.mark, h.grade, 'en')}`],
+            { paper: pal.resin, ink: pal.graphite },
+            { w: 512, h: 96, size: 26 },
+          ),
         ),
       ),
     [pal.resin, pal.graphite],
@@ -251,9 +275,9 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
     () => () => {
       labelMaps.forEach((t) => t.dispose());
       completionMap.dispose();
-      markMaps.forEach((t) => t.dispose());
+      faceMarkSets.forEach((set) => set.forEach((t) => t.dispose()));
     },
-    [labelMaps, completionMap, markMaps],
+    [labelMaps, completionMap, faceMarkSets],
   );
 
   return (
@@ -280,7 +304,7 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
           onSelect={() => onSelectStage(i)}
           pal={pal}
           labelMaps={labelMaps}
-          markMap={markMaps[i]!}
+          faceMarks={faceMarkSets[i]!}
           exemptColor={exemptColor}
         />
       ))}
