@@ -38,8 +38,10 @@ const PRESETS: Record<
   ephemeral: { position: [-0.1, 4.8, 9.5], lookAt: [-0.1, 2.8, 1.3], zoom: 270 },
   // The one frontal hall — subStop pans it in hard stops (bible 05).
   timeline: { position: [0, 3.2, 14], lookAt: [0, 0.95, 0], zoom: 240 },
-  // Below grade, into the opened poché.
-  core: { position: [6, -0.2, 6], lookAt: [0, -1.2, -0.5], zoom: 150 },
+  // Below grade, into the opened poché — sit above the cut sheet (not under
+  // the paper outside the hatch) and pull back so the chamber stays inside
+  // the ortho frustum on common viewports.
+  core: { position: [8, 1.5, 8], lookAt: [0, -1.0, -0.5], zoom: 105 },
   // Deeper still — twice-diminished light, one aisle.
   server: { position: [6, -1.6, 6], lookAt: [-0.2, -1.5, -1.2], zoom: 165 },
   // The records floor, and its one pan west to the reading desk.
