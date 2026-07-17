@@ -408,12 +408,20 @@ export function BootController({
 }: BootControllerProps) {
   const done = useRef(false);
   const invalidate = useThree((s) => s.invalidate);
+  const onCompleteRef = useRef(onComplete);
+  const onExtrudeRef = useRef(onExtrude);
+  const onInkRef = useRef(onInk);
+  onCompleteRef.current = onComplete;
+  onExtrudeRef.current = onExtrude;
+  onInkRef.current = onInk;
 
   useEffect(() => {
+    if (done.current) return;
     if (reducedMotion) {
-      onInk(1);
-      onExtrude(1);
-      onComplete();
+      done.current = true;
+      onInkRef.current(1);
+      onExtrudeRef.current(1);
+      onCompleteRef.current();
       invalidate();
       return;
     }
@@ -422,7 +430,7 @@ export function BootController({
       onComplete: () => {
         if (!done.current) {
           done.current = true;
-          onComplete();
+          onCompleteRef.current();
         }
       },
     });
@@ -431,7 +439,7 @@ export function BootController({
       duration: DUR.ink,
       ease: EASE_INK,
       onUpdate: () => {
-        onInk(state.ink);
+        onInkRef.current(state.ink);
         invalidate();
       },
     })
@@ -440,7 +448,7 @@ export function BootController({
         duration: DUR.extrude,
         ease: EASE_SITE,
         onUpdate: () => {
-          onExtrude(state.extrude);
+          onExtrudeRef.current(state.extrude);
           invalidate();
         },
       })
@@ -448,7 +456,9 @@ export function BootController({
     return () => {
       tl.kill();
     };
-  }, [reducedMotion, onComplete, onExtrude, onInk, invalidate]);
+    // Callbacks via refs so StrictMode / invalidate churn cannot restart boot
+    // and fire a late finishBoot after the visitor has already left the lobby.
+  }, [reducedMotion, invalidate]);
 
   return <>{children}</>;
 }

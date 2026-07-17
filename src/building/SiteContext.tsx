@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -79,6 +80,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   const [printOpen, setPrintOpen] = useState(false);
   const [bootDone, setBootDone] = useState(reducedMotion);
   const [subStop, setSubStop] = useState(0);
+  /** Guards late/duplicate boot completion from resetting lobby after goTo. */
+  const bootSettledRef = useRef(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -138,6 +141,11 @@ export function SiteProvider({ children }: { children: ReactNode }) {
 
   const finishBoot = useCallback(() => {
     setBootDone(true);
+    // Late GSAP / StrictMode / plan-fallback completions must not yank the
+    // visitor back to the lobby thesis after they already left via goTo.
+    if (bootSettledRef.current) return;
+    bootSettledRef.current = true;
+
     const loc = parseHash(window.location.hash);
     if (loc.room !== 'lobby' && SHIPPED_ROOMS.includes(loc.room)) {
       setFloor(loc.floor);
@@ -158,6 +166,9 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       const entry = floorDef?.rooms.find((x) => x.id === r);
       if (!entry) return;
       if (!SHIPPED_ROOMS.includes(r) && r !== 'lobby') return;
+      // Navigation means boot is over — block any pending finishBoot reset.
+      bootSettledRef.current = true;
+      setBootDone(true);
       setFloor(f);
       setRoom(r);
       setSubStop(0);
@@ -173,6 +184,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const reopen = useCallback(() => {
+    bootSettledRef.current = false;
     setBootDone(false);
     setPhase('boot');
     setFloor('L0');
@@ -182,6 +194,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   }, [syncHash]);
 
   const returnLobby = useCallback(() => {
+    bootSettledRef.current = true;
+    setBootDone(true);
     setPhase('lobby');
     setFloor('L0');
     setRoom('lobby');

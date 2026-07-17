@@ -57,16 +57,20 @@ function PrintDrawer() {
 }
 
 function SitelineShell() {
-  const { prefer2d, reducedMotion, phase, finishBoot } = useSite();
+  const { prefer2d, reducedMotion, phase, bootDone, finishBoot } = useSite();
   const [webgl] = useState(() => isWebGLAvailable());
 
   const usePlan = !webgl || prefer2d;
 
   useEffect(() => {
-    if (usePlan && phase === 'boot') {
+    // Plan mode skips the WebGL boot scene; reduced-motion starts with
+    // bootDone already true so SiteRoot never mounts BootScene either.
+    // Either way phase must leave 'boot' or the lobby thesis never mounts
+    // and the rail stays hidden.
+    if (phase === 'boot' && (usePlan || bootDone || reducedMotion)) {
       finishBoot();
     }
-  }, [usePlan, phase, finishBoot]);
+  }, [usePlan, phase, bootDone, reducedMotion, finishBoot]);
 
   return (
     <div className="site-app">
