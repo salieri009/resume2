@@ -38,8 +38,8 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
               className="site-plan-floor"
               onClick={() => {
                 if (f.id === 'L0') returnLobby();
-                const crowd = f.rooms.find((r) => r.id === 'crowd');
-                if (crowd && SHIPPED_ROOMS.includes(crowd.id)) goTo(f.id, crowd.id);
+                const first = f.rooms.find((r) => SHIPPED_ROOMS.includes(r.id));
+                if (first && f.id !== 'L0') goTo(f.id, first.id);
               }}
             >
               <span>{f.id}</span>

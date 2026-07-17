@@ -24,8 +24,8 @@ export function FloorRail() {
                 onClick={() => {
                   if (f.id === 'L0') returnLobby();
                   else {
-                    const crowd = f.rooms.find((r) => r.id === 'crowd');
-                    if (crowd) goTo(f.id as FloorId, crowd.id as RoomId);
+                    const first = f.rooms.find((r) => SHIPPED_ROOMS.includes(r.id));
+                    if (first) goTo(f.id as FloorId, first.id as RoomId);
                   }
                 }}
                 aria-current={active ? 'true' : undefined}
@@ -33,7 +33,7 @@ export function FloorRail() {
                 <span className="site-rail-id">{f.id}</span>
                 <span className="site-rail-label">{f.label}</span>
               </button>
-              {active && f.id === 'L2' && (
+              {active && f.rooms.length > 1 && (
                 <ul className="site-rail-rooms">
                   {f.rooms.map((r) => {
                     const ok = SHIPPED_ROOMS.includes(r.id);

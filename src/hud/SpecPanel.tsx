@@ -1,5 +1,6 @@
 import { getLocalizedProject, getReceipts } from '../data/projects';
 import { STRINGS } from '../data/strings';
+import { projectKeyOf } from '../building/program';
 import { useSite } from '../building/SiteContext';
 
 /** Spec sheet for the active lab — fed by PROJECTS.*, not marketing copy. */
@@ -7,9 +8,10 @@ export function SpecPanel() {
   const { room, lang, phase, returnLobby, setPrintOpen } = useSite();
   const t = STRINGS[lang];
 
-  if (phase !== 'room' || room !== 'crowd') return null;
+  const projectKey = projectKeyOf(room);
+  if (phase !== 'room' || !projectKey) return null;
 
-  const p = getLocalizedProject('crowd', lang);
+  const p = getLocalizedProject(projectKey, lang);
   const receipts = getReceipts(p);
 
   return (

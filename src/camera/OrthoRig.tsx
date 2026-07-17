@@ -6,7 +6,14 @@ import * as THREE from 'three';
 import type { RoomId } from '../building/program';
 import { DUR, EASE_SITE } from '../scene/motion';
 
-export type ViewPreset = 'boot' | 'lobby' | 'labCrowd';
+export type ViewPreset =
+  | 'boot'
+  | 'lobby'
+  | 'crowd'
+  | 'iotbay'
+  | 'farm'
+  | 'gundam'
+  | 'ephemeral';
 
 const PRESETS: Record<
   ViewPreset,
@@ -16,7 +23,13 @@ const PRESETS: Record<
   // the concept-sheet compositions (composition wins over coordinates).
   boot: { position: [18, 22, 18], lookAt: [0, 1, 0], zoom: 28 },
   lobby: { position: [14, 10, 14], lookAt: [0, 1.4, 0], zoom: 55 },
-  labCrowd: { position: [4.5, 5.5, 6.5], lookAt: [0, 1.7, -1.2], zoom: 280 },
+  // Laboratory stations (bible 05 relationships: iotbay mirrors crowd,
+  // farm/gundam raised diagonals, ephemeral the one frontal presentation).
+  crowd: { position: [4.5, 4.5, 6.5], lookAt: [0, 1.25, -1.2], zoom: 280 },
+  iotbay: { position: [-4.5, 4.0, 6.5], lookAt: [0, 1.05, 1.35], zoom: 230 },
+  farm: { position: [6.2, 6.0, 6.5], lookAt: [1.7, 2.8, -1.0], zoom: 260 },
+  gundam: { position: [-6.2, 6.0, 6.5], lookAt: [-1.9, 2.75, -0.9], zoom: 300 },
+  ephemeral: { position: [-0.1, 4.8, 9.5], lookAt: [-0.1, 2.8, 1.3], zoom: 270 },
 };
 
 
@@ -67,7 +80,7 @@ export function OrthoRig({ preset, reducedMotion }: OrthoRigProps) {
       lx: target.lookAt[0],
       ly: target.lookAt[1],
       lz: target.lookAt[2],
-      duration: preset === 'labCrowd' ? DUR.threshold : DUR.civic,
+      duration: preset === 'boot' || preset === 'lobby' ? DUR.civic : DUR.threshold,
       ease: EASE_SITE,
       onUpdate: () => {
         cam.position.set(from.x, from.y, from.z);
@@ -103,6 +116,6 @@ export function OrthoRig({ preset, reducedMotion }: OrthoRigProps) {
 
 export function presetForRoom(room: RoomId, phase: string): ViewPreset {
   if (phase === 'boot') return 'boot';
-  if (room === 'crowd') return 'labCrowd';
+  if (phase === 'room' && room in PRESETS) return room as ViewPreset;
   return 'lobby';
 }

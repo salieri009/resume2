@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useCallback, useMemo, useState } from 'react';
+import { floorOfRoom, tagOf, type RoomId } from '../building/program';
 import { useSite } from '../building/SiteContext';
 import { OrthoRig, presetForRoom } from '../camera/OrthoRig';
 import { BootController, BuildingMass, SiteLights } from './BuildingMass';
@@ -25,14 +26,20 @@ function BootScene({
       onExtrude={setExtrude}
       onInk={setInk}
     >
-      <BuildingMass extrude={extrude} ink={ink} showLab={false} labHover={false} />
+      <BuildingMass
+        extrude={extrude}
+        ink={ink}
+        showLabs={false}
+        enteredRoom={null}
+        hoveredRoom={null}
+      />
     </BootController>
   );
 }
 
 export function SiteRoot({ webgl }: SiteRootProps) {
   const { phase, room, reducedMotion, finishBoot, goTo, bootDone, theme } = useSite();
-  const [labHover, setLabHover] = useState(false);
+  const [hoveredRoom, setHoveredRoom] = useState<RoomId | null>(null);
 
   const onBootComplete = useCallback(() => {
     finishBoot();
@@ -45,6 +52,17 @@ export function SiteRoot({ webgl }: SiteRootProps) {
 
   const pal = getScenePalette(theme === 'dark' ? 'dark' : 'light');
   const clear = pal.paper;
+  const enteredRoom = phase === 'room' ? room : null;
+
+  const onRoomHover = useCallback((id: RoomId, h: boolean) => {
+    setHoveredRoom((prev) => (h ? id : prev === id ? null : prev));
+  }, []);
+  const onRoomClick = useCallback(
+    (id: RoomId) => {
+      goTo(floorOfRoom(id), id);
+    },
+    [goTo],
+  );
 
   if (!webgl) return null;
 
@@ -63,30 +81,30 @@ export function SiteRoot({ webgl }: SiteRootProps) {
         <color attach="background" args={[clear]} />
         <Suspense fallback={null}>
           <PaletteProvider value={pal}>
-          <OrthoRig preset={preset} reducedMotion={reducedMotion} />
-          <SiteLights />
-          {phase === 'boot' && !bootDone ? (
-            <BootScene reducedMotion={reducedMotion} onComplete={onBootComplete} />
-          ) : (
-            <BuildingMass
-              extrude={1}
-              ink={1}
-              showLab
-              labHover={labHover}
-              labEntered={room === 'crowd'}
-              reducedMotion={reducedMotion}
-              onLabHover={setLabHover}
-              onLabClick={() => goTo('L2', 'crowd')}
-            />
-          )}
+            <OrthoRig preset={preset} reducedMotion={reducedMotion} />
+            <SiteLights />
+            {phase === 'boot' && !bootDone ? (
+              <BootScene reducedMotion={reducedMotion} onComplete={onBootComplete} />
+            ) : (
+              <BuildingMass
+                extrude={1}
+                ink={1}
+                showLabs
+                enteredRoom={enteredRoom}
+                hoveredRoom={hoveredRoom}
+                reducedMotion={reducedMotion}
+                onRoomHover={onRoomHover}
+                onRoomClick={onRoomClick}
+              />
+            )}
           </PaletteProvider>
         </Suspense>
       </Canvas>
       {/* The visual leader note lives in-scene (anchored to the exhibit);
           this offscreen twin keeps the announcement for screen readers. */}
-      {labHover && phase !== 'boot' && room !== 'crowd' && (
+      {hoveredRoom && phase !== 'boot' && room !== hoveredRoom && (
         <div className="site-anno site-anno--sr" role="status">
-          ROOM · L2 · PROJECT 01 · CROWD
+          ROOM · {floorOfRoom(hoveredRoom)} · {tagOf(hoveredRoom)}
         </div>
       )}
     </div>

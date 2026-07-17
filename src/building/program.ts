@@ -63,8 +63,26 @@ export const FLOORS: FloorDef[] = [
   },
 ];
 
-/** Rooms implemented in the first vertical slice. */
-export const SHIPPED_ROOMS: RoomId[] = ['lobby', 'crowd'];
+/** Rooms implemented so far (Wave 2: all five laboratories). */
+export const SHIPPED_ROOMS: RoomId[] = ['lobby', 'crowd', 'iotbay', 'farm', 'gundam', 'ephemeral'];
+
+/** Project bound to a room, if the room exhibits one. */
+export function projectKeyOf(room: RoomId): ProjectKey | undefined {
+  for (const f of FLOORS) {
+    const r = f.rooms.find((r) => r.id === room);
+    if (r?.projectKey) return r.projectKey;
+  }
+  return undefined;
+}
+
+/** Rail tag of a room (leader-note register). */
+export function tagOf(room: RoomId): string {
+  for (const f of FLOORS) {
+    const r = f.rooms.find((r) => r.id === room);
+    if (r) return r.tag;
+  }
+  return room.toUpperCase();
+}
 
 export function floorOfRoom(room: RoomId): FloorId {
   for (const f of FLOORS) {

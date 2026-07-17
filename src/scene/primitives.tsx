@@ -1,7 +1,7 @@
 import { Html, Line } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { EASE_INK } from './motion';
 import { usePalette } from './palette';
@@ -208,6 +208,42 @@ function softShadowTexture(): THREE.CanvasTexture {
   ctx.fillRect(0, 0, 128, 128);
   shadowTex = new THREE.CanvasTexture(c);
   return shadowTex;
+}
+
+interface InstancedBlanksProps {
+  /** Grid of identical pre-cast pieces — instancing depicted by instancing. */
+  count: number;
+  cols: number;
+  size: number;
+  spacing: number;
+  position: [number, number, number];
+  color: string;
+}
+
+/** Rows of identical blanks (farm seedling tray, pavilion object pool). */
+export function InstancedBlanks({ count, cols, size, spacing, position, color }: InstancedBlanksProps) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    const m = new THREE.Matrix4();
+    const rows = Math.ceil(count / cols);
+    for (let i = 0; i < count; i++) {
+      const cx = (i % cols) - (cols - 1) / 2;
+      const cz = Math.floor(i / cols) - (rows - 1) / 2;
+      m.setPosition(cx * spacing, 0, cz * spacing);
+      mesh.setMatrixAt(i, m);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    invalidate();
+  }, [count, cols, spacing, invalidate]);
+  return (
+    <instancedMesh ref={ref} args={[undefined, undefined, count]} position={position}>
+      <boxGeometry args={[size, size, size]} />
+      <meshStandardMaterial color={color} roughness={0.55} metalness={0.1} />
+    </instancedMesh>
+  );
 }
 
 interface BlobShadowProps {
