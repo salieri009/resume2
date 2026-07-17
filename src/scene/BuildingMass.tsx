@@ -7,7 +7,8 @@ import { SHIPPED_ROOMS, type RoomId } from '../building/program';
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
-import { InkEdges, partialPolyline, SoftPatch } from './primitives';
+import { BlobShadow, GroundWash, InkEdges, partialPolyline, SoftPatch } from './primitives';
+import { ThesisInscription } from './ThesisInscription';
 import { ArchiveLibrary } from './rooms/ArchiveLibrary';
 import { CoreRisers } from './rooms/CoreRisers';
 import { CrowdObservatory } from './rooms/CrowdObservatory';
@@ -113,6 +114,13 @@ export function BuildingMass({
           Over an opened basement the grid would re-lid the hatch. */}
       {enteredRoom !== 'roof' && !basementOpen && <GridLines />}
 
+      {/* Poured ground — the footprint sits in a cast field of concrete, not on
+          the bright sheet (bible 06 · brutalist grounding). Skirts past the slab
+          edges; withdrawn when the basement cut opens the paper. */}
+      {extrude > 0.02 && !basementOpen && (
+        <GroundWash position={[0, 0.006, 0]} width={FW + 1.8} depth={FD + 1.8} opacity={0.5} />
+      )}
+
       {/* Footprint ink */}
       <Line points={footprintPts} color={pal.graphite} lineWidth={1.5} />
 
@@ -173,18 +181,22 @@ export function BuildingMass({
             [-FW / 2 + 0.4, -FD / 2 + 0.4],
             [FW / 2 - 0.4, -FD / 2 + 0.4],
           ].map(([cx, cz], i) => (
-            <mesh key={i} position={[cx, wallH / 2, cz]}>
-              <boxGeometry args={[0.22, wallH, 0.22]} />
-              <meshStandardMaterial
-                color={pal.alum}
-                roughness={0.45}
-                metalness={0.1}
-                transparent
-                opacity={shellOpacity}
-                depthWrite={!shellFade}
-              />
-              <InkEdges />
-            </mesh>
+            <group key={i}>
+              <mesh position={[cx, wallH / 2, cz]}>
+                <boxGeometry args={[0.22, wallH, 0.22]} />
+                <meshStandardMaterial
+                  color={pal.alum}
+                  roughness={0.45}
+                  metalness={0.1}
+                  transparent
+                  opacity={shellOpacity}
+                  depthWrite={!shellFade}
+                />
+                <InkEdges />
+              </mesh>
+              {/* Column diagonals on the lobby floor (bible 06 shadow catalogue) */}
+              {!shellFade && <BlobShadow position={[cx, 0.03, cz]} width={0.62} depth={0.62} opacity={0.34} />}
+            </group>
           ))}
 
           {/* Glass curtain (lobby front — 55% width, 70% height per bible L0) */}
@@ -212,6 +224,19 @@ export function BuildingMass({
             />
             <InkEdges />
           </mesh>
+          {/* The wall's own weight cast at its foot — no longer standing on nothing */}
+          {!shellFade && (
+            <BlobShadow position={[0, 0.03, -FD / 2 + 0.22]} width={FW * 0.62} depth={0.5} opacity={0.32} />
+          )}
+          {/* The fixed inscription, engraved on the resin (bible L0) — the reading
+              text lives on the wall, not floating on white in the HUD. */}
+          {extrude > 0.85 && !shellFade && (
+            <ThesisInscription
+              position={[0, wallH * 0.5, -FD / 2 + 0.115]}
+              width={FW * 0.66}
+              height={wallH * 0.5}
+            />
+          )}
 
           {/* Light patch — the curtain's admitted sun on the lobby slab (bible L0).
               A drawn patch of sun belongs to the PAPER print only. */}
@@ -550,8 +575,8 @@ export function TeardownController({
 export function SiteLights() {
   return (
     <>
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[8, 14, 6]} intensity={0.55} castShadow={false} />
+      <ambientLight intensity={0.62} />
+      <directionalLight position={[8, 14, 6]} intensity={0.66} castShadow={false} />
       <directionalLight position={[-6, 8, -4]} intensity={0.22} />
     </>
   );

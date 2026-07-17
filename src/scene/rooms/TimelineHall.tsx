@@ -120,7 +120,7 @@ function AssemblyStage({
         onHover={onHover}
         onClick={onSelect}
       >
-        <BlobShadow position={[0.12 * (index + 1), 0.045, 0.1]} width={0.8 + 0.14 * index} depth={0.7} opacity={0.14} />
+        <BlobShadow position={[0.12 * (index + 1), 0.045, 0.1]} width={0.8 + 0.14 * index} depth={0.7} opacity={0.2} />
 
         {/* Exempt base — existing structure, retained; half-sunk, unstamped, never assembled */}
         {AXONO_LAYERS[0].blocks.map((b) => (

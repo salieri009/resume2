@@ -312,9 +312,13 @@ function softShadowTexture(): THREE.CanvasTexture {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
   const ctx = c.getContext('2d')!;
-  const g = ctx.createRadialGradient(64, 64, 8, 64, 64, 64);
-  g.addColorStop(0, 'rgba(42, 44, 46, 0.55)');
-  g.addColorStop(0.6, 'rgba(42, 44, 46, 0.22)');
+  // Two-stop falloff (bible 06 · brutalist grounding): a tight near-opaque core
+  // so the mass reads as *sitting*, then the soft model-maker's skirt. The dark
+  // core is the shadow-gap reveal that ends the "floating" read.
+  const g = ctx.createRadialGradient(64, 64, 6, 64, 64, 64);
+  g.addColorStop(0, 'rgba(42, 44, 46, 0.8)');
+  g.addColorStop(0.35, 'rgba(42, 44, 46, 0.4)');
+  g.addColorStop(0.72, 'rgba(42, 44, 46, 0.12)');
   g.addColorStop(1, 'rgba(42, 44, 46, 0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, 128, 128);
@@ -372,6 +376,48 @@ interface BlobShadowProps {
  */
 export function BlobShadow({ position, width, depth, opacity = 0.3 }: BlobShadowProps) {
   const tex = useMemo(() => softShadowTexture(), []);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={position}>
+      <planeGeometry args={[width, depth]} />
+      <meshBasicMaterial map={tex} transparent opacity={opacity} depthWrite={false} />
+    </mesh>
+  );
+}
+
+let groundTex: THREE.CanvasTexture | null = null;
+function groundWashTexture(): THREE.CanvasTexture {
+  if (groundTex) return groundTex;
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const ctx = c.getContext('2d')!;
+  // Broad, even darkening — the poured ground reads across the footprint, not as
+  // a spot. Graphite family, same doctrine as BlobShadow (bible 06).
+  const g = ctx.createRadialGradient(64, 64, 12, 64, 64, 64);
+  g.addColorStop(0, 'rgba(42, 44, 46, 0.5)');
+  g.addColorStop(0.55, 'rgba(42, 44, 46, 0.32)');
+  g.addColorStop(0.85, 'rgba(42, 44, 46, 0.1)');
+  g.addColorStop(1, 'rgba(42, 44, 46, 0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 128, 128);
+  groundTex = new THREE.CanvasTexture(c);
+  return groundTex;
+}
+
+interface GroundWashProps {
+  position: [number, number, number];
+  width: number;
+  depth: number;
+  opacity?: number;
+}
+
+/**
+ * The poured ground under the footprint (bible 06 · brutalist grounding): a
+ * broad, soft authored darkening so the building sits in a cast field of
+ * concrete rather than floating on the bright sheet. Zero runtime cost — the
+ * same authored-shadow doctrine as BlobShadow, cut wider and flatter.
+ */
+export function GroundWash({ position, width, depth, opacity = 0.5 }: GroundWashProps) {
+  const tex = useMemo(() => groundWashTexture(), []);
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={position}>
       <planeGeometry args={[width, depth]} />
