@@ -179,13 +179,29 @@ interface CaptionPlateProps {
   lines: string[];
   /** Leader-note register: signal-edged annotation naming what the eye is on. */
   note?: boolean;
+  /** Allow wrapping for dense stations (B1 risers) instead of nowrap bleed. */
+  wrap?: boolean;
 }
 
 /** Micro caption in space (bible 07): drafting mono, graphite, screen-crisp. */
-export function CaptionPlate({ position, lines, note = false }: CaptionPlateProps) {
+export function CaptionPlate({ position, lines, note = false, wrap = false }: CaptionPlateProps) {
+  const cls = [
+    'site-caption',
+    note ? 'site-caption--note' : '',
+    wrap ? 'site-caption--wrap' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
   return (
-    <Html position={position} zIndexRange={[10, 0]} className="site-caption-wrap">
-      <div className={note ? 'site-caption site-caption--note' : 'site-caption'}>
+    <Html
+      position={position}
+      zIndexRange={[2, 0]}
+      className="site-caption-wrap"
+      wrapperClass="site-caption-html"
+      style={{ pointerEvents: 'none' }}
+      sprite
+    >
+      <div className={cls}>
         {lines.map((l) => (
           <span key={l}>{l}</span>
         ))}

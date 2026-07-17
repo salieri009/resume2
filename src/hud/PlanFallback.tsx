@@ -14,7 +14,7 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
   return (
     <div className="site-plan">
       <header className="site-plan-head">
-        <p className="site-plan-kicker">SITE 009 · PLAN VIEW</p>
+        <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · PLAN VIEW</p>
         <h1>The Architecture of Software</h1>
         <p className="site-plan-sub">Software is not written. It is constructed.</p>
         <p className="site-plan-reason">
@@ -25,8 +25,9 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
               : 'Compact viewport — plan index.'}
         </p>
         <p className="site-plan-tag">{t.tagline}</p>
-        <p>
-          {PROFILE.name} · {PROFILE.alias}
+        <p className="site-plan-about">{t.aboutStory}</p>
+        <p className="site-plan-name">
+          {PROFILE.name} · {t.majorLine}
         </p>
       </header>
 
