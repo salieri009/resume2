@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
-import { PrintSet } from '../components/PrintSet';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { isWebGLAvailable } from '../lib/webgl';
 import { SiteProvider, useSite } from '../building/SiteContext';
-import { SiteRoot } from '../scene/SiteRoot';
 import { BootLabels } from '../hud/BootLabels';
 import { FloorRail } from '../hud/FloorRail';
 import { SpecPanel } from '../hud/SpecPanel';
@@ -16,6 +14,12 @@ import { PlanFallback } from '../hud/PlanFallback';
 import { SiteChrome } from '../hud/SiteChrome';
 import { STRINGS } from '../data/strings';
 import '../styles/siteline.css';
+
+// The entire WebGL experience (three, R3F, drei, gsap, every room) loads only
+// when the 3D path actually renders — the plan fallback (mobile / no-WebGL)
+// never downloads it. The print set loads only when the DOC drawer opens.
+const SiteRoot = lazy(() => import('../scene/SiteRoot').then((m) => ({ default: m.SiteRoot })));
+const PrintSet = lazy(() => import('../components/PrintSet').then((m) => ({ default: m.PrintSet })));
 
 function PrintDrawer() {
   const { printOpen, setPrintOpen, lang } = useSite();
@@ -55,7 +59,9 @@ function PrintDrawer() {
         </div>
       </div>
       <div className="site-print-drawer-body">
-        <PrintSet lang={lang} preview variant="resume" />
+        <Suspense fallback={null}>
+          <PrintSet lang={lang} preview variant="resume" />
+        </Suspense>
       </div>
     </div>
   );
@@ -94,7 +100,11 @@ function SitelineShell() {
         Skip to content
       </a>
 
-      {!usePlan && <SiteRoot webgl={webgl} />}
+      {!usePlan && (
+        <Suspense fallback={null}>
+          <SiteRoot webgl={webgl} />
+        </Suspense>
+      )}
       {usePlan && (
         <PlanFallback reason={!webgl ? 'webgl' : reducedMotion ? 'reduced' : 'mobile'} />
       )}
