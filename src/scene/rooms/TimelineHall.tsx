@@ -11,6 +11,7 @@ import {
 } from '../../data/academic';
 import { DUR, EASE_INK } from '../motion';
 import { usePalette } from '../palette';
+import { TIMELINE_STOPS } from '../timelineStops';
 import { BlobShadow, CaptionPlate, InkEdges, Plinth } from '../primitives';
 import { labelTexture } from '../textures';
 
@@ -18,7 +19,8 @@ const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
 /** Sheet-coordinate → meters (concept: axono blocks at 1:160 of their px coords). */
 const S = 1 / 160;
-const STAGE_X = [-2.7, -0.9, 0.9, 2.7];
+/** Plinth centers — shared with OrthoRig's pan stops (single source of truth). */
+const STAGE_X = TIMELINE_STOPS;
 /** How many lifts stand at each stop (exempt base always present). */
 const LIFTS_AT = [1, 2, 2, 3];
 /** Vertical throw per lift when a stage is exploded apart into an assembly drawing. */

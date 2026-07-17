@@ -12,6 +12,7 @@ export function SiteChrome() {
             key={l}
             type="button"
             className={lang === l ? 'is-active' : ''}
+            aria-pressed={lang === l}
             onClick={() => setLang(l)}
           >
             {l.toUpperCase()}
@@ -26,7 +27,12 @@ export function SiteChrome() {
       >
         {theme === 'light' ? 'INK' : 'PAPER'}
       </button>
-      <button type="button" className="site-chrome-print" onClick={() => setPrintOpen(true)}>
+      <button
+        type="button"
+        className="site-chrome-print"
+        aria-label="Open document — résumé sheets"
+        onClick={() => setPrintOpen(true)}
+      >
         DOC
       </button>
     </div>

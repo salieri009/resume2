@@ -46,7 +46,7 @@ function PrintDrawer() {
           <span className="site-print-drawer-doc">DOC · R-001 / R-002 · TITLE BLOCK</span>
         </div>
         <div className="site-print-drawer-actions">
-          <button type="button" className="site-btn" onClick={() => window.print()}>
+          <button type="button" className="site-btn" autoFocus onClick={() => window.print()}>
             {t.navDownload}
           </button>
           <button type="button" className="site-btn site-btn-ghost" onClick={() => setPrintOpen(false)}>
@@ -62,7 +62,7 @@ function PrintDrawer() {
 }
 
 function SitelineShell() {
-  const { prefer2d, reducedMotion, phase, bootDone, finishBoot } = useSite();
+  const { prefer2d, reducedMotion, phase, bootDone, finishBoot, returnLobby, printOpen } = useSite();
   const [webgl] = useState(() => isWebGLAvailable());
 
   const usePlan = !webgl || prefer2d;
@@ -76,6 +76,17 @@ function SitelineShell() {
       finishBoot();
     }
   }, [usePlan, phase, bootDone, reducedMotion, finishBoot]);
+
+  useEffect(() => {
+    // Escape returns to the lobby from any room (the print drawer owns Escape
+    // while it is open, so defer to it). Keyboard parity for the floor rail.
+    if (phase !== 'room' || printOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') returnLobby();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [phase, printOpen, returnLobby]);
 
   return (
     <div className="site-app">

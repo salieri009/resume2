@@ -40,6 +40,12 @@ html[data-experience='siteline'] body {
   overflow: hidden;
 }
 
+/* Selection is an interaction, so it wears the one interaction hue — never the
+   legacy stylesheet's banned red (index.css --sel-bg). Signal only, here. */
+html[data-experience='siteline'] ::selection {
+  background: color-mix(in srgb, var(--signal) 24%, transparent);
+}
+
 html[data-experience='siteline'] #root {
   min-height: 100vh;
 }

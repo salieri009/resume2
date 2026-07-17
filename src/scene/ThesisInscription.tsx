@@ -47,7 +47,7 @@ function wrapText(
  * as the roof identity plate; regenerated on language / print change.
  */
 function useThesisMap(): THREE.CanvasTexture {
-  const { lang, theme } = useSite();
+  const { lang } = useSite();
   const t = STRINGS[lang];
   const pal = usePalette();
 
@@ -62,9 +62,8 @@ function useThesisMap(): THREE.CanvasTexture {
     ctx.fillStyle = pal.resin;
     ctx.fillRect(0, 0, w, h);
 
-    /* Higher-contrast ink for ortho lobby distance — still graphite family. */
-    const ink = theme === 'dark' ? '#f0eee8' : '#1e2022';
-    const mute = theme === 'dark' ? '#a8aaae' : '#5a5d61';
+    const ink = pal.ink;
+    const mute = pal.mute;
     const padX = 48;
     let y = 50;
 
@@ -98,7 +97,7 @@ function useThesisMap(): THREE.CanvasTexture {
     map.anisotropy = 4;
     map.needsUpdate = true;
     return map;
-  }, [lang, theme, pal.resin, t.tagline]);
+  }, [lang, pal.ink, pal.mute, pal.resin, t.tagline]);
 
   useEffect(() => () => tex.dispose(), [tex]);
   return tex;

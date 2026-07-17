@@ -16,6 +16,8 @@ export interface ScenePalette {
   resin: string;
   /** Resting lines and lettering. */
   graphite: string;
+  /** Graphite's quiet companion — secondary lettering (mirrors --graphite-mute). */
+  mute: string;
   ink: string;
   alum: string;
   glass: string;
@@ -33,6 +35,7 @@ export const PAPER_PRINT: ScenePalette = {
   concrete: '#C8C4BC',
   resin: '#E8E6E1',
   graphite: '#2A2C2E',
+  mute: '#5A5D61',
   ink: '#0E0F10',
   // A half-step above the steel token — reads as finished metal without an
   // environment map (see bible 06 Wave-1 revision note).
@@ -50,6 +53,7 @@ export const INK_PRINT: ScenePalette = {
   concrete: '#3A3C40',
   resin: '#1A1B1D',
   graphite: '#E6E4DF',
+  mute: '#A8AAAE',
   ink: '#F2F1ED',
   alum: '#6A7078',
   glass: '#33404E',
@@ -75,6 +79,7 @@ export const PAPER = PAPER_PRINT.paper;
 export const CONCRETE = PAPER_PRINT.concrete;
 export const RESIN = PAPER_PRINT.resin;
 export const GRAPHITE = PAPER_PRINT.graphite;
+export const MUTE = PAPER_PRINT.mute;
 export const INK = PAPER_PRINT.ink;
 export const ALUM = PAPER_PRINT.alum;
 export const GLASS = PAPER_PRINT.glass;

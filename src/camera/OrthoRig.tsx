@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { RoomId } from '../building/program';
 import { DUR, EASE_SITE } from '../scene/motion';
+import { TIMELINE_STOPS } from '../scene/timelineStops';
 
 export type ViewPreset =
   | 'boot'
@@ -51,8 +52,6 @@ const PRESETS: Record<
   roof: { position: [0, 7.5, 11], lookAt: [0, 4.1, 0], zoom: 190 },
 };
 
-/** Timeline hall stop centers (matches STAGE_X in the hall block). */
-const TIMELINE_STOPS = [-2.7, -0.9, 0.9, 2.7];
 
 
 interface OrthoRigProps {

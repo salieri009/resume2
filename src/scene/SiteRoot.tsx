@@ -161,6 +161,7 @@ export function SiteRoot({ webgl }: SiteRootProps) {
           <button
             type="button"
             className="site-btn"
+            autoFocus
             onClick={() => {
               setEnded(false);
               reopen();

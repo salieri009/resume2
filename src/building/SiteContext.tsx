@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { Lang, Theme } from '../data/types';
+import { INK, PAPER } from '../scene/palette';
 import { FLOORS, parseHash, toHash, type FloorId, type RoomId, SHIPPED_ROOMS } from './program';
 
 export type Phase = 'boot' | 'lobby' | 'room' | 'end';
@@ -104,7 +105,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
       /* private */
     }
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#F2F1ED' : '#0E0F10');
+    if (meta) meta.setAttribute('content', theme === 'light' ? PAPER : INK);
   }, [theme]);
 
   useEffect(() => {

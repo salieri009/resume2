@@ -43,6 +43,7 @@ export function FloorRail() {
                           type="button"
                           className={room === r.id ? 'is-room-active' : ''}
                           disabled={!ok}
+                          aria-current={room === r.id ? 'true' : undefined}
                           onClick={() => ok && goTo(f.id, r.id)}
                         >
                           {r.tag}
