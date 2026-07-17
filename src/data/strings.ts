@@ -132,7 +132,7 @@ const SHARED = {
     detailAxonoCaption: '입체 분해도 — 스크롤하면 층이 갈라집니다',
     heroRegistryLine: '신입 소프트웨어 엔지니어 · 2026년 졸업 · 엔터프라이즈 시스템과 딥러닝 인프라',
     heroProofMicrosoft: 'Microsoft Sydney 쇼케이스 · 620명 중 선발',
-    detailReceiptsNote: '배포·출고 증빙',
+    detailReceiptsNote: '출고 증빙 — 실제로 배포된 것들의 기록',
     credentialsTitle: '표창 · 수료',
     credentialsNote: '표창장·수료증 기록',
     timelineFoundations:
@@ -156,7 +156,7 @@ const SHARED = {
     archiveTitle: '기록 보관소',
     libraryTitle: '도서실',
     libraryLead: '글은 이 문 너머 서가에 있습니다. 이 공간에 남겨 둔 것은 그 습관뿐입니다.',
-    serverLead: '위층에서 인용한 배포·출고 증빙의 원본이 여기에 있습니다.',
+    serverLead: '위층에서 내보인 모든 증빙이 결국 이곳, 원본에서 만납니다.',
     roofLead: '연락처는 명판에 새겨져 있습니다. 아래에서 여십시오.',
     westLibrary: '서쪽 · 도서실',
     eastArchive: '동쪽 · 보관소',
@@ -214,7 +214,7 @@ const SHARED = {
     detailAxonoCaption: '立体分解図 — スクロールすると階が分かれます',
     heroRegistryLine: '新卒ソフトウェアエンジニア · 2026年卒 · エンタープライズシステムと深層学習インフラ',
     heroProofMicrosoft: 'Microsoft Sydneyショーケース · 620名から選抜',
-    detailReceiptsNote: 'デプロイ・出荷の証憑',
+    detailReceiptsNote: '出荷証憑 — 実際に出したものの記録',
     credentialsTitle: '表彰 · 修了',
     credentialsNote: '表彰状・修了証の記録',
     timelineFoundations:
@@ -238,7 +238,7 @@ const SHARED = {
     archiveTitle: '記録保管庫',
     libraryTitle: '図書室',
     libraryLead: '文章はこの扉の向こうの書架にあります。ここに残しているのは、その習慣だけです。',
-    serverLead: '上階で引用したデプロイ・出荷証憑の原本が、ここにあります。',
+    serverLead: '上階で示したすべての証憑が、最後はここ——その原本にたどり着きます。',
     roofLead: '連絡先は銘板に刻まれています。下から開いてください。',
     westLibrary: '西 · 図書室',
     eastArchive: '東 · 保管庫',
@@ -285,7 +285,7 @@ export const STRINGS: Record<Lang, Strings> = {
   ko: {
     roleLine: '소프트웨어 엔지니어 · 클라우드 & DevOps',
     tagline: '인프라와 딥러닝이 만나는 지점에서 가치를 봅니다.',
-    subTagline: '정확함을 끝까지 챙기고, 그다음 배포까지 갑니다.',
+    subTagline: '정확함을 끝까지 붙들면서도, 끝내 배포까지 해냅니다.',
     skillsIntro: '아래 항목은 제가 만든 프로젝트와 성적표에 연결되어 있습니다.',
     skillA: '계층형 아키텍처, 테스트, CI/CD — 시스템이 흔들리지 않도록 붙잡는, 묵묵한 백엔드 작업입니다.',
     skillB: 'CNN 이론에서 출발해, 파인튜닝한 모델이 실제 추론까지 나가도록 만듭니다.',
@@ -293,7 +293,7 @@ export const STRINGS: Record<Lang, Strings> = {
     skillD: '브라우저에서 돌아가는 실시간 3D, 그리고 직접 작성한 셰이더입니다.',
     skillE: '목업이 아니라, 실제 백엔드에 연결된 React UI입니다.',
     crowdSummary:
-      '이동이 어려운 관광객을 위한 실시간 혼잡도 경보 시스템입니다. 딥러닝 수업이 끝난 뒤에도 마무리하고 싶었습니다.',
+      '이동이 자유롭지 않은 여행자를 위한 실시간 혼잡도·근접 경보 시스템입니다. JRDB로 파인튜닝한 YOLOv8을 React → Spring Boot → FastAPI로 연결해 서비스했습니다.',
     iotbaySummary:
       'CSRF·SQLi·XSS를 막아 둔 IoT 이커머스입니다. E2E 테스트 118개, Docker/GHCR로 CI/CD까지 이어집니다.',
     farmSummary: '브라우저 3D 농장 시뮬레이터입니다. 계절과 날씨, 직접 작성한 GLSL 오로라.',
@@ -303,15 +303,15 @@ export const STRINGS: Record<Lang, Strings> = {
     ephemeralSummary:
       '마우스 움직임에 시간이 반응하는 생성형 아트입니다. 작은 제품처럼 구성했고, p5.js만 썼으며 미디어 파일은 없습니다.',
     growthIntro:
-      '육군 통역에서 출발해 엔터프라이즈 소프트웨어를 거쳐, UTS에서 딥러닝까지 이어졌습니다. 학기마다 짐이 무거워지다 Soft Dev Studio와 이수 완료로 마무리했습니다.',
+      '육군 통역에서 출발해 엔터프라이즈 소프트웨어를 거쳐, UTS에서 딥러닝까지 이어진 길입니다. 학기를 거듭할수록 짐은 무거워졌고, 결국 Soft Dev Studio와 이수 완료로 마무리했습니다.',
     aboutStory:
       '소프트웨어를 설계할 때 저는 처음부터 완벽하게 만들기보다 핵심 구조를 먼저 생각합니다. 먼저 불변항을 세우고 모호함을 걷어낸 뒤, 그 안에서 남는 생각을 살펴봅니다. 컴퓨테이셔널 디자인에 끌리는 이유도 비슷합니다. 처음의 원칙이 단단할수록, 오히려 나중에 기묘한 아이디어가 자리 잡을 공간이 생기기 때문입니다. 늘 변화하는 세상 속에서도, 지켜야 할 것을 지키는 개발자가 되고 싶습니다.',
     aboutHobbies:
       '키보드를 내려놓으면 글을 씁니다. 350편이 넘었습니다. 운동하고, 사람을 만나고, 언어를 배웁니다 — 한국어, 영어, 일본어, 독일어.',
     growthUts:
-      '요구사항을 따르던 쪽에서 팀을 이끄는 쪽으로 옮겼습니다. Soft Dev Studio 95 HD로 학위를 마쳤고, 팀 캡스톤 ML은 커밋의 97%를 맡았습니다.',
+      '주어진 요구사항을 따르던 자리에서, 그 요구사항을 이끄는 자리로 옮겨 왔습니다. 마지막 관문인 Soft Dev Studio를 95 HD로 마쳤고, 팀 캡스톤에서는 ML을 맡아 커밋의 97%를 담당했습니다.',
     growthArmy:
-      '습관은 압박 속 통역에서 왔습니다. 단어 하나 틀리면 값이 컸습니다. 그 기준을 지금은 코드에도 적용합니다.',
+      '이 습관은 압박 속에서 통역하던 시절에 뿌리를 둡니다. 한 단어의 오역이 치르는 대가가 컸기 때문입니다. 그때의 기준을 지금은 코드에도 똑같이 적용합니다.',
     contactTitle: '연락처',
     contactSub: '딥러닝과 프로덕션 인프라가 맞닿는 신입 포지션을 찾고 있습니다.',
     ...SHARED.ko,
@@ -319,7 +319,7 @@ export const STRINGS: Record<Lang, Strings> = {
   ja: {
     roleLine: 'ソフトウェアエンジニア · クラウド & DevOps',
     tagline: 'インフラと深層学習が交わるところに、価値を見ています。',
-    subTagline: '正確さを最後まで詰め、そこからデプロイまで進めます。',
+    subTagline: '正確さを最後まで手放さず、それでも最後はデプロイまでやり切ります。',
     skillsIntro: '下の項目は、自分が手がけたプロジェクトと成績表につながっています。',
     skillA: '階層型アーキテクチャ、テスト、CI/CD — システムが揺れないよう支える、地味なバックエンドの仕事です。',
     skillB: 'CNNの理論から出発し、ファインチューニングしたモデルが実際の推論まで届くようにします。',
@@ -327,7 +327,7 @@ export const STRINGS: Record<Lang, Strings> = {
     skillD: 'ブラウザで動くリアルタイム3Dと、自分で書いたシェーダーです。',
     skillE: 'モックではなく、実際のバックエンドにつながったReact UIです。',
     crowdSummary:
-      '移動のしづらい観光客のためのリアルタイム混雑度アラートです。深層学習の授業が終わっても、最後まで仕上げたかったプロジェクトです。',
+      '移動の自由がききにくい旅行者のための、リアルタイム混雑度・近接アラートです。JRDBでファインチューニングしたYOLOv8を、React → Spring Boot → FastAPIでつないで提供しました。',
     iotbaySummary:
       'CSRF・SQLi・XSS対策済みのIoT eコマースです。E2Eテスト118件、Docker/GHCRまでCI/CDが続きます。',
     farmSummary: 'ブラウザ上の3D農場シミュレーターです。季節と天気、自作のGLSLオーロラ。',
@@ -337,15 +337,15 @@ export const STRINGS: Record<Lang, Strings> = {
     ephemeralSummary:
       'マウスの動きに時間が反応するジェネレーティブアートです。小さなプロダクトのように組み立て、p5.jsのみ、メディアファイルはありません。',
     growthIntro:
-      '陸軍通訳から始まり、エンタープライズソフトウェアを経て、UTSで深層学習へ。学期ごとに負荷が増え、Soft Dev Studioと修了で締めくくりました。',
+      '陸軍通訳から始まり、エンタープライズソフトウェアを経て、UTSで深層学習へと続いた道のりです。学期を重ねるごとに負荷は増し、最後はSoft Dev Studioと修了で締めくくりました。',
     aboutStory:
       'ソフトウェアを設計するとき、最初から完璧に仕上げるより、まず核となる構造を考えます。不変条件を置き、曖昧さを削いでから、残った発想を眺めます。コンピュテーショナルデザインに惹かれる理由も同じです。最初の原則がしっかりしているほど、後から不思議なアイデアが根を張る余地が生まれるからです。変わり続ける世の中でも、守るべきものを守る開発者でありたいと考えています。',
     aboutHobbies:
       'キーボードを離れると、文章を書きます。350本を超えました。体を鍛え、人と会い、言語を学びます — 韓国語、英語、日本語、ドイツ語。',
     growthUts:
-      '要件に従う側から、チームを導く側へ移りました。Soft Dev Studio 95 HDで学位を終え、チームキャップストーンのMLはコミットの97%を担当しました。',
+      '与えられた要件に従う側から、その要件を導く側へと移ってきました。最後の関門であるSoft Dev Studioを95 HDで終え、チームキャップストーンではMLを担当し、コミットの97%を受け持ちました。',
     growthArmy:
-      '習慣は、プレッシャーの中での通訳から来ています。一語の誤りが大きな代償になりました。その基準を、今はコードにも当てています。',
+      'この習慣は、プレッシャーの中で通訳していた頃に根ざしています。一語の誤りが払う代償は大きく、その基準を今はコードにも同じように当てています。',
     contactTitle: '連絡先',
     contactSub: '深層学習とプロダクションインフラが接する新卒ポジションを探しています。',
     ...SHARED.ja,
