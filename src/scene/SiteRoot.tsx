@@ -148,10 +148,9 @@ export function SiteRoot({ webgl }: SiteRootProps) {
           </PaletteProvider>
         </Suspense>
       </Canvas>
-      {/* The visual leader note lives in-scene (anchored to the exhibit);
-          this offscreen twin keeps the announcement for screen readers. */}
+      {/* Screen-space leader note — readable without covering the 3D massing. */}
       {hoveredRoom && phase !== 'boot' && phase !== 'end' && room !== hoveredRoom && (
-        <div className="site-anno site-anno--sr" role="status">
+        <div className="site-anno" role="status">
           ROOM · {floorOfRoom(hoveredRoom)} · {tagOf(hoveredRoom)}
         </div>
       )}

@@ -2,6 +2,17 @@ import { LINKS, PROFILE } from '../../data/profile';
 import { STRINGS } from '../../data/strings';
 import { useSite } from '../../building/SiteContext';
 
+const DOORS: { label: string; href: string; external?: boolean }[] = [
+  { label: 'MAIL', href: `mailto:${LINKS.email}` },
+  { label: 'GITHUB', href: LINKS.github, external: true },
+  { label: 'LINKEDIN', href: LINKS.linkedin, external: true },
+  { label: 'LIBRARY', href: LINKS.blog, external: true },
+];
+
+function doorDisplay(href: string) {
+  return href.replace(/^https?:\/\//, '').replace(/^mailto:/, '');
+}
+
 /**
  * R · the identity plate's interactive twin — four doors in full text and
  * the farewell (bible 04/R-ROOF). Doors leave the building standing; the
@@ -14,7 +25,7 @@ export function RoofPanel() {
   if (phase !== 'room' || room !== 'roof') return null;
 
   return (
-    <aside className="site-spec" aria-label="Roof — contact">
+    <aside className="site-spec site-spec--roof" aria-label="Roof — contact">
       <header className="site-spec-head">
         <div>
           <p className="site-spec-sheet">OBS · R · {PROFILE.alias} · SITE 009</p>
@@ -28,27 +39,19 @@ export function RoofPanel() {
 
       <p className="site-spec-lead">{t.contactSub}</p>
 
-      <div className="site-spec-receipts">
-        <ul>
-          <li>
-            <a href={`mailto:${LINKS.email}`}>{LINKS.email}</a>
-          </li>
-          <li>
-            <a href={LINKS.github} target="_blank" rel="noreferrer">
-              {LINKS.github.replace('https://', '')}
-            </a>
-          </li>
-          <li>
-            <a href={LINKS.linkedin} target="_blank" rel="noreferrer">
-              {LINKS.linkedin.replace('https://', '')}
-            </a>
-          </li>
-          <li>
-            <a href={LINKS.blog} target="_blank" rel="noreferrer">
-              {LINKS.blog.replace('https://', '')}
-            </a>
-          </li>
-        </ul>
+      <div className="site-spec-cards" role="list">
+        {DOORS.map((d) => (
+          <a
+            key={d.label}
+            className="site-spec-card site-spec-card--door"
+            role="listitem"
+            href={d.href}
+            {...(d.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+          >
+            <p className="site-spec-card-trade">{d.label}</p>
+            <p className="site-spec-card-body">{doorDisplay(d.href)}</p>
+          </a>
+        ))}
       </div>
 
       <footer className="site-spec-actions">

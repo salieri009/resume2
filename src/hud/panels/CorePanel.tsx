@@ -62,7 +62,7 @@ export function CorePanel() {
   if (phase !== 'room' || room !== 'core') return null;
 
   return (
-    <aside className="site-spec" aria-label="Mechanical core">
+    <aside className="site-spec site-spec--core" aria-label="Mechanical core">
       <header className="site-spec-head">
         <div>
           <p className="site-spec-sheet">MECH · CORE · B1</p>
@@ -74,39 +74,36 @@ export function CorePanel() {
         </button>
       </header>
 
-      <dl className="site-spec-meta">
+      <div className="site-spec-cards">
         {CARDS.map((c) => (
-          <div key={c.trade}>
-            <dt>{c.trade}</dt>
-            <dd>
-              {t[c.desc]}
-              <br />
+          <article key={c.trade} className="site-spec-card">
+            <p className="site-spec-card-trade">{c.trade}</p>
+            <p className="site-spec-card-body">{t[c.desc]}</p>
+            <p className="site-spec-card-meta">
               {c.tools}
-              <br />
-              {formatProof(SKILL_PROOFS[c.key], lang)}
-              {c.extra ? ` · ${c.extra}` : ''} ·{' '}
-              <button
-                type="button"
-                className="site-spec-close"
-                onClick={() => goTo(c.serves.floor, c.serves.room)}
-              >
-                SERVES · {c.serves.label}
-              </button>
-            </dd>
-          </div>
+              {c.extra ? ` · ${c.extra}` : ''}
+            </p>
+            <p className="site-spec-card-gauge">{formatProof(SKILL_PROOFS[c.key], lang)}</p>
+            <button
+              type="button"
+              className="site-spec-serve"
+              onClick={() => goTo(c.serves.floor, c.serves.room)}
+            >
+              SERVES · {c.serves.label}
+            </button>
+          </article>
         ))}
-        <div>
-          <dt>F · INTERCOM</dt>
-          <dd>
+        <article className="site-spec-card">
+          <p className="site-spec-card-trade">F · INTERCOM</p>
+          <p className="site-spec-card-body">
             한국어 · Native — English · Fluent — 日本語 · Learning — Deutsch · Learning
-            <br />
-            ROK Army · Interpreter ·{' '}
-            <a href={LINKS.blog} target="_blank" rel="noreferrer">
-              SERVES · L4 LIBRARY ↗
-            </a>
-          </dd>
-        </div>
-      </dl>
+          </p>
+          <p className="site-spec-card-meta">ROK Army · Interpreter</p>
+          <a className="site-spec-serve" href={LINKS.blog} target="_blank" rel="noreferrer">
+            SERVES · L4 LIBRARY ↗
+          </a>
+        </article>
+      </div>
 
       <footer className="site-spec-actions">
         <button type="button" className="site-btn site-btn-ghost" onClick={() => setPrintOpen(true)}>

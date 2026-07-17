@@ -3,11 +3,11 @@ import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { useEffect, useMemo, useRef, type ComponentType, type ReactNode } from 'react';
 import * as THREE from 'three';
-import { SHIPPED_ROOMS, tagOf, floorOfRoom, type RoomId } from '../building/program';
+import { SHIPPED_ROOMS, type RoomId } from '../building/program';
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
-import { CaptionPlate, partialPolyline, SoftPatch } from './primitives';
+import { partialPolyline, SoftPatch } from './primitives';
 import { ArchiveLibrary } from './rooms/ArchiveLibrary';
 import { CoreRisers } from './rooms/CoreRisers';
 import { CrowdObservatory } from './rooms/CrowdObservatory';
@@ -217,23 +217,18 @@ export function BuildingMass({
                 onHover={(h) => onRoomHover?.(id, h)}
                 onClick={() => onRoomClick?.(id)}
               />
+              {/* Leader line only in-scene — the ROOM label lives in screen-space
+                  `.site-anno` so the Html plate never occludes the massing. */}
               {hover && !entered && (
-                <>
-                  <Line
-                    points={[
-                      new THREE.Vector3(anchor.note[0] - 0.3, 0.05, anchor.note[2]),
-                      new THREE.Vector3(anchor.note[0] - 0.3, anchor.note[1], anchor.note[2]),
-                      new THREE.Vector3(anchor.note[0], anchor.note[1], anchor.note[2]),
-                    ]}
-                    color={pal.graphite}
-                    lineWidth={0.75}
-                  />
-                  <CaptionPlate
-                    position={anchor.note}
-                    lines={[`ROOM · ${floorOfRoom(id)} · ${tagOf(id)}`]}
-                    note
-                  />
-                </>
+                <Line
+                  points={[
+                    new THREE.Vector3(anchor.note[0] - 0.3, 0.05, anchor.note[2]),
+                    new THREE.Vector3(anchor.note[0] - 0.3, anchor.note[1], anchor.note[2]),
+                    new THREE.Vector3(anchor.note[0], anchor.note[1], anchor.note[2]),
+                  ]}
+                  color={pal.graphite}
+                  lineWidth={0.75}
+                />
               )}
             </group>
           );

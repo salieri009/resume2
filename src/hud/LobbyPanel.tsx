@@ -4,9 +4,11 @@ import { useSite } from '../building/SiteContext';
 
 /** Lobby thesis wall — tagline + identity from existing data. */
 export function LobbyPanel() {
-  const { phase, room, lang, setPrintOpen } = useSite();
+  const { phase, room, lang, prefer2d, setPrintOpen } = useSite();
   const t = STRINGS[lang];
 
+  /* PlanFallback is the cover sheet on compact / 2D — avoid stacked duplicate thesis. */
+  if (prefer2d) return null;
   if (phase !== 'lobby' || room !== 'lobby') return null;
 
   return (
