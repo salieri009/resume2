@@ -241,6 +241,8 @@ export function CaptionPlate({
       className="site-caption-wrap"
       wrapperClass="site-caption-html"
       style={{ pointerEvents: 'none' }}
+      /* Billboard: without sprite, basement camera angles skew the plate into a tall strip */
+      sprite
     >
       <div ref={plateRef} className={cls}>
         {lines.map((l) => (
