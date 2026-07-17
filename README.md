@@ -1,47 +1,75 @@
-# Salieri — Resume Site
+# The Architecture of Software — SITE 009
 
-Personal resume / portfolio site, built with Vite + React + TypeScript. The governing concept is a
-**drawing set** (도면집): sheet numbers, datum marks, and an exploded axonometric degree stack as the
-signature — not a 3D world to explore. Voyage chart and case studies sit inside that document metaphor,
-with English/Korean/Japanese localization and a light/dark theme.
+Personal portfolio of **Jungwook Van (SALIERI)**, built with Vite + React + TypeScript and
+React Three Fiber. The thesis is one line — *"Software is not written. It is constructed."* — and the
+site takes it literally: instead of a page you scroll, the portfolio is a small **orthographic building**
+you visit. A service boundary is a load-bearing wall; a training pipeline is a mechanical riser; the
+degree is exhibited as a construction sequence; the résumé is the building lying back down onto paper.
 
-Smooth scrolling via Lenis; Hero axonometric + Voyage Chart scrub via GSAP ScrollTrigger; desktop Voyage
-map via Three.js (WebGL) with SVG fallback for reduced-motion / no-WebGL / mobile.
+Codename **Siteline / SITE 009**. Three languages (EN · KO · JA), a light **PAPER** print and a dark
+**INK** print (the same drawing as a negative), and a 2D plan fallback that is the same building projected
+flat — for reduced-motion, no-WebGL, and compact viewports.
 
 ## Develop
 
 ```bash
 npm install
-npm run dev
+npm run dev        # vite dev server (5173)
 ```
 
 ## Build
 
 ```bash
-npm run build   # type-checks and outputs to dist/
-npm run preview # serve the production build locally
+npm run build      # tsc -b && vite build → dist/
+npm run preview    # serve the production build (4173)
+npm run lint       # oxlint
 ```
+
+## The building
+
+Floors stack in section order; the left-edge floor rail is the key plan. URL hashes deep-link rooms
+(`#/L2/crowd`).
+
+| Floor | Rooms | Content |
+|---|---|---|
+| **R** — Roof | `roof` | Contact + identity plate, white air |
+| **L4** — Archive | `archive`, `library` | Credentials (embossed seals) + writing |
+| **L2/L3** — Laboratories | `crowd`, `iotbay`, `farm`, `gundam`, `ephemeral` | The five projects, each a typology space |
+| **L1** — Timeline | `timeline` | The degree as an exploded construction sequence |
+| **L0** — Lobby | `lobby` | Thesis wall + about |
+| **B1** — Infrastructure | `core` | Skills as risers and pipes |
+| **B2** — Server | `server` | GitHub, as underground racks |
 
 ## Structure
 
-- `src/data/` — content and shared types: `academic.ts` (transcript highlights), `projects.ts` (case
-  studies), `voyage.ts` (Voyage Chart islands + CI/CD route), `strings.ts` (EN/KO/JA i18n), `types.ts`
-- `src/hooks/` — `useScrollProgress`, `useSectionSpy`, `useReveal` (reveal-on-scroll), `useTypewriter`,
-  `useReducedMotion`, `useSmoothScroll` (Lenis)
-- `src/components/` — layout chrome (`Nav`, `CourseLine`, `Footer`, `BackToTop`, `Icons`) and page
-  sections (`Hero` + `HeroAxono`, `ProjectsBento`, `Experience`, `Skills`, `VoyageChart` + `VoyageScene`
-  + `NauticalBg`, `About`, `Contact`), plus the project case-study overlay (`ProjectDetail`)
-- `src/lib/` — `webgl.ts` (capability check for graceful fallback), `voyageVisuals.ts` (GSAP ScrollTrigger
-  wiring for the Hero axonometric and Voyage Chart scrub)
-- `src/index.css` — theme tokens (CSS variables, swapped via `data-theme` on `<html>`) and all styling
+- `src/app/` — `SitelineApp` (root, HUD wiring), `SiteRoot` (the R3F `<Canvas>`, boot / teardown)
+- `src/scene/` — `BuildingMass` + `rooms/*` (one scene component per room), `primitives.tsx`
+  (plinths, edge ink, authored shadows/ground), `textures.ts` (canvas engraving kit), `palette.ts`
+  (the 7-token color law), `motion.ts` (one ease, a duration menu)
+- `src/camera/` — `OrthoRig` (orthographic-only travel between fixed stations)
+- `src/hud/` — the sheet's furniture: `SiteChrome` (title block), `FloorRail` (key plan),
+  `panels/*` + `SpecPanel` (wall labels), `PlanFallback` (the flat projection)
+- `src/building/` — `program.ts` (the floor/room map) and `SiteContext` (navigation, theme, language)
+- `src/data/` — `academic.ts` (transcript), `projects.ts`, `credentials.ts`, `profile.ts`,
+  `strings.ts` (EN/KO/JA), `types.ts`
+- `src/components/` — the print set: `PrintSet`, `SectionDiagram`, `ShippingLane` (R-series résumé
+  sheets, opened by the **DOC** control)
+- `src/styles/siteline.css` — the HUD design system (CSS tokens, swapped via `data-theme`)
+- `scripts/gen-og.mjs` — regenerates the `public/og.png` share card
+
+## Design system
+
+The visual language is governed, not improvised. The constitution is
+[`docs/ARCHITECTURE_OF_SOFTWARE.md`](docs/ARCHITECTURE_OF_SOFTWARE.md); the Visual Design Bible in
+[`docs/bible/`](docs/bible) carries a chapter per concern (camera, material/light/color, typography,
+interaction) and a spec sheet per room. Two binding commitments: the camera is **orthographic only**
+("parallel projection is testimony"), and the model always admits it is a model — it stands on an
+infinite paper sheet, never a photoreal city.
 
 ## Notes
 
-- The header/hero "Download Résumé" links point to `/resume.pdf`, which is not included — drop a PDF at
-  `public/resume.pdf` to make that link work.
-- Public site shows GPA / WAM / 144 CP / Complete only — **student number is never displayed**.
-- Hero axonometric floors map Foundations → Systems → Algorithms & Graphics → Production from the
-  UTS Online Student Record (printed 29 Jun 2026). Timeline expands the same arc by semester.
-- Voyage Chart islands open the same case-study overlay as the bento grid. The CI/CD strip mirrors the
-  real IoTBay pipeline (push → Actions → E2E → Docker → GHCR) — no unshipped tech (e.g. Kubernetes).
-- Three.js scene is procedural (ocean, ship, five project islands, lighthouse) — no external glTF required.
+- The public site shows **GPA / WAM / 144 CP / Complete only — the student number is never displayed.**
+- The **DOC** control prints the R-series résumé sheets; figures come from the UTS Online Student Record.
+- The scene uses no photoreal shadows: presence is drawn — edge ink, on-surface engraving, and authored
+  shadow/ground planes only.
+- Deployed on Vercel.

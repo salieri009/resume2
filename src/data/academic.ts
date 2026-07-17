@@ -16,44 +16,7 @@ export const DEGREE = {
   completedYear: 2026,
 } as const;
 
-/**
- * Chronological spine — verified against UTS Online Student Record (29 Jun 2026).
- * Waypoint ids align with Experience semester cards; layer ids with HeroAxono floors.
- */
-export const TIMELINE_SPINE = [
-  { layer: 'L0', session: 'exempt', waypoint: null, span: 'pre-2024' },
-  { layer: 'L1', session: '2024 SPR', waypoint: 'spr24', span: '2024' },
-  { layer: 'L2', session: '2025', waypoint: 'aut25', span: '2025 AUT → 2025 SPR' },
-  { layer: 'L3', session: '2026 AUT', waypoint: 'aut26', span: '2026' },
-] as const;
-
 export type GradeBand = 'HD' | 'D' | 'C' | 'P';
-
-export interface CourseHighlight {
-  code: string;
-  name: string;
-  short: string;
-  session: string;
-  mark: number;
-  grade: GradeBand;
-  credit: number;
-}
-
-/** High-signal completed subjects for timeline / skills proof. */
-export const COURSE_HIGHLIGHTS: CourseHighlight[] = [
-  { code: '41113', name: 'Software Development Studio', short: 'Soft Dev Studio', session: '2026 AUT', mark: 95, grade: 'HD', credit: 6 },
-  { code: '31251', name: 'Data Structures and Algorithms', short: 'Data Structures', session: '2025 AUT', mark: 92, grade: 'HD', credit: 6 },
-  { code: '41025', name: 'Introduction to Software Development', short: 'Intro Soft Dev', session: '2025 AUT', mark: 90, grade: 'HD', credit: 6 },
-  { code: '41026', name: 'Advanced Software Development', short: 'Adv Soft Dev', session: '2025 SPR', mark: 87, grade: 'HD', credit: 6 },
-  { code: '41001', name: 'Cloud Computing and Software as a Service', short: 'Cloud/SaaS', session: '2024 SPR', mark: 86, grade: 'HD', credit: 6 },
-  { code: '31080', name: 'Interactive Media', short: 'Interactive Media', session: '2025 SPR', mark: 82, grade: 'D', credit: 6 },
-  { code: '31264', name: 'Computer Graphics', short: 'Computer Graphics', session: '2025 AUT', mark: 81, grade: 'D', credit: 6 },
-  { code: '41082', name: 'Introduction to Data Engineering', short: 'Data Engineering', session: '2026 AUT', mark: 81, grade: 'D', credit: 6 },
-  { code: '48433', name: 'Software Architecture', short: 'Soft Architecture', session: '2024 SPR', mark: 80, grade: 'D', credit: 6 },
-  { code: '42028', name: 'Deep Learning and Convolutional Neural Network', short: 'Deep Learning', session: '2026 AUT', mark: 68, grade: 'C', credit: 6 },
-  { code: '31263', name: 'Introduction to Computer Game Development', short: 'Intro Game Dev', session: '2024 SPR', mark: 66, grade: 'C', credit: 6 },
-  { code: '31262', name: 'Game Design Methodologies', short: 'Game Design Meth', session: '2025 AUT', mark: 64, grade: 'P', credit: 6 },
-];
 
 export type SemesterId = 'spr24' | 'aut25' | 'spr25' | 'aut26';
 
@@ -143,7 +106,7 @@ export const SEMESTER_WAYPOINTS: SemesterWaypoint[] = [
 
 export interface AxonoLayerDef {
   id: string;
-  /** Level datum on the architectural caption — matches TIMELINE_SPINE sessions. */
+  /** Level datum on the architectural caption — matches the timeline session labels. */
   session: string;
   blocks: { label: string; size: number; height: number; left: number; top: number }[];
 }
@@ -151,8 +114,8 @@ export interface AxonoLayerDef {
 /**
  * Exploded axonometric floors — degree building metaphor, bottom = oldest.
  * Blocks are index-aligned vertical stacks (0: Prog→Cloud→DSA→Studio,
- * 1: DB→Arch→GLSL→CI/CD, 2: Net→Game→Media→Data); HeroAxono derives its
- * logic-flow risers and conduits from that ordering, so keep it stable.
+ * 1: DB→Arch→GLSL→CI/CD, 2: Net→Game→Media→Data); the timeline hall extrudes
+ * these into its stage lifts, so keep the ordering stable.
  */
 export const AXONO_LAYERS: AxonoLayerDef[] = [
   {
@@ -218,11 +181,6 @@ export function formatMark(mark: number, grade: GradeBand, lang: Lang): string {
   return `${mark} ${grade}`;
 }
 
-export function formatGpaWam(lang: Lang): string {
-  if (lang === 'ko') return `GPA ${DEGREE.gpa}/7.0 · WAM ${DEGREE.wam}/100`;
-  if (lang === 'ja') return `GPA ${DEGREE.gpa}/7.0 · WAM ${DEGREE.wam}/100`;
-  return `GPA ${DEGREE.gpa} / 7.0 · WAM ${DEGREE.wam}`;
-}
 
 export function formatDegreePlate(lang: Lang): string {
   if (lang === 'ko') return `UTS BIT · 이수 완료 · GPA ${DEGREE.gpa}/7.0 · WAM ${DEGREE.wam}/100 · 144 CP`;
