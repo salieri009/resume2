@@ -73,7 +73,8 @@ html[data-experience='siteline'] #root {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 2px 0;
+  /* Paper chip so drafting labels stay legible over busy mesh / glass */
+  padding: 3px 6px;
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.09em;
@@ -82,6 +83,8 @@ html[data-experience='siteline'] #root {
   color: var(--graphite);
   white-space: nowrap;
   text-align: left;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--graphite) 18%, transparent);
 }
 .site-caption span {
   border-top: 1px solid color-mix(in srgb, var(--graphite) 35%, transparent);
@@ -92,8 +95,10 @@ html[data-experience='siteline'] #root {
 }
 .site-caption--note {
   color: var(--signal);
+  border-color: color-mix(in srgb, var(--signal) 55%, transparent);
   border-left: 2px solid var(--signal);
   padding-left: 6px;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
 }
 .site-caption--note span {
   border-top: 0;
@@ -117,12 +122,17 @@ html[data-experience='siteline'] #root {
   justify-content: center;
   gap: 1.25rem;
   pointer-events: auto;
+  /* Soft paper veil so stamp + CTA read over the last model frame */
+  background: color-mix(in srgb, var(--paper) 78%, transparent);
 }
 .site-end-stamp {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.14em;
-  color: var(--graphite-mute);
+  color: var(--graphite);
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
 }
 
 .site-canvas {
@@ -151,7 +161,7 @@ html[data-experience='siteline'] #root {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.08em;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
   pointer-events: none;
 }
 
@@ -215,6 +225,7 @@ html[data-experience='siteline'] #root {
 .site-chrome-langs {
   display: flex;
   border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
 }
 .site-chrome-langs button,
 .site-chrome-theme,
@@ -227,15 +238,28 @@ html[data-experience='siteline'] #root {
   cursor: pointer;
   font: inherit;
   letter-spacing: inherit;
+  transition: color 0.2s var(--ease-site), background 0.2s var(--ease-site);
 }
-.site-chrome-langs button.is-active,
+.site-chrome-langs button:hover,
 .site-chrome-theme:hover,
 .site-chrome-print:hover {
+  color: var(--graphite);
+  background: color-mix(in srgb, var(--paper) 88%, var(--signal) 12%);
+}
+.site-chrome-langs button.is-active {
   color: var(--signal);
+  background: color-mix(in srgb, var(--paper) 82%, var(--signal) 18%);
 }
 .site-chrome-theme,
 .site-chrome-print {
   border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+}
+.site-chrome-langs button:focus-visible,
+.site-chrome-theme:focus-visible,
+.site-chrome-print:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
 }
 
 /* Floor rail */
@@ -250,7 +274,13 @@ html[data-experience='siteline'] #root {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--paper) 94%, transparent), transparent);
+  /* Stronger left wash so floor labels don't dissolve into the massing */
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--paper) 96%, transparent) 0%,
+    color-mix(in srgb, var(--paper) 78%, transparent) 55%,
+    transparent 100%
+  );
   pointer-events: none;
 }
 .site-rail > * {
@@ -258,12 +288,22 @@ html[data-experience='siteline'] #root {
 }
 .site-rail-brand {
   appearance: none;
-  background: none;
-  border: none;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border: 1px solid var(--line);
   text-align: left;
   cursor: pointer;
   color: inherit;
-  padding: 0;
+  padding: 0.45rem 0.55rem;
+  transition: border-color 0.2s var(--ease-site), background 0.2s var(--ease-site);
+}
+.site-rail-brand:hover,
+.site-rail-brand:focus-visible {
+  border-color: var(--signal);
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+}
+.site-rail-brand:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
 }
 .site-rail-title {
   display: block;
@@ -295,7 +335,7 @@ html[data-experience='siteline'] #root {
   display: flex;
   gap: 0.65rem;
   align-items: baseline;
-  background: none;
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
   border: none;
   border-left: 1px solid var(--line);
   padding: 0.35rem 0.5rem;
@@ -305,10 +345,22 @@ html[data-experience='siteline'] #root {
   font-size: 0.68rem;
   letter-spacing: 0.06em;
   text-align: left;
+  transition: color 0.2s var(--ease-site), background 0.2s var(--ease-site), border-color 0.2s var(--ease-site);
+}
+.site-rail-floors > li > button:hover:not(:disabled),
+.site-rail-floors > li > button:focus-visible:not(:disabled) {
+  color: var(--graphite);
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  border-left-color: var(--signal);
+}
+.site-rail-floors > li > button:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 1px;
 }
 .site-rail-floors > li.is-active > button {
   border-left-color: var(--signal);
   color: var(--graphite);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
 }
 .site-rail-floors > li > button:disabled {
   opacity: 0.35;
@@ -321,18 +373,27 @@ html[data-experience='siteline'] #root {
 .site-rail-rooms {
   list-style: none;
   margin: 0.25rem 0 0.5rem 1.1rem;
-  padding: 0;
+  padding: 0.15rem 0.35rem;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
 }
 .site-rail-rooms button {
   appearance: none;
   background: none;
   border: none;
-  padding: 0.2rem 0;
+  padding: 0.25rem 0.15rem;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.04em;
   color: var(--graphite-mute);
   cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: color 0.2s var(--ease-site);
+}
+.site-rail-rooms button:hover:not(:disabled),
+.site-rail-rooms button:focus-visible:not(:disabled) {
+  color: var(--graphite);
 }
 .site-rail-rooms button.is-room-active {
   color: var(--signal);
@@ -340,6 +401,10 @@ html[data-experience='siteline'] #root {
 .site-rail-rooms button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+.site-rail-rooms button:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 1px;
 }
 
 /* Lobby thesis */
@@ -357,8 +422,15 @@ html[data-experience='siteline'] #root {
   position: absolute;
   right: clamp(1rem, 4vw, 3rem);
   bottom: clamp(1.5rem, 6vh, 4rem);
+  z-index: 5;
   max-width: min(28rem, 92vw);
-  padding: 1.25rem 0 0;
+  max-height: min(70vh, 36rem);
+  overflow: auto;
+  padding: 1.15rem 1.2rem 1.25rem;
+  /* Paper plate — thesis text must never fight the glass / massing behind it */
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  box-shadow: none;
 }
 .site-lobby-kicker {
   margin: 0 0 0.5rem;
@@ -374,6 +446,7 @@ html[data-experience='siteline'] #root {
   line-height: 1.1;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--graphite);
 }
 .site-lobby-sub {
   margin: 0.55rem 0 0;
@@ -385,6 +458,7 @@ html[data-experience='siteline'] #root {
   margin: 1rem 0 0;
   font-size: 0.95rem;
   line-height: 1.45;
+  color: var(--graphite);
 }
 .site-lobby-about {
   margin: 0.75rem 0 0;
@@ -405,6 +479,9 @@ html[data-experience='siteline'] #root {
 }
 .site-lobby-actions {
   margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 /* Spec panel */
@@ -413,11 +490,12 @@ html[data-experience='siteline'] #root {
   top: 3.5rem;
   right: 1rem;
   bottom: 1rem;
+  z-index: 5;
   width: min(24rem, 92vw);
   overflow: auto;
   padding: 1.1rem 1.15rem 1.35rem;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  background: color-mix(in srgb, var(--paper) 97%, transparent);
   backdrop-filter: none;
 }
 .site-spec-head {
@@ -438,6 +516,7 @@ html[data-experience='siteline'] #root {
   font-family: var(--font-display);
   font-size: 1.25rem;
   line-height: 1.2;
+  color: var(--graphite);
 }
 .site-spec-sub {
   margin: 0.35rem 0 0;
@@ -447,13 +526,25 @@ html[data-experience='siteline'] #root {
 .site-spec-close {
   appearance: none;
   border: 1px solid var(--line);
-  background: transparent;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
   color: var(--graphite);
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.08em;
   padding: 0.35rem 0.5rem;
   cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s var(--ease-site), background 0.2s var(--ease-site), color 0.2s var(--ease-site);
+}
+.site-spec-close:hover,
+.site-spec-close:focus-visible {
+  border-color: var(--signal);
+  color: var(--signal);
+  background: color-mix(in srgb, var(--paper) 88%, var(--signal) 12%);
+}
+.site-spec-close:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
 }
 .site-spec-lead,
 .site-spec-overview {
@@ -517,6 +608,10 @@ html[data-experience='siteline'] #root {
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--signal) 40%, transparent);
 }
+.site-spec-receipts a:hover,
+.site-spec-receipts a:focus-visible {
+  border-bottom-color: var(--signal);
+}
 .site-spec-actions {
   display: flex;
   flex-wrap: wrap;
@@ -538,18 +633,27 @@ html[data-experience='siteline'] #root {
   letter-spacing: 0.08em;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.25s var(--ease-site), color 0.25s var(--ease-site);
+  transition: background 0.25s var(--ease-site), color 0.25s var(--ease-site), border-color 0.25s var(--ease-site);
 }
-.site-btn:hover {
+.site-btn:hover,
+.site-btn:focus-visible {
   background: var(--signal);
   border-color: var(--signal);
   color: #fff;
 }
-.site-btn-ghost {
-  background: transparent;
-  color: var(--graphite);
+.site-btn:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
 }
-.site-btn-ghost:hover {
+.site-btn-ghost {
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  color: var(--graphite);
+  border-color: var(--graphite);
+}
+.site-btn-ghost:hover,
+.site-btn-ghost:focus-visible {
+  background: var(--signal);
+  border-color: var(--signal);
   color: #fff;
 }
 
@@ -600,7 +704,7 @@ html[data-experience='siteline'] #root {
   width: 100%;
   display: flex;
   gap: 0.75rem;
-  background: transparent;
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
   border: 1px solid var(--line);
   border-left: 2px solid var(--signal);
   padding: 0.55rem 0.75rem;
@@ -609,6 +713,12 @@ html[data-experience='siteline'] #root {
   font-size: 0.75rem;
   color: var(--graphite);
   text-align: left;
+  transition: border-color 0.2s var(--ease-site), background 0.2s var(--ease-site);
+}
+.site-plan-floor:hover:not(:disabled),
+.site-plan-floor:focus-visible:not(:disabled) {
+  border-color: var(--signal);
+  background: color-mix(in srgb, var(--paper) 88%, var(--signal) 12%);
 }
 .site-plan-floors > li.is-active .site-plan-floor {
   border-color: var(--signal);
@@ -616,10 +726,12 @@ html[data-experience='siteline'] #root {
 .site-plan-floors ul {
   list-style: none;
   margin: 0.35rem 0 0 1rem;
-  padding: 0;
+  padding: 0.25rem 0.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
 }
 .site-plan-floors ul button {
   appearance: none;
@@ -630,7 +742,12 @@ html[data-experience='siteline'] #root {
   font-size: 0.68rem;
   color: var(--graphite-mute);
   cursor: pointer;
-  padding: 0.2rem 0;
+  padding: 0.25rem 0.15rem;
+  width: 100%;
+}
+.site-plan-floors ul button:hover:not(:disabled),
+.site-plan-floors ul button:focus-visible:not(:disabled) {
+  color: var(--graphite);
 }
 .site-plan-floors ul button.is-room-active {
   color: var(--signal);
@@ -698,14 +815,22 @@ html[data-experience='siteline'] #root {
     display: none;
   }
   .site-lobby {
-    right: 1rem;
-    left: 1rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    bottom: 0.75rem;
     max-width: none;
+    max-height: min(58vh, 28rem);
+    /* Keep clear of top-right chrome stamps */
+    padding-top: 1rem;
   }
   .site-spec {
     left: 0.75rem;
     right: 0.75rem;
     width: auto;
     top: 3.25rem;
+  }
+  .site-chrome {
+    /* Compact chips stay above lobby plate */
+    z-index: 8;
   }
 }
