@@ -17,7 +17,7 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
   /* Phase is authoritative — do not keep the cover just because room===lobby
      after a hard-refresh race (L0 → L1/timeline must clear the thesis plate). */
   const showCover = phase === 'lobby' || phase === 'boot';
-  const moreLabel = lang === 'ko' ? '더 읽기' : lang === 'ja' ? '続き' : 'Read more';
+  const moreLabel = t.readMore;
 
   return (
     <div className="site-plan">
@@ -70,7 +70,7 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
 
       <nav className="site-plan-index" aria-label="Floor index">
         <p className="site-plan-index-label">
-          {lang === 'ko' ? '층 인덱스' : lang === 'ja' ? '階インデックス' : 'FLOOR INDEX'}
+          {t.floorIndex}
         </p>
         <ul className="site-plan-floors">
           {FLOORS.map((f) => (
@@ -150,20 +150,15 @@ function PlanRoomSheet({
     bullets = [t.skillA, t.skillB, t.skillC, t.skillD, t.skillE];
   } else if (room === 'server') {
     title = PROFILE.githubUser;
-    lead =
-      lang === 'ko'
-        ? '위층의 모든 영수증이 여기서 원본으로 확인됩니다.'
-        : lang === 'ja'
-          ? '上階のすべてのレシートは、ここで原本に解決されます.'
-          : 'Every receipt upstairs resolves here, at the source.';
+    lead = t.serverLead;
     links = [{ label: `github.com/${PROFILE.githubUser}`, href: LINKS.github }];
   } else if (room === 'archive') {
-    title = lang === 'ko' ? '기록 보관소' : lang === 'ja' ? '記録保管室' : 'The Archive';
+    title = t.archiveTitle;
     bullets = getLocalizedCredentials(lang).map((c) => `${c.issuer} — ${c.title}`);
   } else if (room === 'library') {
-    title = lang === 'ko' ? '도서실' : lang === 'ja' ? '図書室' : 'The Library';
+    title = t.libraryTitle;
     lead = '350+ ESSAYS · KO · EN · JA';
-    links = [{ label: lang === 'ko' ? '서가 열기' : lang === 'ja' ? '書架を開く' : 'Open the shelves', href: LINKS.blog }];
+    links = [{ label: t.openShelves, href: LINKS.blog }];
   } else if (room === 'roof') {
     title = PROFILE.name;
     lead = t.contactTitle;
@@ -184,7 +179,7 @@ function PlanRoomSheet({
           {lead ? <p className="site-plan-sheet-lead">{lead}</p> : null}
         </div>
         <button type="button" className="site-spec-close" onClick={onLobby}>
-          {lang === 'ko' ? '로비로' : lang === 'ja' ? 'ロビーへ' : 'Lobby'}
+          {t.backToLobby}
         </button>
       </header>
       {bullets.length > 0 && (

@@ -70,7 +70,7 @@ export function CorePanel() {
           <p className="site-spec-sub">{t.skillsIntro}</p>
         </div>
         <button type="button" className="site-spec-close" onClick={returnLobby}>
-          {lang === 'ko' ? '로비로' : lang === 'ja' ? 'ロビーへ' : 'Lobby'}
+          {t.backToLobby}
         </button>
       </header>
 
@@ -95,9 +95,7 @@ export function CorePanel() {
         ))}
         <article className="site-spec-card">
           <p className="site-spec-card-trade">F · INTERCOM</p>
-          <p className="site-spec-card-body">
-            한국어 · Native — English · Fluent — 日本語 · Learning — Deutsch · Learning
-          </p>
+          <p className="site-spec-card-body">{t.languagesLine}</p>
           <p className="site-spec-card-meta">ROK Army · Interpreter</p>
           <a className="site-spec-serve" href={LINKS.blog} target="_blank" rel="noreferrer">
             SERVES · L4 LIBRARY ↗

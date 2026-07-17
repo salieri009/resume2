@@ -120,7 +120,7 @@ export const Skills = memo(function Skills({ t, lang, revealed, revealRef, onOpe
         <div className="sal-skill-card">
           <div className="sal-skill-label">f. Human Languages</div>
           <div className="sal-skill-tags">
-            {['한국어 · Native', 'English · Fluent', '日本語 · Learning', 'Deutsch · Learning'].map((tag) => (
+            {t.languagesLine.split(' — ').map((tag) => (
               <span key={tag} className="sal-skill-tag">
                 {tag}
               </span>

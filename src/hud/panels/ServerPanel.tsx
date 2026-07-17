@@ -18,16 +18,10 @@ export function ServerPanel() {
         <div>
           <p className="site-spec-sheet">SYS · GITHUB · B2</p>
           <h2 className="site-spec-title">{PROFILE.githubUser}</h2>
-          <p className="site-spec-sub">
-            {lang === 'ko'
-              ? '위층의 모든 영수증이 여기서 원본으로 확인됩니다.'
-              : lang === 'ja'
-                ? '上階のすべてのレシートは、ここで原本に解決されます.'
-                : 'Every receipt upstairs resolves here, at the source.'}
-          </p>
+          <p className="site-spec-sub">{t.serverLead}</p>
         </div>
         <button type="button" className="site-spec-close" onClick={returnLobby}>
-          {lang === 'ko' ? '로비로' : lang === 'ja' ? 'ロビーへ' : 'Lobby'}
+          {t.backToLobby}
         </button>
       </header>
 

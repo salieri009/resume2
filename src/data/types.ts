@@ -186,4 +186,17 @@ export interface Strings {
   semesterAut26Title: string;
   semesterAut26Body: string;
   fullRecordNote: string;
+  /** Site HUD chrome — lobby, floor labels, archive/library. */
+  readMore: string;
+  backToLobby: string;
+  floorIndex: string;
+  archiveTitle: string;
+  libraryTitle: string;
+  libraryLead: string;
+  serverLead: string;
+  roofLead: string;
+  westLibrary: string;
+  eastArchive: string;
+  openShelves: string;
+  languagesLine: string;
 }

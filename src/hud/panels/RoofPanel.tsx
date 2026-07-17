@@ -28,17 +28,11 @@ export function RoofPanel() {
           <p className="site-spec-sub">{t.contactTitle}</p>
         </div>
         <button type="button" className="site-spec-close" onClick={returnLobby}>
-          {lang === 'ko' ? '로비로' : lang === 'ja' ? 'ロビーへ' : 'Lobby'}
+          {t.backToLobby}
         </button>
       </header>
 
-      <p className="site-spec-overview">
-        {lang === 'ko'
-          ? '문은 명판에 새겨져 있습니다. 아래에서 엽니다.'
-          : lang === 'ja'
-            ? '扉は銘板に刻まれています。下から開きます。'
-            : 'Doors are engraved on the plate. Open them from the schedule.'}
-      </p>
+      <p className="site-spec-overview">{t.roofLead}</p>
 
       <div className="site-spec-cards" role="list">
         {DOORS.map((d) => (

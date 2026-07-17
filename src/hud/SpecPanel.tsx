@@ -26,7 +26,7 @@ export function SpecPanel() {
           <p className="site-spec-sub">{p.manifest.footer}</p>
         </div>
         <button type="button" className="site-spec-close" onClick={returnLobby}>
-          {lang === 'ko' ? '로비로' : lang === 'ja' ? 'ロビーへ' : 'Lobby'}
+          {t.backToLobby}
         </button>
       </header>
 

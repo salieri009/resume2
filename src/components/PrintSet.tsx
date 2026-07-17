@@ -83,7 +83,7 @@ function skillMatrix(t: Strings, lang: Lang) {
     { label: 'c. Cloud & Data', desc: t.skillC, tags: 'AWS · Docker · Data Engineering · PostgreSQL', proof: formatProof(SKILL_PROOFS.cloud, lang), ref: projectSheetNo('gundam') },
     { label: 'd. Graphics / Game Dev', desc: t.skillD, tags: 'Three.js · GLSL · WebGL', proof: formatProof(SKILL_PROOFS.graphics, lang), ref: projectSheetNo('farm') },
     { label: 'e. Frontend', desc: t.skillE, tags: 'HTML/CSS · JavaScript · React · Next.js', proof: formatProof(SKILL_PROOFS.interactive, lang), ref: projectSheetNo('crowd') },
-    { label: 'f. Human Languages', desc: '한국어 Native · English Fluent · 日本語 · Deutsch', tags: 'ROK Army · Interpreter', proof: '350+ essays', ref: LINKS.blog },
+    { label: 'f. Human Languages', desc: t.languagesLine, tags: 'ROK Army · Interpreter', proof: '350+ essays', ref: LINKS.blog },
   ];
 }
 

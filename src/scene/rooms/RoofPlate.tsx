@@ -1,10 +1,58 @@
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
+import type { Lang } from '../../data/types';
 import { useSite } from '../../building/SiteContext';
 import { LINKS, PROFILE } from '../../data/profile';
 import { STRINGS } from '../../data/strings';
 import { usePalette } from '../palette';
 import { BlobShadow } from '../primitives';
+
+function wrapPlateText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxW: number,
+  lineH: number,
+  lang: Lang,
+): number {
+  const useCharWrap = lang === 'ko' || lang === 'ja';
+  if (useCharWrap) {
+    let line = '';
+    for (const ch of text) {
+      const next = line + ch;
+      if (ctx.measureText(next).width > maxW && line) {
+        ctx.fillText(line, x, y);
+        y += lineH;
+        line = ch.trim() ? ch : '';
+      } else {
+        line = next;
+      }
+    }
+    if (line) {
+      ctx.fillText(line, x, y);
+      y += lineH;
+    }
+    return y;
+  }
+
+  let line = '';
+  for (const word of text.split(' ')) {
+    const next = line ? `${line} ${word}` : word;
+    if (ctx.measureText(next).width > maxW && line) {
+      ctx.fillText(line, x, y);
+      y += lineH;
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) {
+    ctx.fillText(line, x, y);
+    y += lineH;
+  }
+  return y;
+}
 
 function stripUrl(url: string) {
   return url.replace(/^https?:\/\//, '');
@@ -51,25 +99,10 @@ function useIdentityPlateMap() {
 
     ctx.fillStyle = ink;
     ctx.font = '17px "Source Serif 4", Georgia, serif';
-    const intent = t.contactSub;
-    const words = intent.split(' ');
-    let line = '';
     const maxW = w - padX * 2;
     const lineH = 24;
-    for (const word of words) {
-      const next = line ? `${line} ${word}` : word;
-      if (ctx.measureText(next).width > maxW && line) {
-        ctx.fillText(line, padX, y);
-        y += lineH;
-        line = word;
-      } else {
-        line = next;
-      }
-    }
-    if (line) {
-      ctx.fillText(line, padX, y);
-      y += 40;
-    }
+    y = wrapPlateText(ctx, t.contactSub, padX, y, maxW, lineH, lang);
+    y += 16;
 
     ctx.strokeStyle = rule;
     ctx.lineWidth = 1;

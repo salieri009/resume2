@@ -16,7 +16,7 @@ export function LobbyPanel() {
   const hashRoom = parseHash(typeof window !== 'undefined' ? window.location.hash : '#/L0').room;
   if (hashRoom !== 'lobby') return null;
 
-  const moreLabel = lang === 'ko' ? '더 읽기' : lang === 'ja' ? '続き' : 'Read more';
+  const moreLabel = t.readMore;
 
   return (
     <div className="site-lobby" data-plate="lobby-thesis">

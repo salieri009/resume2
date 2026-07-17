@@ -67,24 +67,24 @@ const CREDENTIALS_L10N: Record<Exclude<Lang, 'en'>, Record<CredentialId, Credent
     eusa: {
       issuer: '미 제8군 — 한미연합',
       title: 'Certificate of Achievement (공로상)',
-      detail: '한미 연락·통역 임무 2년에 대해 미 8군 참모장(중장) 명의로 수여.',
+      detail: '한미 연락·통역 임무 2년에 대해 미 8군 참모장(중장) 명의로 수여받았습니다.',
     },
     rokbg: {
       issuer: '대한민국 육군',
       title: '표창장 — 준장 표창',
       detail:
-        '한미연합 지휘소훈련(CCPT)에 두 차례 참가했습니다. 발표 자료 번역 때문에 아침 일찍 사무실에 나와 통번역을 준비했고, 협조가 필요한 회의에서는 순차 통역을 맡았습니다. 일상 대화와 사무실의 소소한 이야기를 옮기는 것도 제 일이었습니다. 그 공로로 김 준장 명의의 표창을 받았습니다.',
+        '한미연합 지휘소훈련(CCPT)에 두 차례 참가했습니다. 발표 자료 번역 때문에 아침 일찍 사무실에 나와 통번역을 준비했고, 협조가 필요한 회의에서는 순차 통역을 맡았습니다. 일상 대화와 사무실의 소소한 이야기도 옮겼습니다. 그 공로로 김 준장 명의의 표창을 받았습니다.',
     },
     msshowcase: {
       issuer: 'UTS × Microsoft Sydney',
       title: 'Certificate of Achievement — “Shaping Technologies that Shape Us”',
       detail:
-        '620명 규모 코호트에서 선발되어 Microsoft Sydney에서 AI의 사회적 영향에 관한 융합 프로젝트를 발표했습니다. Microsoft와 업계 전문가들이 함께한 쇼케이스입니다.',
+        '620명 가운데 선발되어 Microsoft Sydney에서 AI의 사회적 영향에 관한 융합 프로젝트를 발표했습니다. Microsoft와 업계 전문가들이 함께한 쇼케이스였습니다.',
     },
     build: {
       issuer: 'UTS BUILD 프로그램',
       title: '글로벌 리더십 프로그램',
-      detail: '학위 밖 비교과 리더십 프로그램 — 글로벌 시민의식, 문화 간 이해, 리더십 워크숍.',
+      detail: '학위 밖 비교과 프로그램입니다. 글로벌 시민의식, 문화 간 이해, 리더십 워크숍을 다룹니다.',
     },
     bit: {
       issuer: '시드니공과대학교 (UTS)',
