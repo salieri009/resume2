@@ -78,6 +78,16 @@ export function EphemeralPavilion({ hover, entered, reducedMotion, onClick, onHo
           <boxGeometry args={[1.8, 0.015, 1.6]} />
           <meshStandardMaterial color={pal.glass} transparent opacity={0.2} roughness={0.12} />
         </mesh>
+        {/* Each roof lays a faint shade on the plane below — the lamination
+            read as its own section (bible A-105). */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 1.292, 0]}>
+          <planeGeometry args={[1.7, 1.5]} />
+          <meshBasicMaterial color={pal.graphite} transparent opacity={0.06} depthWrite={false} />
+        </mesh>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 1.212, 0]}>
+          <planeGeometry args={[1.72, 1.52]} />
+          <meshBasicMaterial color={pal.graphite} transparent opacity={0.05} depthWrite={false} />
+        </mesh>
 
         {/* Fluid court — p5 plate, the combed Perlin field, the waiting blanks */}
         <mesh position={[-0.45, 0.48, 0.3]}>

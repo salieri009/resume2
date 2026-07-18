@@ -1,7 +1,7 @@
 import { Line } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useEffect, useMemo, useRef, type ComponentType, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, type ComponentType, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { SHIPPED_ROOMS, type RoomId } from '../building/program';
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
@@ -273,19 +273,28 @@ export function BuildingMass({
           const Block = LAB_BLOCKS[id];
           if (!anchor || !Block) return null;
           const entered = enteredRoom === id;
-          // When one room is entered, the others slide out of presence
-          // (bible 03: "the building's other masses sliding out of frame").
-          if (enteredRoom !== null && !entered) return null;
-          const hover = hoveredRoom === id;
+          // Isolate (bible 05): entering a lab thins its siblings toward line —
+          // the mass fades but the edge ink holds — rather than removing them.
+          // Non-lab stations (timeline, basements, roof) still clear the labs.
+          const enteringLab = enteredRoom !== null && enteredRoom in LAB_BLOCKS;
+          if (enteredRoom !== null && !entered && !enteringLab) return null;
+          const isolated = enteringLab && !entered;
+          const hover = hoveredRoom === id && !isolated;
           return (
             <group key={id} position={anchor.position}>
-              <Block
-                hover={hover}
-                entered={entered}
-                reducedMotion={reducedMotion}
-                onHover={(h) => onRoomHover?.(id, h)}
-                onClick={() => onRoomClick?.(id)}
-              />
+              {isolated ? (
+                <ThinnedMass>
+                  <Block hover={false} entered={false} reducedMotion={reducedMotion} />
+                </ThinnedMass>
+              ) : (
+                <Block
+                  hover={hover}
+                  entered={entered}
+                  reducedMotion={reducedMotion}
+                  onHover={(h) => onRoomHover?.(id, h)}
+                  onClick={() => onRoomClick?.(id)}
+                />
+              )}
               {/* Leader line only in-scene — the ROOM label lives in screen-space
                   `.site-anno` so the Html plate never occludes the massing. */}
               {hover && !entered && (
@@ -305,6 +314,33 @@ export function BuildingMass({
     </group>
     </EdgeInkContext.Provider>
   );
+}
+
+/**
+ * Isolate (bible 05): a sibling mass thinned toward line — its mesh fills fade
+ * to a whisper while the drawn edge ink holds, "a change of line weight and
+ * opacity, not of position." Fades only its own material instances (fresh per
+ * mount) and drops raycasting so a thinned neighbour never answers.
+ */
+function ThinnedMass({ children }: { children: ReactNode }) {
+  const ref = useRef<THREE.Group>(null);
+  useLayoutEffect(() => {
+    const g = ref.current;
+    if (!g) return;
+    g.traverse((o) => {
+      o.raycast = () => {};
+      const mesh = o as THREE.Mesh;
+      if (!mesh.isMesh) return; // edges/lines are LineSegments — leave them holding
+      const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      mats.forEach((m) => {
+        const mm = m as THREE.Material & { opacity: number };
+        mm.transparent = true;
+        mm.opacity = 0.08;
+        mm.depthWrite = false;
+      });
+    });
+  });
+  return <group ref={ref}>{children}</group>;
 }
 
 function Wall({

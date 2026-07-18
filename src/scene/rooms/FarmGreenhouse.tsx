@@ -133,6 +133,22 @@ export function FarmGreenhouse({ hover, entered, reducedMotion, onClick, onHover
           position={[0.45, 0.3, 0.15]}
           color={pal.alum}
         />
+        {/* The light's best moment (bible A-103): dozens of identical small
+            masses each throwing the same minute shadow — a texture of
+            repetition reading like frost across the tray. */}
+        {Array.from({ length: 24 }, (_, i) => {
+          const cx = (i % 6) - 2.5;
+          const cz = Math.floor(i / 6) - 1.5;
+          return (
+            <BlobShadow
+              key={`frost${i}`}
+              position={[0.45 + cx * 0.1, 0.263, 0.15 + cz * 0.1]}
+              width={0.085}
+              depth={0.085}
+              opacity={0.12}
+            />
+          );
+        })}
         <mesh position={[0.45, 0.12, -0.2]}>
           <boxGeometry args={[0.5, 0.15, 0.4]} />
           <meshStandardMaterial color={pal.alum} roughness={0.55} metalness={0.1} />
