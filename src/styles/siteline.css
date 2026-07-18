@@ -514,7 +514,7 @@ html[data-experience='siteline'] #root {
 }
 .site-lobby-sub {
   margin: 0.5rem 0 0;
-  font-style: italic;
+  font-family: var(--font-body);
   color: var(--graphite-mute);
   font-size: 0.92rem;
 }
@@ -741,7 +741,9 @@ html[data-experience='siteline'] #root {
   display: block;
   padding: 0.7rem 0.75rem;
   border: 1px solid var(--line);
-  border-left: 2px solid var(--graphite);
+  /* Title-block top rule, not a side-stripe (Hallmark anti-pattern) — matches
+     the sheet convention used across the spec/lobby/plan panels. */
+  border-top: 2px solid var(--graphite);
   background: var(--paper);
   color: inherit;
   text-decoration: none;
