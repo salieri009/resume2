@@ -3315,7 +3315,7 @@ button {
 
 .sal-sheet-no {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--c-accent-text);
 }
 
@@ -3348,7 +3348,8 @@ button {
   font-size: 26pt;
   line-height: 1.16;
   letter-spacing: -0.015em;
-  font-weight: 800;
+  /* The loaded weight — Source Serif 4 ships 400/600, so 800 was faux-bold. */
+  font-weight: 600;
   text-wrap: balance;
 }
 
@@ -3377,7 +3378,7 @@ button {
   border: 1px solid currentColor;
   border-radius: var(--radius-sm);
   font-size: 8px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }
