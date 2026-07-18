@@ -4,12 +4,21 @@ import { STRINGS } from '../data/strings';
 import { PROFILE, LINKS } from '../data/profile';
 import { getLocalizedProject, getReceipts } from '../data/projects';
 import { AXONO_LAYERS, DEGREE, SEMESTER_WAYPOINTS, formatDegreePlate, formatMark } from '../data/academic';
+import { CORE_RISERS, RISER_DESC } from '../data/skills';
 import { getLocalizedCredentials } from '../data/credentials';
 import type { Lang } from '../data/types';
 
+const REASON: Record<'webgl' | 'mobile' | 'reduced', string> = {
+  webgl: 'WEBGL UNAVAILABLE · ORTHOGRAPHIC PLAN MODE',
+  reduced: 'REDUCED MOTION · FINAL POSES ONLY',
+  mobile: 'COMPACT VIEWPORT · PLAN INDEX',
+};
+
 /**
- * 2D plan fallback when WebGL fails, reduced-motion prefers list, or mobile.
- * Cover sheet on lobby; off-lobby = floor index + wall-label facts (Ch.03/08 parity).
+ * 2D plan fallback — the same building, projected flat, for mobile / no-WebGL /
+ * reduced-motion. Redesigned per Hallmark within the SITE 009 system: a title
+ * block, a tabular spec, and an index-style key plan. No side-stripes, no
+ * invented facts, signal on interaction only.
  */
 export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced' }) {
   const { goTo, returnLobby, floor, room, phase, lang, setPrintOpen } = useSite();
@@ -17,25 +26,37 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
   /* Phase is authoritative — do not keep the cover just because room===lobby
      after a hard-refresh race (L0 → L1/timeline must clear the thesis plate). */
   const showCover = phase === 'lobby' || phase === 'boot';
-  const moreLabel = t.readMore;
 
   return (
     <div className="site-plan">
-      {showCover && (
-        <header className="site-plan-head">
+      {showCover ? (
+        <header className="site-plan-mast">
           <p className="site-plan-kicker">SITE 009 · {PROFILE.alias} · REVISION A · PLAN VIEW</p>
-          <h1>The Architecture of Software</h1>
-          <p className="site-plan-sub">Software is not written. It is constructed.</p>
-          <p className="site-lobby-role">
-            {PROFILE.name} · {t.roleLine}
-          </p>
-          <p className="site-plan-reason">
-            {reason === 'webgl'
-              ? 'WebGL unavailable — orthographic plan mode.'
-              : reason === 'reduced'
-                ? 'Reduced motion — final poses only.'
-                : 'Compact viewport — plan index.'}
-          </p>
+          <h1 className="site-plan-title">The Architecture of Software</h1>
+          <p className="site-plan-thesis">Software is not written. It is constructed.</p>
+
+          <dl className="site-plan-spec">
+            <div>
+              <dt>WHO</dt>
+              <dd>{PROFILE.name} · {t.roleLine}</dd>
+            </div>
+            <div>
+              <dt>DEGREE</dt>
+              <dd>{DEGREE.award} · {DEGREE.institution}</dd>
+            </div>
+            <div>
+              <dt>RECORD</dt>
+              <dd>
+                GPA {DEGREE.gpa}/7.0 · WAM {DEGREE.wam} · {DEGREE.creditPoints} CP ·{' '}
+                {DEGREE.status.toUpperCase()}
+              </dd>
+            </div>
+            <div>
+              <dt>MODE</dt>
+              <dd>{REASON[reason]}</dd>
+            </div>
+          </dl>
+
           <div className="site-plan-actions">
             <button type="button" className="site-btn" onClick={() => goTo('L2', 'crowd')}>
               {t.enterLabs}
@@ -44,44 +65,36 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
               {t.navDownload}
             </button>
           </div>
+
           <details className="site-plan-more">
-            <summary>{moreLabel}</summary>
+            <summary>{t.readMore}</summary>
             <p className="site-plan-about">{t.tagline}</p>
             <p className="site-plan-about">{t.aboutStory}</p>
-            <p className="site-plan-name">{t.majorLine}</p>
+            <p className="site-plan-about">{t.majorLine}</p>
           </details>
         </header>
+      ) : (
+        <PlanRoomSheet room={room} lang={lang} onLobby={returnLobby} onPrint={() => setPrintOpen(true)} />
       )}
 
-      {!showCover && (
-        <PlanRoomSheet
-          room={room}
-          lang={lang}
-          onLobby={returnLobby}
-          onPrint={() => setPrintOpen(true)}
-        />
-      )}
-
-      <nav className="site-plan-index" aria-label="Floor index">
-        <p className="site-plan-index-label">
-          {t.floorIndex}
-        </p>
-        <ul className="site-plan-floors">
+      <nav className="site-plan-index" aria-label="Floor index — key plan">
+        <p className="site-plan-index-label">{t.floorIndex}</p>
+        <div className="site-plan-key">
           {FLOORS.map((f) => (
-            <li key={f.id} className={floor === f.id ? 'is-active' : ''}>
+            <section key={f.id} className={`site-plan-key-floor${floor === f.id ? ' is-active' : ''}`}>
               <button
                 type="button"
-                className="site-plan-floor"
+                className="site-plan-key-head"
                 onClick={() => {
                   if (f.id === 'L0') returnLobby();
                   const first = f.rooms.find((r) => SHIPPED_ROOMS.includes(r.id));
                   if (first && f.id !== 'L0') goTo(f.id, first.id);
                 }}
               >
-                <span>{f.id}</span>
-                <span>{f.label}</span>
+                <span className="site-plan-key-id">{f.id}</span>
+                <span className="site-plan-key-label">{f.label}</span>
               </button>
-              <ul>
+              <ul className="site-plan-key-rooms">
                 {f.rooms.map((r) => {
                   const ok = SHIPPED_ROOMS.includes(r.id);
                   return (
@@ -92,19 +105,24 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
                         className={room === r.id ? 'is-room-active' : ''}
                         onClick={() => ok && goTo(f.id, r.id)}
                       >
-                        {r.tag}
-                        {!ok && r.id !== 'lobby' ? ' · TBD' : ''}
+                        <span className="site-plan-key-tag">{r.tag}</span>
+                        {!ok && r.id !== 'lobby' ? <span className="site-plan-key-tbd">TBD</span> : null}
                       </button>
                     </li>
                   );
                 })}
               </ul>
-            </li>
+            </section>
           ))}
-        </ul>
+        </div>
       </nav>
     </div>
   );
+}
+
+interface SpecRow {
+  k: string;
+  v: string;
 }
 
 function PlanRoomSheet({
@@ -124,43 +142,43 @@ function PlanRoomSheet({
 
   let title = sheet;
   let lead = '';
-  let bullets: string[] = [];
+  let rows: SpecRow[] = [];
   let links: { label: string; href: string }[] = [];
 
   if (projectKey) {
     const p = getLocalizedProject(projectKey, lang);
     title = p.title;
     lead = p.summary;
-    bullets = [p.stack.join(' · '), `${p.role} · ${p.period}`, ...p.results.slice(0, 3)];
+    rows = [
+      { k: 'STACK', v: p.stack.join(' · ') },
+      { k: 'ROLE', v: `${p.role} · ${p.period}` },
+      ...p.results.slice(0, 3).map((r, i) => ({ k: i === 0 ? 'RESULTS' : '', v: r })),
+    ];
     links = getReceipts(p).map((r) => ({ label: r.label, href: r.url }));
     links.push({ label: 'GitHub', href: p.github });
   } else if (room === 'timeline') {
-    /* The flat projection is the hall's phasing sheet (bible 04/L1): the
-       completion plate as title block, the exempt base named once beneath all,
-       then one stage per row with its top mark stamp and leader-noted artifact. */
     title = `${DEGREE.institution} · ${DEGREE.award}`;
     lead = formatDegreePlate(lang);
-    const exempt = `EXEMPT · ${AXONO_LAYERS[0].blocks.map((b) => b.label).join(' · ').toUpperCase()} · RETAINED`;
-    bullets = [
-      exempt,
+    rows = [
+      { k: 'EXEMPT', v: `${AXONO_LAYERS[0].blocks.map((b) => b.label).join(' · ').toUpperCase()} · RETAINED` },
       ...SEMESTER_WAYPOINTS.map((wp) => {
         const top = wp.highlights[0];
         const artifact = wp.artifacts?.[0]?.label;
-        const stamp = top ? ` · ${top.short} ${formatMark(top.mark, top.grade, lang)}` : '';
-        return `${wp.session}${stamp}${artifact ? ` · ▸ ${artifact}` : ''}`;
+        const mark = top ? `${top.short} ${formatMark(top.mark, top.grade, lang)}` : '';
+        return { k: wp.session, v: `${mark}${artifact ? ` · ▸ ${artifact}` : ''}` };
       }),
     ];
   } else if (room === 'core') {
     title = t.sectionSkills;
     lead = t.skillsIntro;
-    bullets = [t.skillA, t.skillB, t.skillC, t.skillD, t.skillE];
+    rows = CORE_RISERS.map((r) => ({ k: `${r.letter} · ${r.trade}`, v: t[RISER_DESC[r.id]] }));
   } else if (room === 'server') {
     title = PROFILE.githubUser;
     lead = t.serverLead;
     links = [{ label: `github.com/${PROFILE.githubUser}`, href: LINKS.github }];
   } else if (room === 'archive') {
     title = t.archiveTitle;
-    bullets = getLocalizedCredentials(lang).map((c) => `${c.issuer} — ${c.title}`);
+    rows = getLocalizedCredentials(lang).map((c) => ({ k: c.issuer, v: c.title }));
   } else if (room === 'library') {
     title = t.libraryTitle;
     lead = '350+ ESSAYS · KO · EN · JA';
@@ -188,28 +206,34 @@ function PlanRoomSheet({
           {t.backToLobby}
         </button>
       </header>
-      {bullets.length > 0 && (
-        <ul className="site-spec-bullets">
-          {bullets.map((b) => (
-            <li key={b}>{b}</li>
+
+      {rows.length > 0 && (
+        <dl className="site-plan-spec">
+          {rows.map((row, i) => (
+            <div key={`${row.k}${i}`}>
+              <dt>{row.k}</dt>
+              <dd>{row.v}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       )}
+
       {links.length > 0 && (
-        <div className="site-spec-receipts">
-          <p className="site-spec-label">Doors</p>
+        <div className="site-plan-doors">
+          <p className="site-plan-doors-label">Doors</p>
           <ul>
             {links.map((l) => (
               <li key={l.label}>
                 <a href={l.href} target="_blank" rel="noreferrer">
-                  {l.label}
+                  {l.label} ↗
                 </a>
               </li>
             ))}
           </ul>
         </div>
       )}
-      <footer className="site-spec-actions">
+
+      <footer className="site-plan-sheet-foot">
         <button type="button" className="site-btn site-btn-ghost" onClick={onPrint}>
           {t.navDownload}
         </button>

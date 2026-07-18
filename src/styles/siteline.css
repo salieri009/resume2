@@ -1020,18 +1020,15 @@ html[data-experience='siteline'] #root {
     linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 32px 32px,
     var(--paper);
 }
-.site-plan-head {
-  max-width: 28rem;
-  padding-bottom: 1rem;
-  margin-bottom: 0.5rem;
-  border-bottom: 1px solid var(--line);
+/* Hallmark · redesign · preserve SITE 009 · P5 H4 E4 S4 R5 V4
+   The plan view as a drawing-set document: title block · tabular spec · key
+   plan index. No side-stripe, signal on interaction only, roman headers. */
+.site-plan-mast {
+  max-width: 34rem;
+  padding: 0.85rem 0 1.15rem;
+  margin-bottom: 1.25rem;
   border-top: 2px solid var(--graphite);
-  padding-top: 0.85rem;
-}
-.site-plan-head h1 {
-  margin: 0.35rem 0 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  border-bottom: 1px solid var(--line);
 }
 .site-plan-kicker {
   margin: 0;
@@ -1041,30 +1038,66 @@ html[data-experience='siteline'] #root {
   text-transform: uppercase;
   color: var(--graphite-mute);
 }
-.site-plan-sub {
-  font-style: italic;
+.site-plan-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(1.55rem, 6vw, 2.35rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--graphite);
+  overflow-wrap: anywhere;
+}
+.site-plan-thesis {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.4;
   color: var(--graphite-mute);
 }
-.site-plan-reason,
-.site-plan-tag,
-.site-plan-about {
-  max-width: 36rem;
-  font-size: 0.9rem;
-  line-height: 1.45;
-  color: var(--graphite);
+.site-plan-spec {
+  margin: 1rem 0 0;
+  display: grid;
+  border-top: 1px solid var(--line);
 }
-.site-plan-reason {
-  margin: 0.65rem 0 0;
+.site-plan-spec > div {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.site-plan-spec dt {
+  margin: 0;
   font-family: var(--font-mono);
   font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--graphite-mute);
+  padding-top: 0.15rem;
+}
+.site-plan-spec dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--graphite);
+  overflow-wrap: anywhere;
+}
+.site-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.site-plan-actions .site-btn {
+  margin-top: 0;
+  white-space: nowrap;
 }
 .site-plan-more {
-  margin: 0.85rem 0 0;
+  margin: 1rem 0 0;
   max-width: 36rem;
-  padding-top: 0.55rem;
+  padding-top: 0.6rem;
   border-top: 1px solid var(--line);
 }
 .site-plan-more > summary {
@@ -1080,46 +1113,116 @@ html[data-experience='siteline'] #root {
   display: none;
 }
 .site-plan-about {
-  margin: 0.45rem 0 0;
-  font-size: 0.85rem;
-  color: var(--graphite-mute);
-}
-.site-plan-name {
-  margin: 0.75rem 0 0;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: var(--graphite-mute);
+  margin: 0.5rem 0 0;
   max-width: 36rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--graphite-mute);
 }
-.site-plan-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.85rem;
-}
-.site-plan-head .site-btn {
-  margin-top: 0;
-}
+
+/* Index — Ft3 key plan: floors headed as categories, rooms as ruled entries */
 .site-plan-index {
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
+  max-width: 34rem;
 }
 .site-plan-index-label {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.6rem;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--graphite-mute);
 }
+.site-plan-key {
+  border-top: 1px solid var(--line);
+}
+.site-plan-key-floor {
+  border-bottom: 1px solid var(--line);
+}
+.site-plan-key-head {
+  appearance: none;
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  background: none;
+  border: none;
+  padding: 0.6rem 0.15rem 0.4rem;
+  cursor: pointer;
+  text-align: left;
+  color: var(--graphite);
+  transition: color 0.2s var(--ease-site);
+}
+.site-plan-key-id {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  min-width: 2rem;
+}
+.site-plan-key-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--graphite-mute);
+}
+.site-plan-key-head:hover,
+.site-plan-key-head:focus-visible {
+  color: var(--signal);
+}
+.site-plan-key-floor.is-active .site-plan-key-id {
+  color: var(--signal);
+}
+.site-plan-key-rooms {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.5rem;
+}
+.site-plan-key-rooms button {
+  appearance: none;
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.2rem 0.1rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--graphite-mute);
+  white-space: nowrap;
+  transition: color 0.2s var(--ease-site);
+}
+.site-plan-key-rooms button:hover:not(:disabled),
+.site-plan-key-rooms button:focus-visible:not(:disabled) {
+  color: var(--graphite);
+}
+.site-plan-key-rooms button.is-room-active {
+  color: var(--signal);
+}
+.site-plan-key-rooms button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.site-plan-key-tbd {
+  font-size: 0.54rem;
+  letter-spacing: 0.08em;
+  color: var(--graphite-mute);
+}
+
+/* Room sheet — F3 tabular spec + typographic doors */
 .site-plan-sheet {
-  max-width: 36rem;
+  max-width: 34rem;
   margin: 0 0 1.5rem;
-  padding: 1rem 1.05rem 1.1rem;
+  padding: 1rem 1.1rem 1.15rem;
   border: 1px solid var(--line);
+  border-top: 2px solid var(--graphite);
   background: var(--paper);
   background-color: var(--paper);
-  opacity: 1;
-  backdrop-filter: none;
 }
 .site-plan-sheet-head {
   display: flex;
@@ -1138,80 +1241,57 @@ html[data-experience='siteline'] #root {
 .site-plan-sheet-title {
   margin: 0.35rem 0 0;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-style: normal;
+  font-size: 1.25rem;
   line-height: 1.2;
   color: var(--graphite);
+  overflow-wrap: anywhere;
 }
 .site-plan-sheet-lead {
-  margin: 0.45rem 0 0;
-  font-size: 0.85rem;
-  line-height: 1.45;
+  margin: 0.5rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: var(--graphite-mute);
 }
-.site-plan-floors {
+.site-plan-sheet .site-plan-spec {
+  margin-top: 0.85rem;
+}
+.site-plan-doors {
+  margin-top: 0.85rem;
+}
+.site-plan-doors-label {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--graphite-mute);
+}
+.site-plan-doors ul {
   list-style: none;
-  margin: 1.5rem 0;
+  margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.75rem;
-  max-width: 36rem;
 }
-.site-plan-floor {
-  appearance: none;
-  width: 100%;
-  display: flex;
-  gap: 0.75rem;
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
-  border: 1px solid var(--line);
-  border-left: 2px solid var(--signal);
-  padding: 0.55rem 0.75rem;
-  cursor: pointer;
+.site-plan-doors li {
+  border-top: 1px solid var(--line);
+}
+.site-plan-doors a {
+  display: inline-flex;
+  padding: 0.4rem 0.1rem;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--graphite);
-  text-align: left;
-  transition: border-color 0.2s var(--ease-site), background 0.2s var(--ease-site);
-}
-.site-plan-floor:hover:not(:disabled),
-.site-plan-floor:focus-visible:not(:disabled) {
-  border-color: var(--signal);
-  background: color-mix(in srgb, var(--paper) 88%, var(--signal) 12%);
-}
-.site-plan-floors > li.is-active .site-plan-floor {
-  border-color: var(--signal);
-}
-.site-plan-floors ul {
-  list-style: none;
-  margin: 0.35rem 0 0 1rem;
-  padding: 0.25rem 0.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
-  border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
-}
-.site-plan-floors ul button {
-  appearance: none;
-  background: none;
-  border: none;
-  text-align: left;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--graphite-mute);
-  cursor: pointer;
-  padding: 0.25rem 0.15rem;
-  width: 100%;
-}
-.site-plan-floors ul button:hover:not(:disabled),
-.site-plan-floors ul button:focus-visible:not(:disabled) {
-  color: var(--graphite);
-}
-.site-plan-floors ul button.is-room-active {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
   color: var(--signal);
+  text-decoration: none;
+  white-space: nowrap;
 }
-.site-plan-floors ul button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+.site-plan-doors a:hover,
+.site-plan-doors a:focus-visible {
+  text-decoration: underline;
+}
+.site-plan-sheet-foot {
+  margin-top: 0.9rem;
 }
 
 /* Print drawer — Siteline title block; sheet body keeps R-series drawing ink */
@@ -1332,11 +1412,11 @@ html[data-experience='siteline'] #root {
       max(1.5rem, env(safe-area-inset-bottom, 0px))
       max(1rem, env(safe-area-inset-left, 0px));
   }
-  .site-plan-floors ul button {
+  .site-plan-key-rooms button {
     min-height: 2.5rem;
-    padding: 0.45rem 0.35rem;
+    padding: 0.5rem 0.35rem;
   }
-  .site-plan-floor {
+  .site-plan-key-head {
     min-height: 2.75rem;
   }
   .site-spec {
