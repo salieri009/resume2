@@ -21,6 +21,8 @@ export interface ScenePalette {
   ink: string;
   alum: string;
   glass: string;
+  /** The checker's pen — rare blueprint note; also the exit's blueprint register. */
+  blueprint: string;
   /** Interaction only — identical in both prints (constitution: #2F6BFF). */
   signal: string;
   /** Survey grid — a derivative of the sheet, not a token. */
@@ -41,6 +43,7 @@ export const PAPER_PRINT: ScenePalette = {
   // environment map (see bible 06 Wave-1 revision note).
   alum: '#B6BBC2',
   glass: '#B8C4D4',
+  blueprint: '#1E3A5F',
   signal: '#2F6BFF',
   grid: '#D0CEC8',
   shade: '#565A5F',
@@ -57,6 +60,7 @@ export const INK_PRINT: ScenePalette = {
   ink: '#F2F1ED',
   alum: '#6A7078',
   glass: '#33404E',
+  blueprint: '#5B82BC',
   signal: '#2F6BFF',
   grid: '#2A2C2E',
   shade: '#08090A',

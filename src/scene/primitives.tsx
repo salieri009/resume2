@@ -1,10 +1,17 @@
 import { Edges, Html, Line } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { EASE_INK } from './motion';
 import { usePalette } from './palette';
+
+/**
+ * Overrides the resting edge-ink color for a subtree. Null = the palette's
+ * graphite (the default). The exit teardown provides a blueprint tint here so
+ * the whole shell's edges recolor at once without prop-drilling.
+ */
+export const EdgeInkContext = createContext<string | null>(null);
 
 /** Partial polyline along a path — the ink-on technique (boot footprint, flow traces). */
 export function partialPolyline(points: THREE.Vector3[], t: number): THREE.Vector3[] {
@@ -46,7 +53,8 @@ export function InkEdges({
   lineWidth?: number;
 }) {
   const pal = usePalette();
-  return <Edges threshold={threshold} color={pal.graphite} linewidth={lineWidth} />;
+  const override = useContext(EdgeInkContext);
+  return <Edges threshold={threshold} color={override ?? pal.graphite} linewidth={lineWidth} />;
 }
 
 interface PlinthProps {

@@ -47,12 +47,16 @@ function TeardownScene({
 }) {
   const [extrude, setExtrude] = useState(reducedMotion ? 0 : 1);
   const [ink, setInk] = useState(reducedMotion ? 0 : 1);
+  const [fill, setFill] = useState(1);
+  const [blueprint, setBlueprint] = useState(0);
   return (
     <TeardownController
       reducedMotion={reducedMotion}
       onComplete={onComplete}
       onExtrude={setExtrude}
       onInk={setInk}
+      onFill={setFill}
+      onBlueprint={setBlueprint}
     >
       <BuildingMass
         extrude={extrude}
@@ -60,6 +64,8 @@ function TeardownScene({
         showLabs={false}
         enteredRoom={null}
         hoveredRoom={null}
+        teardownFill={fill}
+        teardownBlueprint={blueprint}
       />
     </TeardownController>
   );

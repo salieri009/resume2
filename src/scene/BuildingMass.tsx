@@ -7,7 +7,7 @@ import { SHIPPED_ROOMS, type RoomId } from '../building/program';
 import { LAB_ANCHORS, LAB_ORDER } from './anchors';
 import { DUR, EASE_INK, EASE_SITE } from './motion';
 import { usePalette } from './palette';
-import { BlobShadow, GroundWash, InkEdges, partialPolyline, SoftPatch } from './primitives';
+import { BlobShadow, EdgeInkContext, GroundWash, InkEdges, partialPolyline, SoftPatch } from './primitives';
 import { ThesisInscription } from './ThesisInscription';
 import { ArchiveLibrary } from './rooms/ArchiveLibrary';
 import { CoreRisers } from './rooms/CoreRisers';
@@ -45,6 +45,10 @@ interface BuildingMassProps {
   /** Lateral-pan stop for rooms that read in stops (timeline hall). */
   subStop?: number;
   onSubStop?: (i: number) => void;
+  /** Exit undraw: shell fill 1→~0 (solid → wireframe). */
+  teardownFill?: number;
+  /** Exit undraw: edges graphite→blueprint (the blueprint register). */
+  teardownBlueprint?: number;
 }
 
 /** Footprint rectangle in XZ (meters — bible 02: 8 × 6). */
@@ -62,6 +66,8 @@ export function BuildingMass({
   reducedMotion = false,
   subStop = 0,
   onSubStop,
+  teardownFill = 1,
+  teardownBlueprint = 0,
 }: BuildingMassProps) {
   const pal = usePalette();
   const group = useRef<THREE.Group>(null);
@@ -73,7 +79,17 @@ export function BuildingMass({
   // are CSS — do not compensate by keeping the 3D mass near-opaque).
   const shellFade = enteredRoom !== null && enteredRoom !== 'roof';
   const basementCut = enteredRoom === 'core' || enteredRoom === 'server';
-  const shellOpacity = shellFade ? 0.14 : 1;
+  // Fill carries the exit's wireframe register: as teardownFill → 0 the mass
+  // dissolves and only its edge ink survives (bible 03 · line surviving mass).
+  const shellOpacity = (shellFade ? 0.14 : 1) * teardownFill;
+  // Edge ink shifts to blueprint for the exit's blueprint register (null = rest).
+  const edgeInk = useMemo(
+    () =>
+      teardownBlueprint > 0
+        ? '#' + new THREE.Color(pal.graphite).lerp(new THREE.Color(pal.blueprint), teardownBlueprint).getHexString()
+        : null,
+    [teardownBlueprint, pal.graphite, pal.blueprint],
+  );
   // B1/B2: paper hatch alone is not enough — the lobby slab still plugs the
   // opened poché. Cut it away with the sheet (bible 03/04 cut-reveal).
   const basementOpen = basementCut;
@@ -89,7 +105,11 @@ export function BuildingMass({
   }, [ink]);
 
   return (
+    <EdgeInkContext.Provider value={edgeInk}>
     <group ref={group}>
+      {/* Roof station: merged light — with nothing left to shade, the void
+          becomes fog by running out of references (bible 06/R · white air). */}
+      {enteredRoom === 'roof' && <fog attach="fog" args={[pal.paper, 9, 19]} />}
       {/* Ground plane — the sheet survives any window (bible 02: infinite paper).
           Unlit: paper is the drawing's ground truth, identical to the void.
           For the basements the paper cuts away — hatched, per convention. */}
@@ -283,6 +303,7 @@ export function BuildingMass({
           );
         })}
     </group>
+    </EdgeInkContext.Provider>
   );
 }
 
@@ -444,6 +465,10 @@ interface BootControllerProps {
   onComplete: () => void;
   onExtrude: (v: number) => void;
   onInk: (v: number) => void;
+  /** Teardown only: shell fill (wireframe register). */
+  onFill?: (v: number) => void;
+  /** Teardown only: edge blueprint tint (blueprint register). */
+  onBlueprint?: (v: number) => void;
   children: ReactNode;
 }
 
@@ -512,14 +537,17 @@ export function BootController({
   return <>{children}</>;
 }
 
-/** The exit (bible 03): construction reversed — mass sinks to the footprint,
-    the line un-draws, the sheet is empty. The stamps go last (handled above
-    the canvas). Registers beyond solid→line→void are a fidelity backlog note. */
+/** The exit (bible 03/constitution): construction reversed in five registers —
+    solid → wireframe (the fill dissolves, edges hold) → blueprint (the edges
+    take the checker's pen) → single line (the mass sinks to the footprint) →
+    void (the line un-draws). The stamps go last (handled above the canvas). */
 export function TeardownController({
   reducedMotion,
   onComplete,
   onExtrude,
   onInk,
+  onFill,
+  onBlueprint,
   children,
 }: BootControllerProps) {
   const done = useRef(false);
@@ -533,7 +561,7 @@ export function TeardownController({
       invalidate();
       return;
     }
-    const state = { ink: 1, extrude: 1 };
+    const state = { fill: 1, blueprint: 0, extrude: 1, ink: 1 };
     const tl = gsap.timeline({
       onComplete: () => {
         if (!done.current) {
@@ -543,17 +571,39 @@ export function TeardownController({
       },
     });
     tl.to(state, {
-      extrude: 0,
-      duration: 2.2,
+      // solid → wireframe: the fill fades, the edge ink survives the mass
+      fill: 0.06,
+      duration: 0.9,
       ease: EASE_SITE,
       onUpdate: () => {
-        onExtrude(state.extrude);
+        onFill?.(state.fill);
         invalidate();
       },
     })
       .to(state, {
+        // wireframe → blueprint: the surviving edges take the checker's pen
+        blueprint: 1,
+        duration: 0.6,
+        ease: EASE_SITE,
+        onUpdate: () => {
+          onBlueprint?.(state.blueprint);
+          invalidate();
+        },
+      })
+      .to(state, {
+        // blueprint → single line: the mass sinks to the footprint
+        extrude: 0,
+        duration: 2.0,
+        ease: EASE_SITE,
+        onUpdate: () => {
+          onExtrude(state.extrude);
+          invalidate();
+        },
+      })
+      .to(state, {
+        // single line → void: the footprint un-draws
         ink: 0,
-        duration: 1.4,
+        duration: 1.2,
         ease: EASE_INK,
         onUpdate: () => {
           onInk(state.ink);
@@ -564,7 +614,7 @@ export function TeardownController({
     return () => {
       tl.kill();
     };
-  }, [reducedMotion, onComplete, onExtrude, onInk, invalidate]);
+  }, [reducedMotion, onComplete, onExtrude, onInk, onFill, onBlueprint, invalidate]);
 
   return <>{children}</>;
 }

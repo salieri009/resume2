@@ -71,11 +71,30 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
       ),
     [pal.alum, pal.graphite],
   );
+  // The pressure gauge is stamped with the proof mark, and a destination plate
+  // reads where the riser serves — both persistent fixtures, not hover-only
+  // text (bible 04/B1: "the destination plates are the signature").
+  const gaugeMaps = useMemo(
+    () =>
+      RISERS.map((r) =>
+        labelTexture(r.proof.split(' · '), { paper: pal.resin, ink: pal.graphite }, { w: 256, h: 160, size: 30 }),
+      ),
+    [pal.resin, pal.graphite],
+  );
+  const destMaps = useMemo(
+    () =>
+      RISERS.map((r) =>
+        labelTexture([r.serves], { paper: pal.alum, ink: pal.graphite }, { w: 384, h: 84, size: 26 }),
+      ),
+    [pal.alum, pal.graphite],
+  );
   useEffect(
     () => () => {
       letterMaps.forEach((t) => t.dispose());
+      gaugeMaps.forEach((t) => t.dispose());
+      destMaps.forEach((t) => t.dispose());
     },
-    [letterMaps],
+    [letterMaps, gaugeMaps, destMaps],
   );
 
   return (
@@ -130,6 +149,21 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
               <boxGeometry args={[0.3, 0.18, 0.02]} />
               <meshStandardMaterial color={pal.resin} roughness={0.75} />
               <InkEdges />
+            </mesh>
+            {/* Gauge dial — the proof mark, stamped small on the face */}
+            <mesh position={[r.x, -1.1, -0.328]}>
+              <planeGeometry args={[0.28, 0.16]} />
+              <meshStandardMaterial map={gaugeMaps[i] ?? null} roughness={0.75} toneMapped={false} />
+            </mesh>
+            {/* Destination plate — where this riser serves, fixed to the flank */}
+            <mesh position={[r.x, -1.62, -0.34]}>
+              <boxGeometry args={[0.5, 0.11, 0.02]} />
+              <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
+              <InkEdges />
+            </mesh>
+            <mesh position={[r.x, -1.62, -0.328]}>
+              <planeGeometry args={[0.46, 0.09]} />
+              <meshStandardMaterial map={destMaps[i] ?? null} roughness={0.55} toneMapped={false} />
             </mesh>
 
             <FlowTrace
