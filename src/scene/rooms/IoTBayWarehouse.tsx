@@ -66,6 +66,28 @@ export function IoTBayWarehouse({ hover, entered, reducedMotion, onClick, onHove
         <BlobShadow position={[-0.2, 0.045, 0.05]} width={2.9} depth={1.1} opacity={0.12} />
         <BlobShadow position={[1.5, 0.046, 0]} width={0.7} depth={1.3} opacity={0.16} />
 
+        {/* The rhythm of pale bands (bible A-102): each rack throws a soft,
+            short shadow onto the next row's lane — the floor's logistical
+            texture, authored like the greenhouse's glazing rules. */}
+        {([
+          [-0.3, 0.44, 2.6],
+          [-0.7, -0.14, 0.5],
+          [0.3, -0.14, 0.4],
+          [-0.17, -0.54, 2.52],
+          [-0.1, -0.92, 2.4],
+        ] as const).map(([bx, bz, bw], bi) => (
+          <mesh key={bi} rotation={[-Math.PI / 2, 0, 0]} position={[bx, 0.047, bz]}>
+            <planeGeometry args={[bw, 0.13]} />
+            <meshBasicMaterial color={pal.graphite} transparent opacity={0.1} depthWrite={false} />
+          </mesh>
+        ))}
+        {/* The gate's threshold — the darkest line on the floor, as a
+            threshold should be (bible: nothing leaves unexamined). */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.5, 0.048, 0]}>
+          <planeGeometry args={[0.09, 1.25]} />
+          <meshBasicMaterial color={pal.graphite} transparent opacity={0.32} depthWrite={false} />
+        </mesh>
+
         {/* Interface rack — the long low shelf face customers touch */}
         <mesh position={[-0.3, 0.16, 0.6]}>
           <boxGeometry args={[2.6, 0.12, 0.35]} />

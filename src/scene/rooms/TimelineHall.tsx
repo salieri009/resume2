@@ -51,6 +51,8 @@ interface AssemblyStageProps {
   labelMaps: LabelMaps;
   /** One engraving per highlight — stamped on the top lift's +Z faces. */
   faceMarks: THREE.CanvasTexture[];
+  /** The delivered artifact's name, engraved on its nameplate's outward face. */
+  artifactMap?: THREE.CanvasTexture;
   exemptColor: string;
 }
 
@@ -76,6 +78,7 @@ function AssemblyStage({
   pal,
   labelMaps,
   faceMarks,
+  artifactMap,
   exemptColor,
 }: AssemblyStageProps) {
   const invalidate = useThree((s) => s.invalidate);
@@ -198,13 +201,22 @@ function AssemblyStage({
           );
         })}
 
-        {/* Delivered fixture — nameplate reads once the stage is assembled */}
+        {/* Delivered fixture — nameplate reads once the stage is assembled,
+            its name engraved on the outward face (bible L1). */}
         {artifact && p > 0.6 && (
-          <mesh position={[0.63, 0.3 + 0.18 * index, 0.2]}>
-            <boxGeometry args={[0.03, 0.07, 0.24]} />
-            <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
-            <InkEdges />
-          </mesh>
+          <group position={[0.63, 0.3 + 0.18 * index, 0.2]}>
+            <mesh>
+              <boxGeometry args={[0.03, 0.07, 0.24]} />
+              <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
+              <InkEdges />
+            </mesh>
+            {artifactMap && (
+              <mesh position={[0.017, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+                <planeGeometry args={[0.22, 0.055]} />
+                <meshStandardMaterial map={artifactMap} roughness={0.55} toneMapped={false} />
+              </mesh>
+            )}
+          </group>
         )}
       </Plinth>
 
@@ -273,13 +285,23 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
       ),
     [pal.resin, pal.graphite],
   );
+  // Artifact nameplates carry their names engraved on the metal itself
+  // (bible L1: "THE FIVE FLOORS on the autumn face"), not as HTML captions.
+  const artifactMaps = useMemo(() => {
+    const m: LabelMaps = new Map();
+    for (const name of Object.values(ARTIFACT_AT)) {
+      m.set(name, labelTexture([name], { paper: pal.alum, ink: pal.graphite }, { w: 384, h: 96, size: 30 }));
+    }
+    return m;
+  }, [pal.alum, pal.graphite]);
   useEffect(
     () => () => {
       labelMaps.forEach((t) => t.dispose());
       completionMap.dispose();
       faceMarkSets.forEach((set) => set.forEach((t) => t.dispose()));
+      artifactMaps.forEach((t) => t.dispose());
     },
-    [labelMaps, completionMap, faceMarkSets],
+    [labelMaps, completionMap, faceMarkSets, artifactMaps],
   );
 
   return (
@@ -307,6 +329,7 @@ export function TimelineHall({ subStop, onSelectStage, reducedMotion }: Timeline
           pal={pal}
           labelMaps={labelMaps}
           faceMarks={faceMarkSets[i]!}
+          artifactMap={ARTIFACT_AT[i] ? artifactMaps.get(ARTIFACT_AT[i]) : undefined}
           exemptColor={exemptColor}
         />
       ))}
