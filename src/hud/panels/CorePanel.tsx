@@ -40,15 +40,15 @@ export function CorePanel() {
               {r.letter}
             </span>
             <div className="site-riser-main">
-              <p className="site-riser-trade">{r.trade}</p>
+              <div className="site-riser-head">
+                <p className="site-riser-trade">{r.trade}</p>
+                <p className="site-riser-gauge">{formatProof(SKILL_PROOFS[r.id], lang)}</p>
+              </div>
               <p className="site-riser-desc">{t[RISER_DESC[r.id]]}</p>
               <p className="site-riser-tools">
                 {r.tools.join(' · ')}
                 {r.extra ? ` · ${r.extra}` : ''}
               </p>
-            </div>
-            <div className="site-riser-read">
-              <p className="site-riser-gauge">{formatProof(SKILL_PROOFS[r.id], lang)}</p>
               <button
                 type="button"
                 className="site-riser-serve"
@@ -63,11 +63,11 @@ export function CorePanel() {
         <div className="site-riser-row site-riser-row--intercom">
           <span className="site-riser-symbol">F</span>
           <div className="site-riser-main">
-            <p className="site-riser-trade">INTERCOM</p>
+            <div className="site-riser-head">
+              <p className="site-riser-trade">INTERCOM</p>
+            </div>
             <p className="site-riser-desc">{t.languagesLine}</p>
             <p className="site-riser-tools">ROK Army · Interpreter</p>
-          </div>
-          <div className="site-riser-read">
             <a className="site-riser-serve" href={LINKS.blog} target="_blank" rel="noreferrer">
               SERVES · L4 LIBRARY ↗
             </a>

@@ -830,10 +830,10 @@ html[data-experience='siteline'] #root {
 }
 .site-riser-row {
   display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr) auto;
-  gap: 0.45rem 0.8rem;
+  grid-template-columns: 2.35rem minmax(0, 1fr);
+  gap: 0.75rem;
   align-items: start;
-  padding: 0.7rem 0;
+  padding: 0.95rem 0;
   border-top: 1px solid var(--line);
 }
 .site-riser-row:first-child {
@@ -843,8 +843,8 @@ html[data-experience='siteline'] #root {
   border-top-style: dashed;
 }
 .site-riser-symbol {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 2.15rem;
+  height: 2.15rem;
   border: 1.5px solid var(--graphite);
   border-radius: 50%;
   display: flex;
@@ -852,62 +852,63 @@ html[data-experience='siteline'] #root {
   justify-content: center;
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   color: var(--graphite);
 }
 .site-riser-main {
   min-width: 0;
 }
+.site-riser-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.6rem;
+}
 .site-riser-trade {
   margin: 0;
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 0.74rem;
-  letter-spacing: 0.06em;
-  color: var(--graphite);
-}
-.site-riser-desc {
-  margin: 0.2rem 0 0;
-  font-family: var(--font-body);
   font-size: 0.82rem;
-  line-height: 1.4;
+  letter-spacing: 0.05em;
   color: var(--graphite);
-}
-.site-riser-tools {
-  margin: 0.25rem 0 0;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.03em;
-  line-height: 1.4;
-  color: var(--graphite-mute);
-}
-.site-riser-read {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.4rem;
-  text-align: right;
 }
 .site-riser-gauge {
   margin: 0;
+  flex: none;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.03em;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
   color: var(--graphite);
   white-space: nowrap;
+}
+.site-riser-desc {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--graphite);
+}
+.site-riser-tools {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--graphite-mute);
 }
 .site-riser-serve {
   appearance: none;
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.5rem;
-  min-height: 2rem;
+  margin-top: 0.55rem;
+  padding: 0.4rem 0.6rem;
+  min-height: 2.1rem;
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--paper) 96%, transparent);
   color: var(--signal);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.07em;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
