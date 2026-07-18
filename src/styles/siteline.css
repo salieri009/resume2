@@ -689,16 +689,22 @@ html[data-experience='siteline'] #root {
   color: var(--graphite-mute);
   font-size: 0.82rem;
 }
+/* Vitals as an F3 tabular spec — key | value rows, hairline-ruled */
 .site-spec-meta {
   margin: 1rem 0 0;
   display: grid;
-  gap: 0.55rem;
+  border-top: 1px solid var(--line);
 }
 .site-spec-meta div {
   display: grid;
-  gap: 0.15rem;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--line);
 }
 .site-spec-meta dt {
+  margin: 0;
+  padding-top: 0.12rem;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   letter-spacing: 0.12em;
@@ -710,6 +716,7 @@ html[data-experience='siteline'] #root {
   font-size: 0.82rem;
   line-height: 1.4;
   color: var(--graphite);
+  overflow-wrap: anywhere;
 }
 .site-spec-meta a {
   color: var(--signal);
