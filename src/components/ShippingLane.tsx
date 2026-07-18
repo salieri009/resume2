@@ -126,7 +126,7 @@ export function ShippingLane({ laneTitle, label, ports, reducedMotion }: Shippin
                 y={52}
                 textAnchor={first ? 'start' : last ? 'end' : 'middle'}
                 fontSize="9.5"
-                fontFamily="JetBrains Mono, monospace"
+                fontFamily="IBM Plex Mono, monospace"
                 fill="var(--c-text-muted)"
               >
                 {port}

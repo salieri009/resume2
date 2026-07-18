@@ -110,7 +110,7 @@ export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDi
               y={yTop + FLOOR_H / 2 + 4}
               textAnchor="middle"
               fontSize="12.5"
-              fontFamily="JetBrains Mono, monospace"
+              fontFamily="IBM Plex Mono, monospace"
               fill="var(--c-text)"
             >
               {label}
@@ -119,7 +119,7 @@ export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDi
               x={BX + 12}
               y={yTop + 14}
               fontSize="8.5"
-              fontFamily="JetBrains Mono, monospace"
+              fontFamily="IBM Plex Mono, monospace"
               fill="var(--c-text-faint)"
             >
               {`FL ${level}`}
@@ -131,7 +131,7 @@ export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDi
                   y={yTop + 14}
                   textAnchor="end"
                   fontSize="8.5"
-                  fontFamily="JetBrains Mono, monospace"
+                  fontFamily="IBM Plex Mono, monospace"
                   fill="var(--c-accent-text)"
                 >
                   {`◆ ${floorNotes.length}`}
@@ -172,7 +172,7 @@ export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDi
               stroke="var(--c-accent-text)"
               strokeWidth="1"
             />
-            <text x={488} y={y - 2} fontSize="9.5" fontFamily="JetBrains Mono, monospace" fill="var(--c-accent-text)">
+            <text x={488} y={y - 2} fontSize="9.5" fontFamily="IBM Plex Mono, monospace" fill="var(--c-accent-text)">
               {isGround ? 'GL' : `L${level + 1}`}
               <tspan dx="4" fontSize="8" fill="var(--c-text-faint)">
                 {isGround ? '±0.00' : `+${elev.toFixed(1)}`}
@@ -225,7 +225,7 @@ export function SectionDiagram({ nodes, ariaLabel, notes, notesHint }: SectionDi
         y={(TOP + groundY) / 2}
         textAnchor="middle"
         fontSize="8.5"
-        fontFamily="JetBrains Mono, monospace"
+        fontFamily="IBM Plex Mono, monospace"
         letterSpacing="0.1em"
         fill="var(--c-text-faint)"
       >

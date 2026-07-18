@@ -138,19 +138,19 @@ html {
 .sal-voyage-svg text,
 .sal-secdwg text,
 .sal-shiplane-svg text {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
 }
 
 /* The one label in those drawings that is prose, not chrome. */
 .sal-voyage-svg text.sal-voyage-island-label {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
 }
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   background: var(--c-bg);
   color: var(--c-text);
 }
@@ -198,7 +198,7 @@ button {
 }
 
 .sal-mono {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
 }
 
 /* ---------- Header ---------- */
@@ -222,7 +222,7 @@ button {
 }
 
 .sal-logo {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-weight: 700;
   font-size: 20px;
   color: var(--c-text);
@@ -237,7 +237,7 @@ button {
 }
 
 .sal-nav-link {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   text-decoration: none;
   transition: color var(--dur-fast) var(--ease-out);
@@ -273,7 +273,7 @@ button {
   cursor: pointer;
   padding: 5px 9px;
   border-radius: 6px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   font-weight: 500;
   background: transparent;
@@ -315,7 +315,7 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -350,7 +350,7 @@ button {
 
 .sal-mobile-nav a {
   padding: 12px 4px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 15px;
   color: var(--c-text);
   text-decoration: none;
@@ -464,7 +464,7 @@ button {
 }
 
 .sal-course-no {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
   white-space: nowrap;
@@ -571,7 +571,7 @@ button {
   margin: 0;
   padding-top: 12px;
   border-top: 1px solid var(--c-border);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   letter-spacing: 0.02em;
   color: var(--c-text-muted);
@@ -586,7 +586,7 @@ button {
 }
 
 .sal-proof-chip {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 4px 10px;
   border-radius: var(--radius-sm);
@@ -615,7 +615,7 @@ button {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   color: var(--c-accent-text);
 }
@@ -634,7 +634,7 @@ button {
 
 .sal-hero-title {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(1.75rem, 3.4vw, 3rem);
   line-height: 1.15;
@@ -651,7 +651,7 @@ button {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 10px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13.5px;
   color: var(--c-text-faint);
 }
@@ -674,7 +674,7 @@ button {
   border: 1px solid var(--c-accent);
   border-radius: var(--radius-sm);
   background: var(--c-accent-dim);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13.5px;
   letter-spacing: 0.02em;
   color: var(--c-accent-text);
@@ -693,7 +693,7 @@ button {
 
 .sal-hero-subtag {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
@@ -717,7 +717,7 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 600;
   font-size: 15px;
   border: none;
@@ -740,7 +740,7 @@ button {
   border: 1px solid var(--c-border-strong);
   color: var(--c-text);
   text-decoration: none;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 600;
   font-size: 15px;
   transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
@@ -801,7 +801,7 @@ button {
   position: absolute;
   left: 8px;
   bottom: 6px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.08em;
   color: var(--c-text-faint);
@@ -870,7 +870,7 @@ button {
   position: absolute;
   left: 7px;
   top: 5px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.06em;
   color: var(--c-text-faint);
@@ -907,7 +907,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
   letter-spacing: 0.04em;
   color: var(--c-accent-text);
@@ -996,7 +996,7 @@ button {
   width: 212px;
   text-align: right;
   text-wrap: balance;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   line-height: 1.5;
   color: var(--c-accent-text);
@@ -1048,7 +1048,7 @@ button {
   max-width: 240px;
   text-align: right;
   text-wrap: balance;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-accent-text);
   opacity: 0.85;
@@ -1072,13 +1072,13 @@ button {
 }
 
 .sal-axono-mobile-label {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
 }
 
 .sal-axono-mobile-sub {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 13px;
   color: var(--c-text-muted);
 }
@@ -1091,7 +1091,7 @@ button {
 }
 
 .sal-axono-mobile-roof {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
   padding: 4px 4px 0;
@@ -1099,7 +1099,7 @@ button {
 
 .sal-timeline-foundations {
   margin: 0 0 8px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1109,7 +1109,7 @@ button {
   margin: 28px 0 0;
   padding-top: 18px;
   border-top: 1px dashed var(--c-border);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -1160,7 +1160,7 @@ button {
   place-items: center;
   text-align: center;
   white-space: pre-line;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.1em;
   color: var(--c-accent-text);
@@ -1171,7 +1171,7 @@ button {
 .sal-cred-title {
   margin: 0;
   padding-right: 64px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 15.5px;
   color: var(--c-text);
@@ -1180,7 +1180,7 @@ button {
 
 .sal-cred-detail {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-muted);
   line-height: 1.6;
@@ -1214,14 +1214,14 @@ button {
 }
 
 .sal-section-num {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 14px;
   color: var(--c-accent-text);
 }
 
 .sal-section-title {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: clamp(24px, 3.5vw, 32px);
   color: var(--c-text);
@@ -1237,7 +1237,7 @@ button {
 .sal-section-intro {
   margin: -24px 0 36px;
   max-width: 680px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1312,13 +1312,13 @@ button {
 }
 
 .sal-eyebrow {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
 
 .sal-badge {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: var(--radius-sm);
@@ -1329,7 +1329,7 @@ button {
 
 .sal-bento-a h3 {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(24px, 3vw, 34px);
   color: var(--c-text);
@@ -1339,7 +1339,7 @@ button {
 
 .sal-bento-card h3 {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 20px;
   color: var(--c-text);
@@ -1348,7 +1348,7 @@ button {
 .sal-bento-a p {
   margin: 0;
   max-width: 520px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
   line-height: 1.6;
@@ -1356,7 +1356,7 @@ button {
 
 .sal-bento-card p {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-muted);
   line-height: 1.55;
@@ -1369,7 +1369,7 @@ button {
 }
 
 .sal-tag {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 4px 9px;
   border-radius: 6px;
@@ -1402,7 +1402,7 @@ button {
   gap: 8px 16px;
   padding-top: 14px;
   border-top: 1px dashed var(--c-border-strong);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   letter-spacing: 0.02em;
   color: var(--c-text-muted);
@@ -1428,7 +1428,7 @@ button {
 }
 
 .sal-bento-footer span:first-child {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 12px;
   color: var(--c-text);
 }
@@ -1438,7 +1438,7 @@ button {
 }
 
 .sal-case-study-link {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   color: var(--c-accent-text);
 }
@@ -1499,7 +1499,7 @@ button {
 
 .sal-timeline-h3 {
   margin: 8px 0 4px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 19px;
   color: var(--c-text);
@@ -1507,28 +1507,28 @@ button {
 
 .sal-timeline-p1 {
   margin: 0 0 4px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
 }
 
 .sal-timeline-p2 {
   margin: 0 0 4px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 13.5px;
   color: var(--c-text-faint);
 }
 
 .sal-timeline-p3 {
   margin: 0 0 16px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--c-text-muted);
 }
 
 .sal-pill-outline {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
   border-radius: var(--radius-sm);
@@ -1538,7 +1538,7 @@ button {
 
 /* Shipped artifact / industry partner link on a timeline waypoint */
 .sal-artifact-chip {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 5px 11px;
   border-radius: var(--radius-sm);
@@ -1573,14 +1573,14 @@ button {
 }
 
 .sal-skill-label {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
 }
 
 .sal-skill-desc {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -1595,7 +1595,7 @@ button {
 }
 
 .sal-skill-tag {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   padding: 4px 10px;
   border-radius: 6px;
@@ -1618,7 +1618,7 @@ button {
   background: none;
   padding: 0;
   cursor: pointer;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-accent-text);
   text-decoration: none;
@@ -1663,7 +1663,7 @@ button {
 }
 
 .sal-about-story {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: clamp(16px, 2vw, 19px);
   line-height: 1.75;
   color: var(--c-text);
@@ -1675,7 +1675,7 @@ button {
 }
 
 .sal-about-hobbies {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   line-height: 1.7;
   color: var(--c-text-muted);
@@ -1706,7 +1706,7 @@ button {
 
 .sal-contact-title {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(28px, 5vw, 48px);
   color: var(--c-text);
@@ -1715,7 +1715,7 @@ button {
 
 .sal-contact-name {
   margin: 0;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-faint);
   letter-spacing: 0.04em;
@@ -1724,7 +1724,7 @@ button {
 .sal-contact-sub {
   margin: 0;
   max-width: 480px;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
 }
@@ -1739,7 +1739,7 @@ button {
   background: var(--c-accent);
   color: var(--c-accent-contrast);
   text-decoration: none;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-weight: 700;
   font-size: 15px;
   transition: background var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
@@ -1759,7 +1759,7 @@ button {
 }
 
 .sal-contact-links a {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-muted);
   text-decoration: none;
@@ -1782,7 +1782,7 @@ button {
 
 .sal-footer p {
   margin: 0;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -1826,7 +1826,7 @@ button {
   background: transparent;
   color: var(--c-text);
   cursor: pointer;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
@@ -1855,14 +1855,14 @@ button {
 }
 
 .sal-detail-category {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-accent-text);
 }
 
 .sal-detail-title {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 800;
   font-size: clamp(30px, 3.5vw, 44px);
   line-height: 1.08;
@@ -1872,7 +1872,7 @@ button {
 
 .sal-detail-summary {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -1894,7 +1894,7 @@ button {
 }
 
 .sal-detail-meta-label {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
   text-transform: uppercase;
@@ -1902,7 +1902,7 @@ button {
 }
 
 .sal-detail-meta-value {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14px;
   color: var(--c-text);
   line-height: 1.5;
@@ -1917,7 +1917,7 @@ button {
 }
 
 .sal-receipt-link {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: 6px;
@@ -1935,7 +1935,7 @@ button {
 
 .sal-receipt-note {
   margin-top: 6px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10.5px;
   color: var(--c-text-faint);
   letter-spacing: 0.02em;
@@ -1966,14 +1966,14 @@ button {
 }
 
 .sal-detail-letter {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-accent-text);
 }
 
 .sal-detail-block h2 {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-weight: 700;
   font-size: 24px;
   color: var(--c-text);
@@ -1981,7 +1981,7 @@ button {
 
 .sal-detail-block p {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15.5px;
   line-height: 1.75;
   color: var(--c-text-muted);
@@ -2011,7 +2011,7 @@ button {
 
 .sal-secdwg-caption {
   text-align: center;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
 }
@@ -2034,7 +2034,7 @@ button {
 }
 
 .sal-secdwg-notes-hint {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10.5px;
   color: var(--c-text-faint);
   text-align: center;
@@ -2052,7 +2052,7 @@ button {
 
 .sal-secdwg-note-kind {
   flex-shrink: 0;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.12em;
   padding: 1px var(--space-2);
@@ -2232,7 +2232,7 @@ button {
 }
 
 .sal-axono-layer-label {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
   color: var(--c-accent-text);
 }
@@ -2259,7 +2259,7 @@ button {
   left: 0;
   top: 0;
   white-space: nowrap;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.05em;
   color: var(--c-accent-text);
@@ -2520,7 +2520,7 @@ button {
 
 .sal-detail-axono-caption {
   text-align: center;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   color: var(--c-text-faint);
 }
@@ -2533,7 +2533,7 @@ button {
   min-width: 168px;
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.05em;
 }
@@ -2593,7 +2593,7 @@ button {
   top: 50%;
   transform: translateY(-50%);
   writing-mode: vertical-rl;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.12em;
   color: var(--c-text-faint);
@@ -2603,7 +2603,7 @@ button {
   position: absolute;
   left: 34px;
   bottom: 38px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   color: var(--c-accent-text);
 }
@@ -2631,7 +2631,7 @@ button {
 
 .sal-problem-row p {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2640,14 +2640,14 @@ button {
 
 .sal-solution-row p {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
   line-height: 1.65;
 }
 
 .sal-pill-accent {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: var(--radius-sm);
@@ -2657,7 +2657,7 @@ button {
 }
 
 .sal-pill-muted {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   padding: 3px 9px;
   border-radius: var(--radius-sm);
@@ -2678,7 +2678,7 @@ button {
 
 .sal-decision-card p:first-child {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2700,7 +2700,7 @@ button {
 }
 
 .sal-tradeoff-rejected {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--c-text);
@@ -2708,7 +2708,7 @@ button {
 }
 
 .sal-tradeoff-why {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 14.5px;
   color: var(--c-text-muted);
   line-height: 1.65;
@@ -2721,7 +2721,7 @@ button {
 }
 
 .sal-result-chip {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12.5px;
   padding: 8px 14px;
   border-radius: var(--radius-sm);
@@ -2737,7 +2737,7 @@ button {
 
 .sal-lessons p {
   margin: 0;
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 15px;
   color: var(--c-text-muted);
   line-height: 1.65;
@@ -2755,13 +2755,13 @@ button {
 }
 
 .sal-next-label {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
 
 .sal-next-chip {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   padding: 5px 11px;
   border-radius: 6px;
@@ -2787,7 +2787,7 @@ button {
   color: var(--c-accent-contrast);
   border: none;
   cursor: pointer;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   font-weight: 600;
   transition: background var(--dur-base) var(--ease-out);
@@ -2807,7 +2807,7 @@ button {
   background: transparent;
   color: var(--c-text);
   cursor: pointer;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
 }
@@ -2874,7 +2874,7 @@ button {
   border: 1px solid var(--c-border-strong);
   border-radius: var(--radius-sm);
   background: var(--c-panel);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10px;
   line-height: 1.45;
   opacity: 0;
@@ -3020,7 +3020,7 @@ button {
 
 .sal-voyage-hint {
   margin: -20px 0 28px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   color: var(--c-text-faint);
 }
@@ -3082,7 +3082,7 @@ button {
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 0.66rem;
   letter-spacing: 0.06em;
   color: var(--c-muted);
@@ -3109,7 +3109,7 @@ button {
   border-radius: var(--radius-sm);
   border: 1px solid var(--c-border-strong);
   background: var(--c-panel);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   line-height: 1.45;
   color: var(--c-text);
@@ -3191,12 +3191,12 @@ button {
 }
 
 .sal-voyage-card strong {
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   font-size: 16px;
 }
 
 .sal-voyage-card-stack {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11.5px;
   color: var(--c-text-muted);
 }
@@ -3213,7 +3213,7 @@ button {
 .sal-voyage-ports {
   margin: 0;
   padding-left: 18px;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 13px;
   color: var(--c-text-muted);
   line-height: 1.8;
@@ -3237,7 +3237,7 @@ button {
   background: var(--c-panel);
   color: var(--c-text);
   text-decoration: none;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 12px;
   transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
@@ -3263,9 +3263,11 @@ button {
   --c-text: #14161a;
   --c-text-muted: #454a50;
   --c-text-faint: #676d74;
-  --c-accent: #c81e30;
-  --c-accent-text: #a01626;
-  --c-accent-dim: rgba(200, 30, 48, 0.12);
+  /* The R-series sheets take the building's checker's-pen blueprint, not a
+     stray red — SITE 009 has no red ink (siteline --blueprint #1E3A5F). */
+  --c-accent: #1e3a5f;
+  --c-accent-text: #1e3a5f;
+  --c-accent-dim: rgba(30, 58, 95, 0.12);
   color: var(--c-text);
 }
 
@@ -3282,7 +3284,7 @@ button {
   max-width: 186mm; /* A4 210mm − 2 × 12mm hard margin */
   margin: 0 auto;
   background: var(--c-bg);
-  font-family: 'Inter', var(--font-cjk), sans-serif;
+  font-family: 'Source Serif 4', var(--font-cjk), sans-serif;
   break-after: page;
   /* A case-study sheet can legitimately run past one page — let the sheet
      break and keep the avoid rules on its blocks instead. */
@@ -3306,7 +3308,7 @@ button {
   padding-bottom: var(--space-2);
   margin-bottom: var(--space-5);
   border-bottom: 2px solid var(--c-text);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.08em;
 }
@@ -3335,7 +3337,7 @@ button {
 
 .sal-sheet-alias {
   margin: 0 0 var(--space-2);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 11px;
   letter-spacing: 0.24em;
   color: var(--c-accent-text);
@@ -3352,7 +3354,7 @@ button {
 
 .sal-sheet-registry {
   margin: 0 0 var(--space-5);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10px;
   color: var(--c-text-muted);
 }
@@ -3365,7 +3367,7 @@ button {
   padding: var(--space-2) var(--space-3);
   border: 1.5px solid var(--c-accent);
   border-radius: var(--radius-sm);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10.5px;
   color: var(--c-accent-text);
 }
@@ -3387,7 +3389,7 @@ button {
   margin: 0 0 var(--space-6);
   padding: 0;
   list-style: none;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
   color: var(--c-text-muted);
 }
@@ -3396,7 +3398,7 @@ button {
   margin-bottom: var(--space-6);
   padding-top: var(--space-3);
   border-top: 1px solid var(--c-border);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 10px;
   line-height: 1.7;
   color: var(--c-text-muted);
@@ -3413,7 +3415,7 @@ button {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-2) var(--space-5);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9.5px;
 }
 
@@ -3451,7 +3453,7 @@ button {
 
 .sal-sheet-workmeta {
   margin: 0;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 7.5px;
   line-height: 1.6;
   color: var(--c-text-muted);
@@ -3475,7 +3477,7 @@ button {
 
 .sal-sheet-block-label {
   margin-bottom: var(--space-2);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8.5px;
   letter-spacing: 0.14em;
   color: var(--c-accent-text);
@@ -3494,7 +3496,7 @@ button {
   padding: var(--space-1) var(--space-3) var(--space-1) 0;
   border-bottom: 1.5px solid var(--c-text);
   text-align: left;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8px;
   letter-spacing: 0.12em;
   color: var(--c-text-faint);
@@ -3507,7 +3509,7 @@ button {
 }
 
 .sal-sheet-td-no {
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   letter-spacing: 0.08em;
   color: var(--c-accent-text);
@@ -3553,7 +3555,7 @@ button {
   align-items: baseline;
   gap: var(--space-3);
   margin: 0 0 var(--space-3);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 9px;
   color: var(--c-text-muted);
 }
@@ -3585,7 +3587,7 @@ button {
 
 .sal-sheet-receipts {
   margin: 0;
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8px;
   line-height: 1.7;
   color: var(--c-text-muted);
@@ -3596,7 +3598,7 @@ button {
   margin: var(--space-6) 0 0;
   padding-top: var(--space-3);
   border-top: 2px solid var(--c-text);
-  font-family: 'JetBrains Mono', var(--font-cjk-mono), monospace;
+  font-family: 'IBM Plex Mono', var(--font-cjk-mono), monospace;
   font-size: 8px;
   letter-spacing: 0.1em;
   color: var(--c-text-faint);
