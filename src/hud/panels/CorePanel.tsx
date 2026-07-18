@@ -1,59 +1,18 @@
 import { SKILL_PROOFS, formatProof } from '../../data/academic';
+import { CORE_RISERS, RISER_DESC, RISER_GAUGE } from '../../data/skills';
 import { LINKS } from '../../data/profile';
 import { STRINGS } from '../../data/strings';
 import { useSite } from '../../building/SiteContext';
-import type { FloorId, RoomId } from '../../building/program';
 
-const CARDS: {
-  trade: string;
-  key: keyof typeof SKILL_PROOFS;
-  desc: 'skillA' | 'skillB' | 'skillC' | 'skillD' | 'skillE';
-  tools: string;
-  serves: { floor: FloorId; room: RoomId; label: string };
-  extra?: string;
-}[] = [
-  {
-    trade: 'A · ENTERPRISE',
-    key: 'enterprise',
-    desc: 'skillA',
-    tools: 'Java · Python · C# · C++',
-    serves: { floor: 'L2', room: 'iotbay', label: 'A-102 · IOTBAY' },
-  },
-  {
-    trade: 'B · AI / DEEP LEARNING',
-    key: 'ai',
-    desc: 'skillB',
-    tools: 'Neural Nets · CNN · YOLOv8 · PyTorch',
-    serves: { floor: 'L2', room: 'crowd', label: 'A-101 · CROWD' },
-    extra: 'SageMaker',
-  },
-  {
-    trade: 'C · CLOUD & DATA',
-    key: 'cloud',
-    desc: 'skillC',
-    tools: 'AWS · Docker · Data Engineering · PostgreSQL',
-    serves: { floor: 'L2', room: 'gundam', label: 'A-104 · GUNDAM' },
-  },
-  {
-    trade: 'D · GRAPHICS',
-    key: 'graphics',
-    desc: 'skillD',
-    tools: 'Three.js · GLSL · WebGL',
-    serves: { floor: 'L2', room: 'farm', label: 'A-103 · FARM' },
-  },
-  {
-    trade: 'E · FRONTEND',
-    key: 'interactive',
-    desc: 'skillE',
-    tools: 'HTML/CSS · JavaScript · React · Next.js',
-    serves: { floor: 'L2', room: 'crowd', label: 'A-101 · CROWD' },
-  },
-];
+/** Ring weight tracks the pipe gauge — the heaviest trade draws the boldest symbol. */
+const symbolWeight = (id: keyof typeof RISER_GAUGE) =>
+  1 + ((RISER_GAUGE[id] - 0.11) / (0.17 - 0.11)) * 1.6;
 
 /**
- * B1 · the plant room's schedule — riser cards with real gauges and
- * destinations (bible 04/B1-CORE): every pipe goes somewhere, and the C
- * reads at the same size as the HDs.
+ * B1 · the plant room's services schedule (bible 04/B1-CORE flat projection):
+ * one ruled row per riser — a circled symbol whose weight tracks its gauge,
+ * the trade and its tools, the real gauge reading (the C at HD size), and the
+ * destination it serves. The drawing a services engineer would actually make.
  */
 export function CorePanel() {
   const { room, phase, lang, goTo, returnLobby, setPrintOpen } = useSite();
@@ -74,33 +33,46 @@ export function CorePanel() {
         </button>
       </header>
 
-      <div className="site-spec-cards">
-        {CARDS.map((c) => (
-          <article key={c.trade} className="site-spec-card">
-            <p className="site-spec-card-trade">{c.trade}</p>
-            <p className="site-spec-card-body">{t[c.desc]}</p>
-            <p className="site-spec-card-meta">
-              {c.tools}
-              {c.extra ? ` · ${c.extra}` : ''}
-            </p>
-            <p className="site-spec-card-gauge">{formatProof(SKILL_PROOFS[c.key], lang)}</p>
-            <button
-              type="button"
-              className="site-spec-serve"
-              onClick={() => goTo(c.serves.floor, c.serves.room)}
-            >
-              SERVES · {c.serves.label}
-            </button>
-          </article>
+      <div className="site-riser-schedule">
+        {CORE_RISERS.map((r) => (
+          <div key={r.id} className="site-riser-row">
+            <span className="site-riser-symbol" style={{ borderWidth: `${symbolWeight(r.id)}px` }}>
+              {r.letter}
+            </span>
+            <div className="site-riser-main">
+              <p className="site-riser-trade">{r.trade}</p>
+              <p className="site-riser-desc">{t[RISER_DESC[r.id]]}</p>
+              <p className="site-riser-tools">
+                {r.tools.join(' · ')}
+                {r.extra ? ` · ${r.extra}` : ''}
+              </p>
+            </div>
+            <div className="site-riser-read">
+              <p className="site-riser-gauge">{formatProof(SKILL_PROOFS[r.id], lang)}</p>
+              <button
+                type="button"
+                className="site-riser-serve"
+                onClick={() => goTo(r.serves.floor, r.serves.room)}
+              >
+                SERVES · {r.serves.tag} →
+              </button>
+            </div>
+          </div>
         ))}
-        <article className="site-spec-card">
-          <p className="site-spec-card-trade">F · INTERCOM</p>
-          <p className="site-spec-card-body">{t.languagesLine}</p>
-          <p className="site-spec-card-meta">ROK Army · Interpreter</p>
-          <a className="site-spec-serve" href={LINKS.blog} target="_blank" rel="noreferrer">
-            SERVES · L4 LIBRARY ↗
-          </a>
-        </article>
+
+        <div className="site-riser-row site-riser-row--intercom">
+          <span className="site-riser-symbol">F</span>
+          <div className="site-riser-main">
+            <p className="site-riser-trade">INTERCOM</p>
+            <p className="site-riser-desc">{t.languagesLine}</p>
+            <p className="site-riser-tools">ROK Army · Interpreter</p>
+          </div>
+          <div className="site-riser-read">
+            <a className="site-riser-serve" href={LINKS.blog} target="_blank" rel="noreferrer">
+              SERVES · L4 LIBRARY ↗
+            </a>
+          </div>
+        </div>
       </div>
 
       <footer className="site-spec-actions">

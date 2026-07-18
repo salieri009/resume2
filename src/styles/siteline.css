@@ -821,6 +821,108 @@ html[data-experience='siteline'] #root {
   outline: 1px solid var(--signal);
   outline-offset: 2px;
 }
+
+/* B1 riser schedule — a services drawing, not cards: one ruled row per trade,
+   a circled riser symbol whose weight tracks the pipe gauge. */
+.site-riser-schedule {
+  display: flex;
+  flex-direction: column;
+}
+.site-riser-row {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  gap: 0.45rem 0.8rem;
+  align-items: start;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+.site-riser-row:first-child {
+  border-top: none;
+}
+.site-riser-row--intercom {
+  border-top-style: dashed;
+}
+.site-riser-symbol {
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1.5px solid var(--graphite);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--graphite);
+}
+.site-riser-main {
+  min-width: 0;
+}
+.site-riser-trade {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--graphite);
+}
+.site-riser-desc {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--graphite);
+}
+.site-riser-tools {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  color: var(--graphite-mute);
+}
+.site-riser-read {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  text-align: right;
+}
+.site-riser-gauge {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--graphite);
+  white-space: nowrap;
+}
+.site-riser-serve {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  min-height: 2rem;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  color: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease-site), background 0.2s var(--ease-site);
+}
+.site-riser-serve:hover,
+.site-riser-serve:focus-visible {
+  border-color: var(--signal);
+  background: color-mix(in srgb, var(--paper) 88%, var(--signal) 12%);
+}
+.site-riser-serve:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+}
+
 .site-spec-bullets {
   margin: 0.9rem 0 0;
   padding-left: 1.1rem;

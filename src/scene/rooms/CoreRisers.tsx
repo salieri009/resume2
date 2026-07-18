@@ -1,51 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { SKILL_PROOFS, formatProof } from '../../data/academic';
+import { CORE_RISERS, RISER_GAUGE } from '../../data/skills';
 import { usePalette } from '../palette';
 import { CaptionPlate, FlowTrace, InkEdges, SoftPatch } from '../primitives';
 import { labelTexture } from '../textures';
 
 const v = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
 
-/** The five trades — full schedule lives in CorePanel; one hover note at a time. */
-const RISERS = [
-  {
-    x: -2,
-    letter: 'A · ENTERPRISE',
-    proof: formatProof(SKILL_PROOFS.enterprise, 'en'),
-    serves: 'SERVES · A-102 IOTBAY',
-  },
-  {
-    x: -1,
-    letter: 'B · AI / DEEP LEARNING',
-    proof: `${formatProof(SKILL_PROOFS.ai, 'en')} · SAGEMAKER`,
-    serves: 'SERVES · A-101 CROWD',
-  },
-  {
-    x: 0,
-    letter: 'C · CLOUD & DATA',
-    proof: formatProof(SKILL_PROOFS.cloud, 'en'),
-    serves: 'SERVES · A-104 GUNDAM',
-  },
-  {
-    x: 1,
-    letter: 'D · GRAPHICS',
-    proof: formatProof(SKILL_PROOFS.graphics, 'en'),
-    serves: 'SERVES · A-103 FARM',
-  },
-  {
-    x: 2,
-    letter: 'E · FRONTEND',
-    proof: formatProof(SKILL_PROOFS.interactive, 'en'),
-    serves: 'SERVES · A-101 CROWD',
-  },
-] as const;
+/** Riser x-centers on the meter line (scene layout, not content). */
+const riserX = (i: number) => i - 2;
+/** The proof reading stamped on a riser's gauge (with any managed-service fitting). */
+const riserProof = (id: (typeof CORE_RISERS)[number]['id'], extra?: string) =>
+  formatProof(SKILL_PROOFS[id], 'en') + (extra ? ` · ${extra.toUpperCase()}` : '');
 
 /**
  * B1 · The Mechanical Core (bible 04/B1-CORE, concept sheet dims).
  * Skills as building services below the opened ground: five risers on meter
- * centers. Full trade / gauge / destination text is the CorePanel schedule —
- * only one in-scene Html caption mounts at a time so plates never stack.
+ * centers, each in its own gauge — Enterprise the heaviest — carrying its
+ * trade's tool stencil, proof gauge, and destination plate. Every pipe goes
+ * somewhere. Only one in-scene Html caption mounts at a time.
  */
 export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
   const pal = usePalette();
@@ -60,41 +34,44 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
     [pal.concrete],
   );
 
-  const active = hovered !== null ? RISERS[hovered] : null;
+  const active = hovered !== null ? CORE_RISERS[hovered] : null;
 
-  // Trade letters engraved onto the pipe faces at reading height (bible 10):
-  // the stencil voice belongs ON the metal.
+  // Stencil voice on the metal (bible 10): the big trade letter, the trade's
+  // tool list, the proof gauge, and the destination plate — one texture set
+  // per riser, disposed on unmount / palette change.
   const letterMaps = useMemo(
     () =>
-      RISERS.map((r) =>
-        labelTexture([r.letter[0]], { paper: pal.alum, ink: pal.graphite }, { w: 128, h: 128, size: 72 }),
+      CORE_RISERS.map((r) =>
+        labelTexture([r.letter], { paper: pal.alum, ink: pal.graphite }, { w: 128, h: 128, size: 72 }),
       ),
     [pal.alum, pal.graphite],
   );
-  // The pressure gauge is stamped with the proof mark, and a destination plate
-  // reads where the riser serves — both persistent fixtures, not hover-only
-  // text (bible 04/B1: "the destination plates are the signature").
+  const toolMaps = useMemo(
+    () =>
+      CORE_RISERS.map((r) =>
+        labelTexture(r.tools, { paper: pal.alum, ink: pal.graphite }, { w: 300, h: 220, size: 26 }),
+      ),
+    [pal.alum, pal.graphite],
+  );
   const gaugeMaps = useMemo(
     () =>
-      RISERS.map((r) =>
-        labelTexture(r.proof.split(' · '), { paper: pal.resin, ink: pal.graphite }, { w: 256, h: 160, size: 30 }),
+      CORE_RISERS.map((r) =>
+        labelTexture(riserProof(r.id, r.extra).split(' · '), { paper: pal.resin, ink: pal.graphite }, { w: 256, h: 160, size: 30 }),
       ),
     [pal.resin, pal.graphite],
   );
   const destMaps = useMemo(
     () =>
-      RISERS.map((r) =>
-        labelTexture([r.serves], { paper: pal.alum, ink: pal.graphite }, { w: 384, h: 84, size: 26 }),
+      CORE_RISERS.map((r) =>
+        labelTexture([`SERVES · ${r.serves.tag}`], { paper: pal.alum, ink: pal.graphite }, { w: 384, h: 84, size: 26 }),
       ),
     [pal.alum, pal.graphite],
   );
   useEffect(
     () => () => {
-      letterMaps.forEach((t) => t.dispose());
-      gaugeMaps.forEach((t) => t.dispose());
-      destMaps.forEach((t) => t.dispose());
+      [...letterMaps, ...toolMaps, ...gaugeMaps, ...destMaps].forEach((t) => t.dispose());
     },
-    [letterMaps, gaugeMaps, destMaps],
+    [letterMaps, toolMaps, gaugeMaps, destMaps],
   );
 
   return (
@@ -109,11 +86,15 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
       </mesh>
       <SoftPatch position={[0.5, -2.19, -0.3]} width={4.5} depth={3.2} opacity={0.28} />
 
-      {RISERS.map((r, i) => {
+      {CORE_RISERS.map((r, i) => {
         const hover = hovered === i;
+        const x = riserX(i);
+        const g = RISER_GAUGE[r.id];
+        // The pipe's camera-facing face — the big letter stencil rides here.
+        const zFace = -0.5 + g / 2 + 0.001;
         return (
           <group
-            key={r.letter}
+            key={r.id}
             onPointerOver={(e) => {
               e.stopPropagation();
               document.body.style.cursor = 'crosshair';
@@ -125,50 +106,63 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
               setHovered((p) => (p === i ? null : p));
             }}
           >
-            <mesh position={[r.x, -2.12, -0.5]}>
-              <boxGeometry args={[0.25, 0.15, 0.25]} />
+            {/* Concrete thimble — scaled to the riser's gauge */}
+            <mesh position={[x, -2.12, -0.5]}>
+              <boxGeometry args={[g + 0.13, 0.15, g + 0.13]} />
               <meshStandardMaterial color={dim} roughness={0.9} />
               <InkEdges />
             </mesh>
-            <mesh position={[r.x, -1.0, -0.5]}>
-              <boxGeometry args={[0.12, 2.1, 0.12]} />
+            {/* The riser — Enterprise the heaviest gauge (bible B1) */}
+            <mesh position={[x, -1.0, -0.5]}>
+              <boxGeometry args={[g, 2.1, g]} />
               <meshStandardMaterial color={pal.alum} roughness={0.45} metalness={0.1} />
               <InkEdges />
             </mesh>
-            {/* The stencil, on the metal itself */}
-            <mesh position={[r.x, -1.42, -0.4395]}>
-              <planeGeometry args={[0.1, 0.1]} />
-              <meshStandardMaterial map={letterMaps[i] ?? null} roughness={0.55} toneMapped={false} />
-            </mesh>
-            <mesh position={[r.x, -0.02, -0.5]}>
-              <boxGeometry args={[0.2, 0.08, 0.2]} />
+            {/* Slab sleeve */}
+            <mesh position={[x, -0.02, -0.5]}>
+              <boxGeometry args={[g + 0.06, 0.08, g + 0.06]} />
               <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
               <InkEdges />
             </mesh>
-            <mesh position={[r.x, -1.1, -0.34]}>
+            {/* Trade letter, stencilled on the metal near the top */}
+            <mesh position={[x, -0.24, zFace]}>
+              <planeGeometry args={[g * 0.72, g * 0.72]} />
+              <meshStandardMaterial map={letterMaps[i] ?? null} roughness={0.55} toneMapped={false} />
+            </mesh>
+            {/* Tool stencil placard — this trade's tools, fixed to the flank */}
+            <mesh position={[x, -0.62, -0.34]}>
+              <boxGeometry args={[0.48, 0.36, 0.02]} />
+              <meshStandardMaterial color={pal.alum} roughness={0.42} metalness={0.1} />
+              <InkEdges />
+            </mesh>
+            <mesh position={[x, -0.62, -0.328]}>
+              <planeGeometry args={[0.44, 0.32]} />
+              <meshStandardMaterial map={toolMaps[i] ?? null} roughness={0.55} toneMapped={false} />
+            </mesh>
+            {/* Gauge dial — the proof mark, stamped small on the face */}
+            <mesh position={[x, -1.1, -0.34]}>
               <boxGeometry args={[0.3, 0.18, 0.02]} />
               <meshStandardMaterial color={pal.resin} roughness={0.75} />
               <InkEdges />
             </mesh>
-            {/* Gauge dial — the proof mark, stamped small on the face */}
-            <mesh position={[r.x, -1.1, -0.328]}>
+            <mesh position={[x, -1.1, -0.328]}>
               <planeGeometry args={[0.28, 0.16]} />
               <meshStandardMaterial map={gaugeMaps[i] ?? null} roughness={0.75} toneMapped={false} />
             </mesh>
             {/* Destination plate — where this riser serves, fixed to the flank */}
-            <mesh position={[r.x, -1.62, -0.34]}>
+            <mesh position={[x, -1.62, -0.34]}>
               <boxGeometry args={[0.5, 0.11, 0.02]} />
               <meshStandardMaterial color={pal.alum} roughness={0.4} metalness={0.1} />
               <InkEdges />
             </mesh>
-            <mesh position={[r.x, -1.62, -0.328]}>
+            <mesh position={[x, -1.62, -0.328]}>
               <planeGeometry args={[0.46, 0.09]} />
               <meshStandardMaterial map={destMaps[i] ?? null} roughness={0.55} toneMapped={false} />
             </mesh>
 
             <FlowTrace
-              restRuns={[[v(r.x, -2.05, -0.5), v(r.x, 0.35, -0.5)]]}
-              path={[v(r.x, -2.05, -0.5), v(r.x, 0.35, -0.5)]}
+              restRuns={[[v(x, -2.05, -0.5), v(x, 0.35, -0.5)]]}
+              path={[v(x, -2.05, -0.5), v(x, 0.35, -0.5)]}
               active={hover}
               reducedMotion={reducedMotion}
               duration={0.8}
@@ -180,8 +174,12 @@ export function CoreRisers({ reducedMotion }: { reducedMotion: boolean }) {
       {active && (
         <CaptionPlate
           /* Near the slab cut so the lifted note stays inside the frame */
-          position={[active.x + 0.35, -0.15, -0.15]}
-          lines={[active.letter, active.proof.toUpperCase(), active.serves]}
+          position={[riserX(hovered ?? 0) + 0.35, -0.15, -0.15]}
+          lines={[
+            `${active.letter} · ${active.trade}`,
+            riserProof(active.id, active.extra).toUpperCase(),
+            `SERVES · ${active.serves.tag}`,
+          ]}
           note
           wrap
         />
