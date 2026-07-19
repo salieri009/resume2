@@ -52,6 +52,19 @@ export function PlanFallback({ reason }: { reason: 'webgl' | 'mobile' | 'reduced
               </dd>
             </div>
             <div>
+              <dt>CONTACT</dt>
+              <dd>
+                <a href={`mailto:${LINKS.email}`}>{LINKS.email}</a> ·{' '}
+                <a href={LINKS.github} target="_blank" rel="noreferrer">
+                  GITHUB
+                </a>{' '}
+                ·{' '}
+                <a href={LINKS.linkedin} target="_blank" rel="noreferrer">
+                  LINKEDIN
+                </a>
+              </dd>
+            </div>
+            <div>
               <dt>MODE</dt>
               <dd>{REASON[reason]}</dd>
             </div>

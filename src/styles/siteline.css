@@ -1156,6 +1156,21 @@ html[data-experience='siteline'] #root {
   color: var(--graphite);
   overflow-wrap: anywhere;
 }
+/* Doors set inline in the register (CONTACT row) — signal on attention only */
+.site-plan-spec dd a {
+  color: var(--graphite);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+}
+.site-plan-spec dd a:hover {
+  color: var(--signal);
+  border-bottom-color: var(--signal);
+}
+.site-plan-spec dd a:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+  color: var(--signal);
+}
 .site-plan-actions {
   display: flex;
   flex-wrap: wrap;
