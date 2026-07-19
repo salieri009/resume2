@@ -30,10 +30,10 @@ export function SiteChrome() {
       <button
         type="button"
         className="site-chrome-print"
-        aria-label="Open document — résumé sheets"
+        aria-label="Résumé — print sheets R-001 / R-002"
         onClick={() => setPrintOpen(true)}
       >
-        DOC
+        RÉSUMÉ
       </button>
     </div>
   );

@@ -43,11 +43,11 @@ function PrintDrawer() {
   if (!printOpen) return null;
 
   return (
-    <div className="site-print-drawer" role="dialog" aria-label="SITE 009 · DOC · R-series">
+    <div className="site-print-drawer" role="dialog" aria-label="SITE 009 · Résumé · R-series">
       <div className="site-print-drawer-bar">
         <div className="site-print-drawer-stamp">
           <span className="site-print-drawer-site">SITE 009 · SALIERI · REVISION A</span>
-          <span className="site-print-drawer-doc">DOC · R-001 / R-002 · TITLE BLOCK</span>
+          <span className="site-print-drawer-doc">RÉSUMÉ · R-001 / R-002</span>
         </div>
         <div className="site-print-drawer-actions">
           <button type="button" className="site-btn" autoFocus onClick={() => window.print()}>

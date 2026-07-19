@@ -69,7 +69,7 @@ infinite paper sheet, never a photoreal city.
 ## Notes
 
 - The public site shows **GPA / WAM / 144 CP / Complete only — the student number is never displayed.**
-- The **DOC** control prints the R-series résumé sheets; figures come from the UTS Online Student Record.
+- The **RÉSUMÉ** control prints the R-series résumé sheets; figures come from the UTS Online Student Record.
 - The scene uses no photoreal shadows: presence is drawn — edge ink, on-surface engraving, and authored
   shadow/ground planes only.
 - Deployed on Vercel.
