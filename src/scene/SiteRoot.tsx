@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useCallback, useMemo, useState } from 'react';
 import { floorOfRoom, tagOf, type RoomId } from '../building/program';
+import { STRINGS } from '../data/strings';
 import { useSite } from '../building/SiteContext';
 import { OrthoRig, presetForRoom } from '../camera/OrthoRig';
 import { BootController, BuildingMass, SiteLights, TeardownController } from './BuildingMass';
@@ -80,6 +81,7 @@ export function SiteRoot({ webgl }: SiteRootProps) {
     goTo,
     bootDone,
     theme,
+    lang,
     subStop,
     setSubStop,
     reopen,
@@ -155,11 +157,15 @@ export function SiteRoot({ webgl }: SiteRootProps) {
         </Suspense>
       </Canvas>
       {/* Screen-space leader note — readable without covering the 3D massing. */}
-      {hoveredRoom && phase !== 'boot' && phase !== 'end' && room !== hoveredRoom && (
+      {hoveredRoom && phase !== 'boot' && phase !== 'end' && room !== hoveredRoom ? (
         <div className="site-anno" role="status">
           ROOM · {floorOfRoom(hoveredRoom)} · {tagOf(hoveredRoom)}
         </div>
-      )}
+      ) : phase === 'lobby' && bootDone && !hoveredRoom ? (
+        /* Standing annotation at the lobby: the model is clickable — say so
+           in the same drafting voice. Hovering a room replaces it naturally. */
+        <div className="site-anno">{STRINGS[lang].lobbyHint}</div>
+      ) : null}
       {/* The rolled-up drawing — the last sheet of the set */}
       {phase === 'end' && ended && (
         <div className="site-end" role="dialog" aria-label="End of set">

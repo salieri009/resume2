@@ -201,6 +201,8 @@ export interface Strings {
   languagesLine: string;
   /** Lobby primary CTA — enters L2 laboratories (Norman: label = action). */
   enterLabs: string;
-  /** DOC drawer dismiss control. */
+  /** Résumé drawer dismiss control. */
   closeDoc: string;
+  /** Standing lobby annotation — tells a first-timer the model is clickable. */
+  lobbyHint: string;
 }
