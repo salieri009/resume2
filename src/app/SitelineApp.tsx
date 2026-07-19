@@ -12,6 +12,7 @@ import { ArchivePanel } from '../hud/panels/ArchivePanel';
 import { RoofPanel } from '../hud/panels/RoofPanel';
 import { PlanFallback } from '../hud/PlanFallback';
 import { SiteChrome } from '../hud/SiteChrome';
+import { TitleBlock } from '../hud/TitleBlock';
 import { STRINGS } from '../data/strings';
 import '../styles/siteline.css';
 
@@ -99,6 +100,9 @@ function SitelineShell() {
       <a className="site-skip" href="#site-main">
         Skip to content
       </a>
+
+      {/* Identity before the scene in reading order — recruiter's who/how-to-reach. */}
+      {!usePlan && <TitleBlock />}
 
       {!usePlan && (
         <Suspense fallback={null}>
