@@ -1437,6 +1437,16 @@ html[data-experience='siteline'] #root {
   background-size: 32px 32px;
 }
 
+/* ?sheets — the drawing set as the page itself, laid on the same desk */
+.site-sheets-standalone {
+  min-height: 100vh;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--paper);
+  background-size: 32px 32px;
+}
+
 @media print {
   .site-canvas,
   .site-rail,

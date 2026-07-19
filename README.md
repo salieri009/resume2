@@ -53,7 +53,8 @@ Floors stack in section order; the left-edge floor rail is the key plan. URL has
 - `src/data/` — `academic.ts` (transcript), `projects.ts`, `credentials.ts`, `profile.ts`,
   `strings.ts` (EN/KO/JA), `types.ts`
 - `src/components/` — the print set: `PrintSet`, `SectionDiagram`, `ShippingLane` (R-series résumé
-  sheets, opened by the **DOC** control)
+  sheets, opened by the **RÉSUMÉ** control; `/?sheets` shows the full A-000–A-600 set on screen,
+  `/?sheets=r` the two R-series pages)
 - `src/styles/siteline.css` — the HUD design system (CSS tokens, swapped via `data-theme`)
 - `scripts/gen-og.mjs` — regenerates the `public/og.png` share card
 

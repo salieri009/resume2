@@ -22,6 +22,23 @@ import '../styles/siteline.css';
 const SiteRoot = lazy(() => import('../scene/SiteRoot').then((m) => ({ default: m.SiteRoot })));
 const PrintSet = lazy(() => import('../components/PrintSet').then((m) => ({ default: m.PrintSet })));
 
+/* ?sheets renders the drawing set on screen for inspection — the printed
+   R-002 footer points here. `?sheets` = the full A-000–A-600 set, `?sheets=r`
+   = the two R-series résumé pages. Read once; this is a page mode, not state. */
+const SHEETS_PARAM =
+  typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('sheets') : null;
+
+function SheetsStandalone() {
+  const { lang } = useSite();
+  return (
+    <div className="site-sheets-standalone">
+      <Suspense fallback={null}>
+        <PrintSet lang={lang} preview standalone variant={SHEETS_PARAM === 'r' ? 'resume' : 'set'} />
+      </Suspense>
+    </div>
+  );
+}
+
 function PrintDrawer() {
   const { printOpen, setPrintOpen, lang } = useSite();
   const t = STRINGS[lang];
@@ -132,8 +149,6 @@ function SitelineShell() {
 
 export default function SitelineApp() {
   return (
-    <SiteProvider>
-      <SitelineShell />
-    </SiteProvider>
+    <SiteProvider>{SHEETS_PARAM !== null ? <SheetsStandalone /> : <SitelineShell />}</SiteProvider>
   );
 }

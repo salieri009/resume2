@@ -94,6 +94,11 @@ interface PrintSetProps {
   /** True when shown via ?sheets — adds the on-screen preview frame. */
   preview: boolean;
   /**
+   * True when the sheets ARE the page (?sheets route) rather than a copy of
+   * content that already exists on screen — then they must not be aria-hidden.
+   */
+  standalone?: boolean;
+  /**
    * What printing emits. `resume` is the default — two R-series pages, the
    * Western-convention résumé. The full A-000–A-600 set prints only from the
    * `?sheets` preview, where the reader has already chosen the deep dive.
@@ -101,12 +106,13 @@ interface PrintSetProps {
   variant: PrintVariant;
 }
 
-export function PrintSet({ lang, preview, variant }: PrintSetProps) {
+export function PrintSet({ lang, preview, standalone, variant }: PrintSetProps) {
   const t = STRINGS[lang];
+  const hidden = standalone ? undefined : true;
 
   if (variant === 'resume') {
     return (
-      <div className={`sal-print${preview ? ' is-preview' : ''}`} aria-hidden="true">
+      <div className={`sal-print${preview ? ' is-preview' : ''}`} aria-hidden={hidden}>
         {/* R-001 — who, the thesis, the stamps, education, the skill matrix. */}
         <Sheet no="R-001" kind="RÉSUMÉ · 1 OF 2" title={PROFILE.name}>
           <p className="sal-sheet-alias">{PROFILE.alias}</p>
@@ -212,7 +218,7 @@ export function PrintSet({ lang, preview, variant }: PrintSetProps) {
   };
 
   return (
-    <div className={`sal-print${preview ? ' is-preview' : ''}`} aria-hidden="true">
+    <div className={`sal-print${preview ? ' is-preview' : ''}`} aria-hidden={hidden}>
       {/* A-000 — title sheet: the thesis and the stamps that back it. */}
       <Sheet no="A-000" kind="TITLE SHEET" title={t.courseTop}>
         <p className="sal-sheet-alias">{PROFILE.alias}</p>
