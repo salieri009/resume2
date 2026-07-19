@@ -547,7 +547,7 @@ html[data-experience='siteline'] #root {
   bottom: clamp(1.5rem, 6vh, 4rem);
   z-index: 5;
   max-width: min(22rem, 92vw);
-  max-height: min(52vh, 24rem);
+  max-height: min(60vh, 27rem);
   overflow: auto;
   padding: 1.05rem 1.1rem 1.15rem;
   border: 1px solid var(--line);
@@ -629,6 +629,10 @@ html[data-experience='siteline'] #root {
   font-size: 0.9rem;
   line-height: 1.4;
   color: var(--graphite);
+}
+/* Degree/record register inside the thesis card — tighter than the plan mast */
+.site-lobby .site-plan-spec {
+  margin: 0.7rem 0 0;
 }
 .site-lobby-more {
   margin: 0.75rem 0 0;

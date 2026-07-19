@@ -1,5 +1,6 @@
 import { STRINGS } from '../data/strings';
 import { PROFILE } from '../data/profile';
+import { DEGREE } from '../data/academic';
 import { useSite } from '../building/SiteContext';
 import { parseHash } from '../building/program';
 
@@ -28,6 +29,23 @@ export function LobbyPanel() {
       <p className="site-lobby-role">
         {PROFILE.name} · {t.roleLine}
       </p>
+      {/* Degree + record — top fixation targets in the recruiter's first scan,
+          same register the plan fallback already proves out. */}
+      <dl className="site-plan-spec">
+        <div>
+          <dt>DEGREE</dt>
+          <dd>
+            {DEGREE.award} · {DEGREE.institution}
+          </dd>
+        </div>
+        <div>
+          <dt>RECORD</dt>
+          <dd>
+            GPA {DEGREE.gpa}/7.0 · WAM {DEGREE.wam} · {DEGREE.creditPoints} CP ·{' '}
+            {DEGREE.status.toUpperCase()}
+          </dd>
+        </div>
+      </dl>
       <div className="site-lobby-actions">
         <button type="button" className="site-btn" onClick={() => goTo('L2', 'crowd')}>
           {t.enterLabs}
