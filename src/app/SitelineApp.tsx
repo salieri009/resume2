@@ -21,10 +21,15 @@ import '../styles/siteline.css';
 // never downloads it. The print set loads only when the DOC drawer opens.
 const SiteRoot = lazy(() => import('../scene/SiteRoot').then((m) => ({ default: m.SiteRoot })));
 const PrintSet = lazy(() => import('../components/PrintSet').then((m) => ({ default: m.PrintSet })));
+const ResumeSheets = lazy(() =>
+  import('../components/resume/ResumeSheets').then((m) => ({ default: m.ResumeSheets })),
+);
 
-/* ?sheets renders the drawing set on screen for inspection — the printed
-   R-002 footer points here. `?sheets` = the full A-000–A-600 set, `?sheets=r`
-   = the two R-series résumé pages. Read once; this is a page mode, not state. */
+/* ?sheets renders the print documents on screen for inspection. `?sheets` =
+   the full A-000–A-600 drawing set, `?sheets=r` = the two-page conventional
+   résumé (per-language format). Read once; this is a page mode, not state.
+   Separate lazy chunks: printing from the site never downloads the A-set,
+   and the A-set inspection never downloads the résumé. */
 const SHEETS_PARAM =
   typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('sheets') : null;
 
@@ -33,7 +38,11 @@ function SheetsStandalone() {
   return (
     <div className="site-sheets-standalone">
       <Suspense fallback={null}>
-        <PrintSet lang={lang} preview standalone variant={SHEETS_PARAM === 'r' ? 'resume' : 'set'} />
+        {SHEETS_PARAM === 'r' ? (
+          <ResumeSheets lang={lang} preview standalone />
+        ) : (
+          <PrintSet lang={lang} preview standalone />
+        )}
       </Suspense>
     </div>
   );
@@ -61,11 +70,11 @@ function PrintDrawer() {
   if (!printOpen) return null;
 
   return (
-    <div className="site-print-drawer" role="dialog" aria-label="SITE 009 · Résumé · R-series">
+    <div className="site-print-drawer" role="dialog" aria-label={t.resumeDocLabel}>
       <div className="site-print-drawer-bar">
         <div className="site-print-drawer-stamp">
-          <span className="site-print-drawer-site">SITE 009 · SALIERI · REVISION A</span>
-          <span className="site-print-drawer-doc">RÉSUMÉ · R-001 / R-002</span>
+          <span className="site-print-drawer-site">{t.resumeDocLabel}</span>
+          <span className="site-print-drawer-doc">{t.resumeDocPages}</span>
         </div>
         <div className="site-print-drawer-actions">
           <button type="button" className="site-btn" autoFocus onClick={() => window.print()}>
@@ -78,7 +87,7 @@ function PrintDrawer() {
       </div>
       <div className="site-print-drawer-body">
         <Suspense fallback={null}>
-          <PrintSet lang={lang} preview variant="resume" />
+          <ResumeSheets lang={lang} preview />
         </Suspense>
       </div>
     </div>

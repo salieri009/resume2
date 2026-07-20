@@ -45,6 +45,10 @@ const LANG_KEY = 'sal-lang';
 const THEME_KEY = 'sal-theme';
 
 function initialLang(): Lang {
+  // ?lang= wins over everything — the ?sheets routes have no language
+  // switcher, so this is the only way to inspect a specific print language.
+  const q = new URLSearchParams(window.location.search).get('lang');
+  if (q === 'en' || q === 'ko' || q === 'ja') return q;
   try {
     const stored = localStorage.getItem(LANG_KEY);
     if (stored === 'en' || stored === 'ko' || stored === 'ja') return stored;

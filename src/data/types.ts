@@ -203,6 +203,10 @@ export interface Strings {
   enterLabs: string;
   /** Résumé drawer dismiss control. */
   closeDoc: string;
+  /** Résumé drawer document label (dialog aria-label + bar stamp). */
+  resumeDocLabel: string;
+  /** Résumé drawer page-count stamp, e.g. '2 pages · A4'. */
+  resumeDocPages: string;
   /** Standing lobby annotation — tells a first-timer the model is clickable. */
   lobbyHint: string;
 }

@@ -82,6 +82,8 @@ const SHARED = {
     languagesLine: 'Korean · Native — English · Fluent — Japanese · Learning — German · Learning',
     enterLabs: 'Enter laboratories',
     closeDoc: 'Close',
+    resumeDocLabel: 'Résumé — Jungwook Van',
+    resumeDocPages: '2 pages · A4',
     lobbyHint: 'SELECT A ROOM ON THE MODEL · OR USE THE FLOOR RAIL',
   },
   ko: {
@@ -165,6 +167,8 @@ const SHARED = {
     languagesLine: '한국어 · 모국어 — English · 유창 — 日本語 · 학습 중 — Deutsch · 학습 중',
     enterLabs: '실험실 입장',
     closeDoc: '닫기',
+    resumeDocLabel: '이력서 — 반정욱',
+    resumeDocPages: '2매 · A4',
     lobbyHint: '모형의 방을 선택하거나 · 왼쪽 층 레일을 이용',
   },
   ja: {
@@ -248,6 +252,8 @@ const SHARED = {
     languagesLine: '韓国語 · 母語 — English · 流暢 — 日本語 · 学習中 — Deutsch · 学習中',
     enterLabs: '実験室へ入る',
     closeDoc: '閉じる',
+    resumeDocLabel: '履歴書・職務経歴書 — 潘政煜',
+    resumeDocPages: '2枚 · A4',
     lobbyHint: '模型の部屋を選択 · または左のフロアレール',
   },
 } as const;
